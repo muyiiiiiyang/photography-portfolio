@@ -151,9 +151,7 @@ export async function getAlbumBySlug(slug: string): Promise<AlbumView | null> {
   if (index === -1) return null;
 
   const album = data.albums[index];
-  const photos = sortPhotosByTakenDateDesc(
-    data.albumPhotos[album.id] ?? [],
-  ).map(toPhotoView);
+  const photos = (data.albumPhotos[album.id] ?? []).map(toPhotoView);
   const summary = buildAlbumSummary(
     album,
     data.albumPhotos[album.id] ?? [],

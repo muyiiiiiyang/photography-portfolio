@@ -6,7 +6,7 @@ import type {
   SiteConfig,
   SocialLink,
 } from "@/lib/types";
-import { isIsoDate, sortPhotosByTakenDateDesc, toIsoUtc, uniqueTags } from "@/lib/photos";
+import { isIsoDate, toIsoUtc, uniqueTags } from "@/lib/photos";
 
 function asString(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
@@ -202,7 +202,7 @@ export function sanitizePortfolio(raw: unknown): PortfolioData {
       createdAt,
     });
 
-    albumPhotos[id] = sortPhotosByTakenDateDesc(photos);
+    albumPhotos[id] = photos;
   });
 
   const folders: Folder[] = [];

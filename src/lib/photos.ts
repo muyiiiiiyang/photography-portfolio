@@ -8,15 +8,17 @@ export function isoTime(iso?: string | null): number {
 }
 
 /** 取拍摄时间戳。 */
-export function takenAt(photo: Photo): number {
+export function takenAt(photo: Pick<Photo, "dateTaken">): number {
   return isoTime(photo.dateTaken);
 }
 
 /**
- * 拍摄时间绝对降序。所有展示入口都必须经过这里：
- * 1) 写入 JSON 前重排；2) 读取 API 时重排；3) 管理后台保存前二次重排。
+ * 按拍摄时间绝对降序，用于专题、首页时间轴与前台的时间排序视图。
+ * 相册内部顺序由后台拖动决定，写入时不再强制重排。
  */
-export function sortPhotosByTakenDateDesc(photos: Photo[]): Photo[] {
+export function sortPhotosByTakenDateDesc<
+  T extends Pick<Photo, "dateTaken" | "addedAt" | "id">,
+>(photos: T[]): T[] {
   return [...photos].sort((a, b) => {
     const diff = takenAt(b) - takenAt(a);
     if (diff !== 0) return diff;

@@ -5,6 +5,7 @@ import type { Dispatch, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
 import { MapPicker } from "./MapPicker";
+import { formatDate } from "@/lib/format";
 import type { Album, PortfolioData } from "@/lib/types";
 
 interface AlbumsPanelProps {
@@ -27,6 +28,8 @@ export function AlbumsPanel({
   onWorksIntroChange,
 }: AlbumsPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.albums[0]?.id ?? "");
+  const [dragPhotoId, setDragPhotoId] = useState<string | null>(null);
+  const [dragOverPhotoId, setDragOverPhotoId] = useState<string | null>(null);
   const selected =
     portfolio.albums.find((album) => album.id === selectedId) ??
     portfolio.albums[0] ??
@@ -51,6 +54,34 @@ export function AlbumsPanel({
     }
     next[index] = value;
     onNavAlbumIdsChange(next.filter(Boolean));
+  }
+
+  function reorderAlbumPhotos(fromId: string, toId: string | null) {
+    if (!selected) return;
+    setPortfolio((prev) => {
+      const list = prev.albumPhotos[selected.id] ?? [];
+      const fromIndex = list.findIndex((photo) => photo.id === fromId);
+      if (fromIndex === -1) return prev;
+      const next = [...list];
+      const [moved] = next.splice(fromIndex, 1);
+      if (!moved) return prev;
+      const targetIndex = toId
+        ? next.findIndex((photo) => photo.id === toId)
+        : next.length;
+      next.splice(targetIndex === -1 ? next.length : targetIndex, 0, moved);
+      if (next.every((photo, index) => photo.id === list[index]?.id)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        albumPhotos: { ...prev.albumPhotos, [selected.id]: next },
+      };
+    });
+  }
+
+  function resetDrag() {
+    setDragPhotoId(null);
+    setDragOverPhotoId(null);
   }
 
   function patchAlbum(patch: Partial<Album>) {
@@ -284,6 +315,140 @@ export function AlbumsPanel({
                 {photos.length > 0 ? "继续上传" : "上传第一批照片"} ↑
               </Button>
             </div>
+
+            <section className="border border-ink/15 bg-paper-2/30 p-4">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink/40">
+                    相册照片 / {photos.length}
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-ink/50">
+                    拖动任意缩略图调整前台顺序。手动顺序会写入相册数组；
+                    在「照片」面板也可以拖动排序。
+                  </p>
+                </div>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink/30">
+                  拖动排序
+                </span>
+              </div>
+
+              {photos.length > 0 ? (
+                <>
+                  <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+                    {photos.map((photo, index) => {
+                      const dropTarget =
+                        dragOverPhotoId === photo.id &&
+                        dragPhotoId !== photo.id;
+                      return (
+                        <div
+                          key={photo.id}
+                          draggable={photos.length > 1}
+                          onDragStart={(event) => {
+                            setDragPhotoId(photo.id);
+                            event.dataTransfer.effectAllowed = "move";
+                            event.dataTransfer.setData(
+                              "text/plain",
+                              photo.id,
+                            );
+                          }}
+                          onDragOver={(event) => {
+                            if (
+                              !dragPhotoId ||
+                              dragPhotoId === photo.id
+                            ) {
+                              return;
+                            }
+                            event.preventDefault();
+                            event.dataTransfer.dropEffect = "move";
+                            setDragOverPhotoId(photo.id);
+                          }}
+                          onDragLeave={() =>
+                            setDragOverPhotoId((current) =>
+                              current === photo.id ? null : current,
+                            )
+                          }
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            if (
+                              dragPhotoId &&
+                              dragPhotoId !== photo.id
+                            ) {
+                              reorderAlbumPhotos(dragPhotoId, photo.id);
+                            }
+                            resetDrag();
+                          }}
+                          onDragEnd={resetDrag}
+                          title="拖动调整顺序"
+                          className={`group cursor-grab border bg-white p-1 active:cursor-grabbing ${
+                            dragPhotoId === photo.id
+                              ? "border-ink/20 opacity-40"
+                              : "border-ink/15"
+                          } ${
+                            dropTarget
+                              ? "border-dashed border-red bg-red/5"
+                              : ""
+                          }`}
+                        >
+                          <div className="relative aspect-[4/3] overflow-hidden bg-paper-2">
+                            <img
+                              src={photo.thumb}
+                              alt={photo.title ?? "照片"}
+                              loading="lazy"
+                              draggable={false}
+                              className="h-full w-full object-cover"
+                            />
+                            <span className="absolute left-1 top-1 border border-ink/15 bg-white/90 px-1 font-mono text-[8px]">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                            {selected.coverPhotoId === photo.id ? (
+                              <span className="absolute right-1 top-1 bg-ink px-1 py-0.5 font-mono text-[8px] text-paper">
+                                封面
+                              </span>
+                            ) : null}
+                          </div>
+                          <div className="mt-1 flex items-baseline justify-between gap-2 px-0.5">
+                            <span className="min-w-0 truncate text-[10px] text-ink/70">
+                              {photo.title ?? "Untitled"}
+                            </span>
+                            <span className="shrink-0 font-mono text-[8px] text-ink/35">
+                              {formatDate(photo.dateTaken)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {photos.length > 1 ? (
+                    <div
+                      onDragOver={(event) => {
+                        if (!dragPhotoId) return;
+                        event.preventDefault();
+                        event.dataTransfer.dropEffect = "move";
+                      }}
+                      onDrop={(event) => {
+                        event.preventDefault();
+                        if (dragPhotoId) {
+                          reorderAlbumPhotos(dragPhotoId, null);
+                        }
+                        resetDrag();
+                      }}
+                      className={`mt-2 border border-dashed px-3 py-2 text-center font-mono text-[9px] uppercase tracking-[0.16em] transition-colors ${
+                        dragPhotoId
+                          ? "border-red bg-red/5 text-red"
+                          : "border-ink/15 text-ink/30"
+                      }`}
+                    >
+                      拖到这里移到相册末尾
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <p className="mt-3 border border-dashed border-ink/20 px-4 py-8 text-center text-[11px] text-ink/40">
+                  还没有照片，先用上方按钮上传。
+                </p>
+              )}
+            </section>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="标题">

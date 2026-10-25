@@ -5,7 +5,7 @@ import type { Dispatch, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
 import { formatDate } from "@/lib/format";
-import { sortPhotosByTakenDateDesc, uniqueTags } from "@/lib/photos";
+import { uniqueTags } from "@/lib/photos";
 import type { Photo, PortfolioData } from "@/lib/types";
 import type { UploadSuccess } from "@/lib/admin/types";
 
@@ -46,6 +46,8 @@ export function PhotosPanel({
   const [targetFolderId, setTargetFolderId] = useState("");
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [dragPhotoId, setDragPhotoId] = useState<string | null>(null);
+  const [dragOverPhotoId, setDragOverPhotoId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const activeAlbumId = albumId ?? localAlbumId;
@@ -111,6 +113,36 @@ export function PhotosPanel({
     onAlbumChange?.(nextId);
     setSelected(new Set());
     setEditingId(null);
+    setDragPhotoId(null);
+    setDragOverPhotoId(null);
+  }
+
+  function reorderAlbumPhoto(fromId: string, toId: string | null) {
+    if (!album || isAll) return;
+    setPortfolio((prev) => {
+      const list = prev.albumPhotos[album.id] ?? [];
+      const fromIndex = list.findIndex((photo) => photo.id === fromId);
+      if (fromIndex === -1) return prev;
+      const next = [...list];
+      const [moved] = next.splice(fromIndex, 1);
+      if (!moved) return prev;
+      const targetIndex = toId
+        ? next.findIndex((photo) => photo.id === toId)
+        : next.length;
+      next.splice(targetIndex === -1 ? next.length : targetIndex, 0, moved);
+      if (next.every((photo, index) => photo.id === list[index]?.id)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        albumPhotos: { ...prev.albumPhotos, [album.id]: next },
+      };
+    });
+  }
+
+  function resetDrag() {
+    setDragPhotoId(null);
+    setDragOverPhotoId(null);
   }
 
   function ownerAlbumId(photoId: string): string | undefined {
@@ -121,10 +153,10 @@ export function PhotosPanel({
 
   function addPhotos(targetAlbumId: string, incoming: Photo[]) {
     setPortfolio((prev) => {
-      const merged = sortPhotosByTakenDateDesc([
+      const merged = [
         ...(prev.albumPhotos[targetAlbumId] ?? []),
         ...incoming,
-      ]);
+      ];
       return {
         ...prev,
         albums: prev.albums.map((item) =>
@@ -148,7 +180,7 @@ export function PhotosPanel({
         ...prev,
         albumPhotos: {
           ...prev.albumPhotos,
-          [albumId]: sortPhotosByTakenDateDesc(updated),
+          [albumId]: updated,
         },
       };
     });
@@ -277,10 +309,10 @@ export function PhotosPanel({
         albumPhotos[item.id] = keep;
       }
 
-      albumPhotos[target.id] = sortPhotosByTakenDateDesc([
+      albumPhotos[target.id] = [
         ...(albumPhotos[target.id] ?? []),
         ...moved,
-      ]);
+      ];
 
       const albums = prev.albums.map((item) => {
         const list = albumPhotos[item.id] ?? [];
@@ -498,6 +530,13 @@ export function PhotosPanel({
             </p>
           </div>
         )}
+
+        {album && photos.length > 1 ? (
+          <p className="border-l-2 border-yellow bg-yellow/10 px-3 py-2 text-[11px] leading-relaxed text-ink/55">
+            拖动任意照片卡片调整「{album.title}」的前台顺序；松手后顺序只存入草稿，
+            点击右上角「保存至磁盘」后生效。前台默认显示手动顺序，也可切换拍摄时间排序。
+          </p>
+        ) : null}
 
         {selected.size > 0 ? (
           <div className="flex flex-wrap items-center gap-2 border border-ink bg-white p-2.5">
@@ -772,14 +811,47 @@ export function PhotosPanel({
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
           {photos.map((photo) => {
             const active = selected.has(photo.id);
+            const reorderable = Boolean(album) && !isAll && photos.length > 1;
+            const dropTarget =
+              dragOverPhotoId === photo.id && dragPhotoId !== photo.id;
             return (
               <div
                 key={photo.id}
+                draggable={reorderable}
+                onDragStart={(event) => {
+                  if (!reorderable) return;
+                  setDragPhotoId(photo.id);
+                  event.dataTransfer.effectAllowed = "move";
+                  event.dataTransfer.setData("text/plain", photo.id);
+                }}
+                onDragOver={(event) => {
+                  if (!dragPhotoId || dragPhotoId === photo.id) return;
+                  event.preventDefault();
+                  event.dataTransfer.dropEffect = "move";
+                  setDragOverPhotoId(photo.id);
+                }}
+                onDragLeave={() =>
+                  setDragOverPhotoId((current) =>
+                    current === photo.id ? null : current,
+                  )
+                }
+                onDrop={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  if (dragPhotoId && dragPhotoId !== photo.id) {
+                    reorderAlbumPhoto(dragPhotoId, photo.id);
+                  }
+                  resetDrag();
+                }}
+                onDragEnd={resetDrag}
+                title={reorderable ? "拖动照片调整顺序" : undefined}
                 className={`group relative border bg-white p-1.5 transition-colors ${
                   active
                     ? "border-red ring-1 ring-red"
                     : "border-ink/15 hover:border-ink/40"
-                }`}
+                } ${reorderable ? "cursor-grab active:cursor-grabbing" : ""} ${
+                  dragPhotoId === photo.id ? "opacity-40" : ""
+                } ${dropTarget ? "border-dashed border-red bg-red/5" : ""}`}
               >
                 <button
                   type="button"
@@ -828,6 +900,7 @@ export function PhotosPanel({
                 </button>
                 <button
                   type="button"
+                  draggable={false}
                   onClick={() => openEditor(photo)}
                   aria-label={`编辑照片：${photo.title ?? photo.fileName}`}
                   className="absolute right-1.5 top-1.5 flex h-8 items-center border border-ink bg-white px-2.5 text-[10px] tracking-[0.06em] shadow-[2px_2px_0_0_rgba(20,18,16,0.12)] transition-colors hover:bg-ink hover:text-paper"
@@ -838,6 +911,28 @@ export function PhotosPanel({
             );
           })}
         </div>
+
+        {album && photos.length > 1 ? (
+          <div
+            onDragOver={(event) => {
+              if (!dragPhotoId) return;
+              event.preventDefault();
+              event.dataTransfer.dropEffect = "move";
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              if (dragPhotoId) reorderAlbumPhoto(dragPhotoId, null);
+              resetDrag();
+            }}
+            className={`border border-dashed px-4 py-3 text-center font-mono text-[9px] uppercase tracking-[0.18em] transition-colors ${
+              dragPhotoId
+                ? "border-red bg-red/5 text-red"
+                : "border-ink/15 text-ink/35"
+            }`}
+          >
+            拖到这里移到相册末尾
+          </div>
+        ) : null}
 
         {photos.length === 0 ? (
           <p className="border border-dashed border-ink/20 px-6 py-12 text-center text-xs text-ink/40">

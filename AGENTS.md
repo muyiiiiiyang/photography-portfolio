@@ -49,22 +49,17 @@ pwsh -File scripts/enable-pages.ps1   # 首次开启 GitHub Pages
 
 ## 2. 四条铁律（不可破坏）
 
-### 2.1 拍摄时间绝对降序
+### 2.1 拍摄时间是真实元数据，相册顺序由手动拖动决定
 
 - 排序字段：`photo.dateTaken`，完整 ISO-8601 UTC 字符串（如 `2026-09-14T09:12:00.000Z`）。
 - 取值优先级：EXIF `DateTimeOriginal` → `CreateDate` → （缺失时）导入时间兜底，并标记 `dateTakenSource: "fallback"`。
-- **严禁**使用文件 `mtime`、`ctime` 或上传时间参与正常排序。
-- 三重防御：
-  1. 写入前：`src/lib/admin/sanitize.ts` → `sanitizePortfolio()` 对每个相册 `sortPhotosByTakenDateDesc()`；
-  2. 读取时：`src/lib/api/portfolio.ts` → `getAlbums()` / `getAlbumBySlug()` / `getFolderBySlug()` 再次排序；
-  3. 后台编辑：`PhotosPanel` 修改日期/批量操作后立即重排。
-- 公共排序函数：`src/lib/photos.ts` → `sortPhotosByTakenDateDesc()`，新代码必须复用它，不要另写 sort。
-- 缺失时间的照片在后台显示红色 `NO DATE` 徽标；可用 Studio 修改，或 `scripts/fix-missing-dates.mjs`。
-
-验证（PowerShell）：
+- **严禁**使用文件 `mtime`、`ctime` 或上传时间参与正常排序；`dateTaken` 仍必须准确。
+- **相册内顺序**：`albumPhotos[albumId]` 的数组顺序就是前台顺序，由 Studio「照片」或「相册」面板拖动决定。写入、读取和保存都不得自动按日期重排。
+- **时间排序视图**：`sortPhotosByTakenDateDesc()` 仍用于专题、首页时间轴，以及相册页的手动/倒序/正序切换；不要删除该函数。
+- 校验（PowerShell）：只检查时间字段合法/缺时兜底；不要再断言相册数组按日期降序。
 
 ```powershell
-node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of Object.entries(d.albumPhotos)){const t=ps.map(p=>Date.parse(p.dateTaken));console.log(id, t.every((v,i)=>i===0||t[i-1]>=v))}"
+node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of Object.entries(d.albumPhotos)){console.log(id, ps.length, ps.every(p=>p.dateTaken))}"
 ```
 
 ### 2.2 原始大图不进库
@@ -149,6 +144,7 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 
 关键约定：
 
+- `albumPhotos[albumId]` 的数组顺序就是该相册的前台顺序；工作台拖动后由保存接口原样保留，不要按日期重排。
 - `folders` 使用 `parentId` 表示上级专题，`null` / 缺失为顶级专题；子专题可继续嵌套。
 - `folderPhotos` 只存照片 **id**，照片本体唯一存放在 `albumPhotos`；不要复制整份照片对象。
 - `id` 一经生成不再修改（专题引用依赖它）；`slug` 是前台 URL，发布后避免修改。
@@ -185,7 +181,7 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --tags "夜,长曝光"
 ```
 
-该脚本走真实 `/api/admin/upload` 管线，复用同一套压缩/EXIF/保存逻辑，最后调用保存接口完成排序与清理。
+该脚本走真实 `/api/admin/upload` 管线，复用同一套压缩/EXIF/保存逻辑，最后调用保存接口完成校验与清理（保留相册手动顺序）。
 需要临时改导入逻辑时，直接修改 `scripts/import-folder.mjs`，不要复制一份新的 sharp 参数。
 
 ### 4.3 API 契约（仅本地）
@@ -212,7 +208,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 ### 4.5 排序与校验
 
-- 保存接口会重新执行 `sanitizePortfolio()`：字段类型清洗、slug 去重、文件夹引用过滤、按时间排序、`updatedAt` 刷新。
+- 保存接口会重新执行 `sanitizePortfolio()`：字段类型清洗、slug 去重、文件夹引用过滤、**保留 `albumPhotos` 数组的手动顺序**、`updatedAt` 刷新。
 - 服务端会丢弃 `src` 不以 `/photos/` 开头的照片记录，防止手写 JSON 注入外链或路径穿越。
 - 相册 slug 冲突会自动追加 `-2`、`-3`；不要依赖旧 slug 的链接。
 
@@ -250,7 +246,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 - 专题页：`/folders` 展示顶级专题与子专题列表；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
 - 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩 + 从点击缩略图位置开始的共享缩放开关动画，简介与说明居中显示）；打开时保留原生滚动条、用 `wheel` / `touchmove` / 键盘事件阻止背景滚动，避免滚动条消失造成的页面抖动；先用缩略图撑开灯箱再后台替换大图。相册卡片：`CollectionCard`（作品集封面使用 3:2 比例，无彩色偏移描边）；筛选：`WorksExplorer`（xl 四列）。
-- 相册详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 提供“按拍摄时间倒序/正序”切换。
+- 相册详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 默认展示工作台拖动的手动顺序，按钮可循环切换「手动 → 拍摄时间倒序 → 拍摄时间正序」。
 - 图片一律使用 `<img>` + `withBasePath()`（已关闭 `@next/next/no-img-element`），必须带 `width`/`height`、`loading`、`decoding`。
 - 内页静态生成：`generateStaticParams()` 必须穷举所有 albums 与 folders，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
 - 空作品集时，两个动态路由会返回 `coming-soon` 占位参数（`src/lib/constants.ts`），避免 `output: export` 报 “empty array”；有数据后自动恢复真实参数。这个兜底不要删除。
@@ -401,7 +397,7 @@ node scripts/reset-demo.mjs --yes
 - [ ] `pnpm lint` 零 error（warning 尽量清零）
 - [ ] `pnpm build` 通过（本地完整功能）
 - [ ] 若改了前台/导出：`pnpm build:static` 通过，且 `out/admin`、`out/api` 不存在
-- [ ] 数据仍按 `dateTaken` 降序
+- [ ] 相册数组顺序未被保存流程重排；专题 / 时间视图仍按 `dateTaken` 排序
 - [ ] 新图片是否只在 `public/photos/` 且为 WebP
 - [ ] 新路由是否有 `generateStaticParams` + `dynamicParams = false`
 - [ ] 新 API 是否 `guardAdmin()` 且位于 `src/app/api/admin/`
