@@ -1,7 +1,7 @@
 {
   "photographer": "Bok_Haam",
   "title": "Bok_Haam Photography",
-  "tagline": "000",
+  "tagline": "记录城市、光线与旅途里的短暂停顿。",
   "portrait": "/portrait/portrait-1792932357433-0806b0.webp",
   "navAlbumIds": [
     "album-japan-2024",
@@ -10,7 +10,7 @@
     "album-southbound-2026"
   ],
   "statement": "",
-  "bio": "00000",
+  "bio": "2025年毕业于四川传媒学院 摄影专业\n师从普耘，何博，姬韶康",
   "location": "GanZhou,JiangXi, CN",
   "email": "muyioffical@outlook.com",
   "socials": [
@@ -37,7 +37,7 @@
   "pageCopy": {
     "aboutHeadingLead": "Bok-Haam",
     "aboutHeadingAccent": "Yang",
-    "worksIntro": "按相册收录。每张作品以相机原始拍摄时间排序，最新的光永远在最前面。",
+    "worksIntro": "观察世界，理解秩序，以作品回应所见\n\nTo observe the world, discern its order, and articulate the seen through creation.",
     "foldersIntro": "从主题到子专题，逐层收拢照片。先选一个大方向，再进入下一层继续细分。"
   },
   "contact": {
@@ -54,7 +54,8 @@
     "services": [
       "建筑 / 空间",
       "品牌视觉",
-      "编辑肖像",
+      "编辑",
+      "肖像",
       "展览 / 出版"
     ],
     "ctaTitle": "先看看作品？",

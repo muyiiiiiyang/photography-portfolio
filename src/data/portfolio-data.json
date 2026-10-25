@@ -60,71 +60,6 @@
   "albumPhotos": {
     "album-japan-2024": [
       {
-        "id": "p_3375185b3f",
-        "fileName": "20261025110026-eacc24.webp",
-        "src": "/photos/2026/20261025110026-eacc24.webp",
-        "thumb": "/photos/2026/20261025110026-eacc24-thumb.webp",
-        "width": 2048,
-        "height": 1500,
-        "blurDataURL": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYABIAPvVmrlAqpSQisBgIAVAeiWcAVf0Db+CmDGye6vB2mgAA/oMcXynidxKvAcuHLokSFpZ4IGfsqaBCemIXgpx+DPuH07cpwefRG3wxUDbTiUW8RAAA",
-        "title": "暮色",
-        "tags": [
-          "日本",
-          "旅行",
-          "城市",
-          "胶片",
-          "黄昏"
-        ],
-        "dateTaken": "2024-04-25T17:30:00.000Z",
-        "dateTakenSource": "manual",
-        "addedAt": "2026-10-25T11:00:27.785Z"
-      },
-      {
-        "id": "p_cc5e07c853",
-        "fileName": "20240425122929-d910ba.webp",
-        "src": "/photos/2024/20240425122929-d910ba.webp",
-        "thumb": "/photos/2024/20240425122929-d910ba-thumb.webp",
-        "width": 2048,
-        "height": 1366,
-        "blurDataURL": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoYABAAPvVmq06qpaQiMAgBUB6JZwAAW+s/5xOIFLsK8MgA/vQadf4cS9y3DffXDeq3x1uTyk5OmJEUBvD3yUElBVCgKEZd5J9ZSgOWnvUNL8TgEAA=",
-        "title": "京都塔",
-        "tags": [
-          "日本",
-          "旅行",
-          "城市",
-          "夜景"
-        ],
-        "dateTaken": "2024-04-25T12:29:29.000Z",
-        "dateTakenSource": "exif",
-        "camera": "SONY ILCE-7RM3",
-        "lens": "16-28mm F2.8 DG DN | Contemporary 022",
-        "focalLength": "16mm",
-        "aperture": "f/2.8",
-        "shutterSpeed": "1/60s",
-        "iso": 6400,
-        "addedAt": "2026-10-25T11:00:25.869Z"
-      },
-      {
-        "id": "p_a423578d01",
-        "fileName": "20261025110026-03875d.webp",
-        "src": "/photos/2026/20261025110026-03875d.webp",
-        "thumb": "/photos/2026/20261025110026-03875d-thumb.webp",
-        "width": 2048,
-        "height": 1500,
-        "blurDataURL": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACwBACdASoYABIAPvVysFKqpqSiqAgBUB6JQBYdgevXDH5EIq96johGkaZggvKAAP5N/CPdhTeWpvG2b8wNNrZ18SdprnWvwE9Cw0DF5iM057qVOT1JvnCqXUViDGnzeXliSQwdYYIBJgm2Fc95b28mqhqQOVctF5eolroJCqEYw47WGWvyLqCE4kAAAA==",
-        "title": "庭院",
-        "tags": [
-          "日本",
-          "旅行",
-          "城市",
-          "胶片",
-          "庭院"
-        ],
-        "dateTaken": "2024-04-25T10:30:00.000Z",
-        "dateTakenSource": "manual",
-        "addedAt": "2026-10-25T11:00:26.898Z"
-      },
-      {
         "id": "p_a90648c33e",
         "fileName": "20240425092640-065728.webp",
         "src": "/photos/2024/20240425092640-065728.webp",
@@ -148,65 +83,6 @@
         "shutterSpeed": "1/60s",
         "iso": 125,
         "addedAt": "2026-10-25T11:00:25.342Z"
-      },
-      {
-        "id": "p_54b22ec506",
-        "fileName": "20240424223223-233e07.webp",
-        "src": "/photos/2024/20240424223223-233e07.webp",
-        "thumb": "/photos/2024/20240424223223-233e07-thumb.webp",
-        "width": 2048,
-        "height": 1366,
-        "blurDataURL": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAAAQBACdASoYABAAPvVkqk4qpaOiMAgBUB6JZwCw7CPQHRLnsHBSi4h4AAD+0PQAHAH2Duo9uvHrFlQV2hPKdDY7U94w5oxyDvYv+KD5LHGdvOOjuWLJAiRXgOhi1uBtlg56oqB1SrZJ3xEmy812t+QpvlQbU+XORMdYvUvTwdo9ywUnKxQbZFBl/4aXbEKl8FQU95YgAAA=",
-        "title": "鸭川跳石",
-        "tags": [
-          "日本",
-          "旅行",
-          "城市",
-          "自然"
-        ],
-        "dateTaken": "2024-04-24T22:32:23.000Z",
-        "dateTakenSource": "exif",
-        "camera": "SONY ILCE-7RM3",
-        "lens": "FE 24-105mm F4 G OSS",
-        "focalLength": "41mm",
-        "aperture": "f/11",
-        "shutterSpeed": "1/200s",
-        "iso": 100,
-        "gps": {
-          "lat": 35.029495,
-          "lng": 135.771823
-        },
-        "addedAt": "2026-10-25T11:00:24.800Z"
-      },
-      {
-        "id": "p_8ee3b1a995",
-        "fileName": "20240424110308-d80f6a.webp",
-        "src": "/photos/2024/20240424110308-d80f6a.webp",
-        "thumb": "/photos/2024/20240424110308-d80f6a-thumb.webp",
-        "width": 2048,
-        "height": 1366,
-        "blurDataURL": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBACdASoYABAAPvVmqk4qpaOiMAgBUB6JZwAAW+3j6dGnEZIDTs7OAAD+7oe74zHEhjdDlAE+wWFnRkj2FFrAJvYLqqqn7S5z5vAtHdqHastsmkS2LG4BcvQXhiO05cN/4sXCGFmOGMBB4t7preQAAAA=",
-        "title": "雨夜",
-        "tags": [
-          "日本",
-          "旅行",
-          "城市",
-          "夜景",
-          "雨天"
-        ],
-        "dateTaken": "2024-04-24T11:03:08.000Z",
-        "dateTakenSource": "exif",
-        "camera": "SONY ILCE-7RM3",
-        "lens": "FE 24-105mm F4 G OSS",
-        "focalLength": "50mm",
-        "aperture": "f/4",
-        "shutterSpeed": "1/60s",
-        "iso": 3200,
-        "gps": {
-          "lat": 35.43953,
-          "lng": 139.62287
-        },
-        "addedAt": "2026-10-25T11:00:23.980Z"
       },
       {
         "id": "p_5b1e9d8bfd",
@@ -267,6 +143,35 @@
         "addedAt": "2026-10-25T11:00:22.816Z"
       },
       {
+        "id": "p_54b22ec506",
+        "fileName": "20240424223223-233e07.webp",
+        "src": "/photos/2024/20240424223223-233e07.webp",
+        "thumb": "/photos/2024/20240424223223-233e07-thumb.webp",
+        "width": 2048,
+        "height": 1366,
+        "blurDataURL": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAAAQBACdASoYABAAPvVkqk4qpaOiMAgBUB6JZwCw7CPQHRLnsHBSi4h4AAD+0PQAHAH2Duo9uvHrFlQV2hPKdDY7U94w5oxyDvYv+KD5LHGdvOOjuWLJAiRXgOhi1uBtlg56oqB1SrZJ3xEmy812t+QpvlQbU+XORMdYvUvTwdo9ywUnKxQbZFBl/4aXbEKl8FQU95YgAAA=",
+        "title": "鸭川跳石",
+        "tags": [
+          "日本",
+          "旅行",
+          "城市",
+          "自然"
+        ],
+        "dateTaken": "2024-04-24T22:32:23.000Z",
+        "dateTakenSource": "exif",
+        "camera": "SONY ILCE-7RM3",
+        "lens": "FE 24-105mm F4 G OSS",
+        "focalLength": "41mm",
+        "aperture": "f/11",
+        "shutterSpeed": "1/200s",
+        "iso": 100,
+        "gps": {
+          "lat": 35.029495,
+          "lng": 135.771823
+        },
+        "addedAt": "2026-10-25T11:00:24.800Z"
+      },
+      {
         "id": "p_3385847330",
         "fileName": "20240423012619-466f49.webp",
         "src": "/photos/2024/20240423012619-466f49.webp",
@@ -294,6 +199,36 @@
           "lng": 139.550097
         },
         "addedAt": "2026-10-25T11:00:22.243Z"
+      },
+      {
+        "id": "p_8ee3b1a995",
+        "fileName": "20240424110308-d80f6a.webp",
+        "src": "/photos/2024/20240424110308-d80f6a.webp",
+        "thumb": "/photos/2024/20240424110308-d80f6a-thumb.webp",
+        "width": 2048,
+        "height": 1366,
+        "blurDataURL": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBACdASoYABAAPvVmqk4qpaOiMAgBUB6JZwAAW+3j6dGnEZIDTs7OAAD+7oe74zHEhjdDlAE+wWFnRkj2FFrAJvYLqqqn7S5z5vAtHdqHastsmkS2LG4BcvQXhiO05cN/4sXCGFmOGMBB4t7preQAAAA=",
+        "title": "雨夜",
+        "tags": [
+          "日本",
+          "旅行",
+          "城市",
+          "夜景",
+          "雨天"
+        ],
+        "dateTaken": "2024-04-24T11:03:08.000Z",
+        "dateTakenSource": "exif",
+        "camera": "SONY ILCE-7RM3",
+        "lens": "FE 24-105mm F4 G OSS",
+        "focalLength": "50mm",
+        "aperture": "f/4",
+        "shutterSpeed": "1/60s",
+        "iso": 3200,
+        "gps": {
+          "lat": 35.43953,
+          "lng": 139.62287
+        },
+        "addedAt": "2026-10-25T11:00:23.980Z"
       },
       {
         "id": "p_5d4b70e632",
@@ -351,33 +286,29 @@
         "addedAt": "2026-10-25T11:00:21.076Z"
       },
       {
-        "id": "p_0a4ee65b8d",
-        "fileName": "20240421225150-7a41bb.webp",
-        "src": "/photos/2024/20240421225150-7a41bb.webp",
-        "thumb": "/photos/2024/20240421225150-7a41bb-thumb.webp",
+        "id": "p_cc5e07c853",
+        "fileName": "20240425122929-d910ba.webp",
+        "src": "/photos/2024/20240425122929-d910ba.webp",
+        "thumb": "/photos/2024/20240425122929-d910ba-thumb.webp",
         "width": 2048,
         "height": 1366,
-        "blurDataURL": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAwBACdASoYABAAPvVkqk4qpaQiMAgBUB6JZQAD5en3+cbq8vXgSl5tWMAA/tlSPRut1uUF8VhYUV3Qphrpc9uUUd8UukrpJ9TYhG31fl6pkCaFCyKIOLXAQjDUj6CjWoh2Eult3qOB27Kgk84SzEyy5DvWnc8cWvkPHkdpu6mAAA==",
-        "title": "巷口",
+        "blurDataURL": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAwCdASoYABAAPvVmq06qpaQiMAgBUB6JZwAAW+s/5xOIFLsK8MgA/vQadf4cS9y3DffXDeq3x1uTyk5OmJEUBvD3yUElBVCgKEZd5J9ZSgOWnvUNL8TgEAA=",
+        "title": "京都塔",
         "tags": [
           "日本",
           "旅行",
           "城市",
-          "街头"
+          "夜景"
         ],
-        "dateTaken": "2024-04-21T22:51:50.000Z",
+        "dateTaken": "2024-04-25T12:29:29.000Z",
         "dateTakenSource": "exif",
         "camera": "SONY ILCE-7RM3",
-        "lens": "FE 24-105mm F4 G OSS",
-        "focalLength": "84mm",
-        "aperture": "f/4",
-        "shutterSpeed": "1/125s",
-        "iso": 320,
-        "gps": {
-          "lat": 35.685113,
-          "lng": 139.72296
-        },
-        "addedAt": "2026-10-25T11:00:20.604Z"
+        "lens": "16-28mm F2.8 DG DN | Contemporary 022",
+        "focalLength": "16mm",
+        "aperture": "f/2.8",
+        "shutterSpeed": "1/60s",
+        "iso": 6400,
+        "addedAt": "2026-10-25T11:00:25.869Z"
       },
       {
         "id": "p_48d52d71c3",
@@ -436,6 +367,35 @@
         "addedAt": "2026-10-25T11:00:18.147Z"
       },
       {
+        "id": "p_0a4ee65b8d",
+        "fileName": "20240421225150-7a41bb.webp",
+        "src": "/photos/2024/20240421225150-7a41bb.webp",
+        "thumb": "/photos/2024/20240421225150-7a41bb-thumb.webp",
+        "width": 2048,
+        "height": 1366,
+        "blurDataURL": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAwBACdASoYABAAPvVkqk4qpaQiMAgBUB6JZQAD5en3+cbq8vXgSl5tWMAA/tlSPRut1uUF8VhYUV3Qphrpc9uUUd8UukrpJ9TYhG31fl6pkCaFCyKIOLXAQjDUj6CjWoh2Eult3qOB27Kgk84SzEyy5DvWnc8cWvkPHkdpu6mAAA==",
+        "title": "巷口",
+        "tags": [
+          "日本",
+          "旅行",
+          "城市",
+          "街头"
+        ],
+        "dateTaken": "2024-04-21T22:51:50.000Z",
+        "dateTakenSource": "exif",
+        "camera": "SONY ILCE-7RM3",
+        "lens": "FE 24-105mm F4 G OSS",
+        "focalLength": "84mm",
+        "aperture": "f/4",
+        "shutterSpeed": "1/125s",
+        "iso": 320,
+        "gps": {
+          "lat": 35.685113,
+          "lng": 139.72296
+        },
+        "addedAt": "2026-10-25T11:00:20.604Z"
+      },
+      {
         "id": "p_0bf7ec747c",
         "fileName": "20240420122954-9d6e2f.webp",
         "src": "/photos/2024/20240420122954-9d6e2f.webp",
@@ -459,6 +419,46 @@
         "shutterSpeed": "13s",
         "iso": 100,
         "addedAt": "2026-10-25T11:00:19.248Z"
+      },
+      {
+        "id": "p_a423578d01",
+        "fileName": "20261025110026-03875d.webp",
+        "src": "/photos/2026/20261025110026-03875d.webp",
+        "thumb": "/photos/2026/20261025110026-03875d-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAACwBACdASoYABIAPvVysFKqpqSiqAgBUB6JQBYdgevXDH5EIq96johGkaZggvKAAP5N/CPdhTeWpvG2b8wNNrZ18SdprnWvwE9Cw0DF5iM057qVOT1JvnCqXUViDGnzeXliSQwdYYIBJgm2Fc95b28mqhqQOVctF5eolroJCqEYw47WGWvyLqCE4kAAAA==",
+        "title": "庭院",
+        "tags": [
+          "日本",
+          "旅行",
+          "城市",
+          "胶片",
+          "庭院"
+        ],
+        "dateTaken": "2024-04-25T10:30:00.000Z",
+        "dateTakenSource": "manual",
+        "addedAt": "2026-10-25T11:00:26.898Z"
+      },
+      {
+        "id": "p_3375185b3f",
+        "fileName": "20261025110026-eacc24.webp",
+        "src": "/photos/2026/20261025110026-eacc24.webp",
+        "thumb": "/photos/2026/20261025110026-eacc24-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwBACdASoYABIAPvVmrlAqpSQisBgIAVAeiWcAVf0Db+CmDGye6vB2mgAA/oMcXynidxKvAcuHLokSFpZ4IGfsqaBCemIXgpx+DPuH07cpwefRG3wxUDbTiUW8RAAA",
+        "title": "暮色",
+        "tags": [
+          "日本",
+          "旅行",
+          "城市",
+          "胶片",
+          "黄昏"
+        ],
+        "dateTaken": "2024-04-25T17:30:00.000Z",
+        "dateTakenSource": "manual",
+        "addedAt": "2026-10-25T11:00:27.785Z"
       },
       {
         "id": "p_263f553f57",
@@ -1556,13 +1556,7 @@
         "width": 2048,
         "height": 1638,
         "blurDataURL": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAACwBACdASoYABMAPvVqqlAqpiOisBgIAVAeiWcAxNgQ72at6gjN3CPf8QfZ/rBQAP6WILEgZm4hV8ltdPHuGQsWdiL49eBammiZY3uAFU+paNIFj9CUAZY2IYaJ3L+PPiAhq0/bnnU2RbvbTC71O/AA",
-        "title": "港岛远眺",
-        "tags": [
-          "胶卷",
-          "粤港澳",
-          "公路",
-          "城市"
-        ],
+        "tags": [],
         "dateTaken": "2026-09-10T02:00:00.000Z",
         "dateTakenSource": "manual",
         "addedAt": "2026-10-25T11:00:50.186Z"
@@ -1628,5 +1622,5 @@
       "p_5b1e9d8bfd"
     ]
   },
-  "updatedAt": "2026-10-25T13:14:45.905Z"
+  "updatedAt": "2026-10-25T14:01:10.453Z"
 }
