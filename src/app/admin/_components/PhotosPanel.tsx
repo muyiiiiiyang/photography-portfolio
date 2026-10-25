@@ -612,7 +612,8 @@ export function PhotosPanel({
                 <button
                   type="button"
                   onClick={() => openEditor(photo)}
-                  className="absolute right-1.5 top-1.5 border border-ink bg-white/90 px-1.5 py-0.5 text-[8px] tracking-[0.08em] opacity-0 transition-opacity group-hover:opacity-100"
+                  aria-label={`编辑照片：${photo.title ?? photo.fileName}`}
+                  className="absolute right-1.5 top-1.5 flex h-8 items-center border border-ink bg-white px-2.5 text-[10px] tracking-[0.06em] shadow-[2px_2px_0_0_rgba(20,18,16,0.12)] transition-colors hover:bg-ink hover:text-paper"
                 >
                   编辑
                 </button>
