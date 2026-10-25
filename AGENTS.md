@@ -238,11 +238,12 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 ### 5.2 页面与组件
 
-- 首页：`src/app/page.tsx`，纯白左右分栏；左侧 `Bok_Hamm / Photography` 混合大小写标题与分类导航，右侧 `RandomWall` 随机照片墙（客户端每次加载/换一组重抽）。不再使用大色块或全大写标题。
-- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。Studio「站点设置 → 个人照片」上传。
-- 导航：`SiteHeader`（服务端，读取 albums/folders）→ `SiteNav`（客户端 hover 子目录面板）；新增分类页时同步修改 `SiteHeader` 的 `items`。
+- 首页：`src/app/page.tsx`，纯白左右分栏；左侧 `Bok_Hamm / Photography` 混合大小写标题与分类导航，右侧 `RandomWall` 随机照片墙（每 5 秒自动换一组，也可手动换一组）。不再使用大色块或全大写标题。
+- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。Studio「站点设置 → 个人照片」上传。导航只保留「关于作者」直达链接，不再有 About 子目录。
+- 导航：`SiteHeader`（服务端，读取 albums/folders）→ `SiteNav`（客户端 hover 子目录面板；`children` 为空时只渲染直达链接）。新增分类页时同步修改 `SiteHeader` 的 `items`。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
-- 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩）；相册卡片：`CollectionCard`；筛选：`WorksExplorer`。
+- 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩 + 打开/切图过渡，简介与说明居中显示）；相册卡片：`CollectionCard`（作品集封面使用 3:2 比例，无彩色偏移描边）；筛选：`WorksExplorer`（xl 四列）。
+- 相册/专题详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 提供“按拍摄时间倒序/正序”切换。
 - 图片一律使用 `<img>` + `withBasePath()`（已关闭 `@next/next/no-img-element`），必须带 `width`/`height`、`loading`、`decoding`。
 - 内页静态生成：`generateStaticParams()` 必须穷举所有 albums/folders，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
 - 空作品集时，两个动态路由会返回 `coming-soon` 占位参数（`src/lib/constants.ts`），避免 `output: export` 报 “empty array”；有数据后自动恢复真实参数。这个兜底不要删除。

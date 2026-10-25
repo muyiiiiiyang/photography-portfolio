@@ -188,9 +188,9 @@ scripts/                 演示数据、静态构建、补救、Pages 启用脚�
 
 ## 本地版本快照
 
-`ver1.0/` 保存了本次交付的完整工作副本（源码、`src/data`、`public` 图片、配置与文档），不包含 `node_modules`、`.next`、`out`、`.git` 和本机环境变量。该目录已加入 `.gitignore`，不会重复提交。
+`ver1.5/` 保存了本次交付的完整工作副本（源码、`src/data`、`public` 图片、配置与文档），不包含 `node_modules`、`.next`、`out`、`.git` 和本机环境变量。该目录已加入 `.gitignore`，不会重复提交；`ver1.0/` 作为上一版快照保留。
 
-回滚时先停止 `pnpm dev`，把 `ver1.0/` 内的文件覆盖回项目根目录，再执行 `pnpm install && pnpm dev`。更细的回滚方式见 `ver1.0/VERSION.md`。
+回滚时先停止 `pnpm dev`，把 `ver1.5/` 内的文件覆盖回项目根目录，再执行 `pnpm install && pnpm dev`。更细的回滚方式见 `ver1.5/VERSION.md`。
 
 ---
 

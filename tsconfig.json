@@ -39,6 +39,7 @@
     "node_modules",
     "out",
     ".stash",
-    "ver1.0"
+    "ver1.0",
+    "ver1.5"
   ]
 }

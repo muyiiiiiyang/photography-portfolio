@@ -26,6 +26,7 @@ desktop.ini
 
 # local version snapshots
 ver1.0/
+ver1.5/
 
 # logs
 npm-debug.log*

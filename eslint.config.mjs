@@ -19,5 +19,6 @@ export default defineConfig([
     "scripts/**",
     ".stash/**",
     "ver1.0/**",
+    "ver1.5/**",
   ]),
 ]);
