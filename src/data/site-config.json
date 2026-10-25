@@ -1,0 +1,30 @@
+{
+  "photographer": "Bok Hamm",
+  "title": "Bok_Hamm Photography",
+  "tagline": "以几何的目光，收集光、秩序与城市的呼吸。",
+  "statement": "摄影不是记录我看见了什么，而是排列光如何落在这些事物上。用最少的元素，留下最长的余韵。",
+  "bio": "Bok Hamm，工作于上海的摄影师与视觉设计师。长期关注城市结构、几何秩序与自然光在空间中形成的形状，作品以冷静的构图与克制的色彩，记录日常里被忽略的秩序。\n\n曾为建筑事务所、独立品牌与出版物拍摄，同时在持续进行个人长期项目《几何城市》。",
+  "location": "Shanghai, CN",
+  "email": "hello@bokhamm.studio",
+  "socials": [
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/"
+    },
+    {
+      "label": "Behance",
+      "url": "https://www.behance.net/"
+    },
+    {
+      "label": "小红书",
+      "url": "https://www.xiaohongshu.com/"
+    }
+  ],
+  "equipment": [
+    "Leica M11",
+    "Summilux-M 35mm f/1.4 ASPH",
+    "Hasselblad 500CM",
+    "Kodak Portra 400"
+  ],
+  "copyright": "© 2026 Bok Hamm. All rights reserved."
+}

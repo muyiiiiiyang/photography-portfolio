@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 管理后台只存在于本地开发环境，公网构建中会被物理删除。
+Disallow: /admin
