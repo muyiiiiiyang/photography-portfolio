@@ -1,13 +1,6 @@
 import Link from "next/link";
 
-import type { Accent } from "@/lib/types";
 import type { PhotoView } from "@/lib/view-types";
-
-const ACCENT_BG: Record<Accent, string> = {
-  red: "bg-red",
-  yellow: "bg-yellow",
-  blue: "bg-blue",
-};
 
 interface CollectionCardProps {
   href: string;
@@ -20,7 +13,6 @@ interface CollectionCardProps {
   year: string;
   location?: string;
   tags: string[];
-  accent: Accent;
   priority?: boolean;
 }
 
@@ -35,17 +27,12 @@ export function CollectionCard({
   year,
   location,
   tags,
-  accent,
   priority = false,
 }: CollectionCardProps) {
   return (
     <Link href={href} className="group block">
       <div className="relative">
-        <span
-          aria-hidden
-          className={`absolute -left-2 -top-2 h-full w-full ${ACCENT_BG[accent]} transition-transform duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover:translate-x-2 group-hover:translate-y-2`}
-        />
-        <div className="photo-zoom relative aspect-[4/3] overflow-hidden border border-ink bg-paper-2">
+        <div className="photo-zoom relative aspect-[3/2] overflow-hidden border border-ink/25 bg-paper-2">
           {cover ? (
             <img
               src={cover.thumbUrl}
@@ -65,15 +52,15 @@ export function CollectionCard({
           <span className="absolute left-3 top-3 bg-paper/90 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] backdrop-blur-sm">
             {code}—{String(index + 1).padStart(2, "0")}
           </span>
-          <span className="absolute bottom-0 right-0 flex h-9 items-center bg-ink px-3 font-mono text-[9px] uppercase tracking-[0.18em] text-paper">
+          <span className="absolute bottom-0 right-0 flex h-8 items-center bg-ink px-2.5 font-mono text-[9px] uppercase tracking-[0.18em] text-paper">
             {count} frames
           </span>
         </div>
       </div>
 
-      <div className="mt-5 flex items-start justify-between gap-4 border-t border-ink/25 pt-4">
+      <div className="mt-4 flex items-start justify-between gap-4 border-t border-ink/25 pt-3.5">
         <div className="min-w-0">
-          <h3 className="font-display text-[22px] leading-tight tracking-[-0.01em] sm:text-[26px]">
+          <h3 className="font-display text-[20px] leading-tight tracking-[-0.01em] sm:text-[22px]">
             {title}
           </h3>
           {subtitle ? (
@@ -81,7 +68,7 @@ export function CollectionCard({
               {subtitle}
             </p>
           ) : null}
-          <div className="mt-3 flex flex-wrap gap-1.5">
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}

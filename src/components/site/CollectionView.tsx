@@ -1,14 +1,7 @@
 import Link from "next/link";
 
-import { PhotoGallery } from "@/components/site/PhotoGallery";
-import type { Accent } from "@/lib/types";
+import { CollectionGallery } from "@/components/site/CollectionGallery";
 import type { PhotoView } from "@/lib/view-types";
-
-const ACCENT_BG: Record<Accent, string> = {
-  red: "bg-red",
-  yellow: "bg-yellow",
-  blue: "bg-blue",
-};
 
 export interface CollectionViewProps {
   code: string;
@@ -16,7 +9,6 @@ export interface CollectionViewProps {
   subtitle?: string;
   description?: string;
   meta: { label: string; value: string }[];
-  accent: Accent;
   cover: PhotoView | null;
   photos: PhotoView[];
   backHref: string;
@@ -30,7 +22,6 @@ export function CollectionView({
   subtitle,
   description,
   meta,
-  accent,
   cover,
   photos,
   backHref,
@@ -86,23 +77,17 @@ export function CollectionView({
       {cover ? (
         <div className="mx-auto max-w-[1560px] px-5 pt-10 sm:px-8 lg:px-12">
           <figure>
-            <div className="relative">
-              <span
-                aria-hidden
-                className={`absolute -left-2 -top-2 h-full w-full ${ACCENT_BG[accent]}`}
+            <div className="relative overflow-hidden border border-ink/20 bg-paper-2">
+              <img
+                src={cover.srcUrl}
+                alt={cover.title ?? title}
+                width={cover.width}
+                height={cover.height}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                className="max-h-[52vh] w-full object-cover"
               />
-              <div className="relative overflow-hidden border border-ink bg-paper-2">
-                <img
-                  src={cover.srcUrl}
-                  alt={cover.title ?? title}
-                  width={cover.width}
-                  height={cover.height}
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  className="max-h-[72vh] w-full object-cover"
-                />
-              </div>
             </div>
             <figcaption className="mt-3 flex items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-ink/50">
               <span>{cover.title ?? title}</span>
@@ -112,17 +97,7 @@ export function CollectionView({
         </div>
       ) : null}
 
-      <section className="mx-auto max-w-[1560px] px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
-        <div className="mb-6 flex items-end justify-between gap-4 border-b border-ink/15 pb-4">
-          <h2 className="font-display text-[11px] uppercase tracking-[0.3em]">
-            全部作品 / {photos.length}
-          </h2>
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink/35">
-            按拍摄时间倒序 ↓
-          </span>
-        </div>
-        <PhotoGallery photos={photos} />
-      </section>
+      <CollectionGallery photos={photos} />
 
       {next ? (
         <div className="border-t border-ink/20">

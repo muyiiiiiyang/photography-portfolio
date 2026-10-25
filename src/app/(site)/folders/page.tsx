@@ -53,7 +53,6 @@ export default async function FoldersPage() {
                 count={folder.count}
                 year={formatYear(folder.latestTakenAt)}
                 tags={folder.tags}
-                accent={folder.accent}
               />
             ))}
           </div>

@@ -81,7 +81,7 @@ export function WorksExplorer({ albums }: { albums: AlbumSummary[] }) {
       </div>
 
       <div className="mx-auto max-w-[1560px] px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
-        <div className="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:gap-x-16 lg:gap-y-20">
+        <div className="grid gap-x-6 gap-y-12 md:grid-cols-2 xl:grid-cols-4 xl:gap-x-8 xl:gap-y-14">
           {filtered.map((album, index) => (
             <CollectionCard
               key={album.id}
@@ -95,8 +95,7 @@ export function WorksExplorer({ albums }: { albums: AlbumSummary[] }) {
               year={album.year}
               location={album.location?.name}
               tags={album.tags}
-              accent={album.accent}
-              priority={index < 2}
+              priority={index < 4}
             />
           ))}
         </div>

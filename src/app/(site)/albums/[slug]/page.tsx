@@ -76,7 +76,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         { label: "作品", value: `${String(album.count).padStart(2, "0")} frames` },
         { label: "最近拍摄", value: formatDate(album.latestTakenAt) },
       ]}
-      accent={album.accent}
       cover={album.cover}
       photos={album.photos}
       backHref="/works"

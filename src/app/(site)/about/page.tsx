@@ -5,7 +5,7 @@ import { getAlbums, getPortfolioStats, getSiteConfig } from "@/lib/api/portfolio
 import { withBasePath } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "关于",
+  title: "关于作者",
   description: "关于摄影师 Bok Hamm：城市、几何与光的长期观察者。",
 };
 
@@ -37,7 +37,7 @@ export default async function AboutPage() {
         />
         <div className="relative mx-auto max-w-[1560px] px-5 pb-12 pt-10 sm:px-8 lg:px-12 lg:pb-20 lg:pt-16">
           <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
-            <span>Index / 03</span>
+            <span>关于作者</span>
             <span className="h-px w-10 bg-ink/25" />
             <span>About the photographer</span>
           </div>

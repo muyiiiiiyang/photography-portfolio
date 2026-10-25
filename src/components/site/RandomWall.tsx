@@ -7,6 +7,7 @@ import { formatDate } from "@/lib/format";
 import type { FrameView } from "@/lib/view-types";
 
 const PICKS = 3;
+const AUTO_ROTATE_MS = 5000;
 
 function pickRandom<T>(items: T[], count: number): T[] {
   const pool = [...items];
@@ -49,6 +50,18 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
 
     return () => window.clearTimeout(timer);
   }, [frames, round]);
+
+  useEffect(() => {
+    if (frames.length === 0) return;
+
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        setRound((value) => value + 1);
+      }
+    }, AUTO_ROTATE_MS);
+
+    return () => window.clearInterval(interval);
+  }, [frames.length]);
 
   if (frames.length === 0) {
     return (
@@ -113,8 +126,9 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
       <div className="mt-3 grid flex-1 grid-cols-2 gap-3">
         {lead ? (
           <Link
+            key={lead.id}
             href={`/albums/${lead.albumSlug}`}
-            className="group relative col-span-2 overflow-hidden border border-ink bg-paper-2"
+            className="frame-in group relative col-span-2 overflow-hidden border border-ink bg-paper-2"
             aria-label={`查看相册：${lead.albumTitle}`}
           >
             <img
@@ -127,18 +141,15 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
               decoding="async"
               className="aspect-[2/1] w-full object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(.22,.61,.36,1)] group-hover:scale-[1.025]"
             />
-            <span className="absolute left-2 top-2 bg-white px-1.5 py-0.5 font-mono text-[8px] tracking-[0.12em]">
-              F—01
-            </span>
             <FrameMeta frame={lead} />
           </Link>
         ) : null}
 
-        {rest.map((frame, index) => (
+        {rest.map((frame) => (
           <Link
             key={frame.id}
             href={`/albums/${frame.albumSlug}`}
-            className="group relative overflow-hidden border border-ink bg-paper-2"
+            className="frame-in group relative overflow-hidden border border-ink bg-paper-2"
             aria-label={`查看相册：${frame.albumTitle}`}
           >
             <img
@@ -150,17 +161,10 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
               decoding="async"
               className="aspect-[4/3] w-full object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(.22,.61,.36,1)] group-hover:scale-[1.03]"
             />
-            <span className="absolute left-2 top-2 bg-white px-1.5 py-0.5 font-mono text-[8px] tracking-[0.12em]">
-              F—{String(index + 2).padStart(2, "0")}
-            </span>
             <FrameMeta frame={frame} />
           </Link>
         ))}
       </div>
-
-      <p className="mt-3 font-mono text-[9px] tracking-[0.12em] text-ink/35">
-        每次打开随机抽取 · 共 {frames.length} 张可选
-      </p>
     </div>
   );
 }

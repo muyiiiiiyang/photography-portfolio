@@ -42,14 +42,8 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
     },
     {
       href: "/about",
-      label: "关于",
+      label: "关于作者",
       en: "About",
-      children: [
-        { label: "关于作者", href: "/about", en: "PROFILE" },
-        { label: "个人照片", href: "/about#portrait", en: "PORTRAIT" },
-        { label: "创作宣言", href: "/about#statement", en: "STATEMENT" },
-        { label: "器材清单", href: "/about#equipment", en: "EQUIPMENT" },
-      ],
     },
     {
       href: "/contact",

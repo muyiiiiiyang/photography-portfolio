@@ -72,7 +72,6 @@ export default async function FolderPage({ params }: FolderPageProps) {
         { label: "标签", value: `${folder.tags.length}` },
         { label: "最近拍摄", value: formatDate(folder.latestTakenAt) },
       ]}
-      accent={folder.accent}
       cover={folder.cover}
       photos={folder.photos}
       backHref="/folders"
