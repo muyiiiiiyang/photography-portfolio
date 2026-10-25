@@ -205,6 +205,17 @@ export function sanitizePortfolio(raw: unknown): PortfolioData {
     albumPhotos[id] = photos;
   });
 
+  const loosePhotos: Photo[] = [];
+  const looseSource = Array.isArray(source.loosePhotos)
+    ? source.loosePhotos
+    : [];
+  looseSource.forEach((rawPhoto, index) => {
+    const photo = sanitizePhoto(rawPhoto, index);
+    if (!photo || validPhotoIds.has(photo.id)) return;
+    validPhotoIds.add(photo.id);
+    loosePhotos.push(photo);
+  });
+
   const folders: Folder[] = [];
   const folderPhotos: Record<string, string[]> = {};
   const usedFolderIds = new Set<string>();
@@ -295,6 +306,7 @@ export function sanitizePortfolio(raw: unknown): PortfolioData {
   return {
     albums,
     albumPhotos,
+    loosePhotos,
     folders,
     folderPhotos,
     updatedAt:

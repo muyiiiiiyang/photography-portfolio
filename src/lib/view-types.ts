@@ -45,8 +45,8 @@ export interface FrameSeriesLink {
 }
 
 export interface FrameView extends PhotoView {
-  albumSlug: string;
-  albumTitle: string;
+  albumSlug?: string;
+  albumTitle?: string;
   series: FrameSeriesLink[];
 }
 

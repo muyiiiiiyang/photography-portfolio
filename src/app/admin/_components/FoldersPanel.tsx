@@ -29,9 +29,6 @@ export function FoldersPanel({
 }: FoldersPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.folders[0]?.id ?? "");
   const [query, setQuery] = useState("");
-  const [uploadAlbumId, setUploadAlbumId] = useState(
-    portfolio.albums[0]?.id ?? "",
-  );
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const uploadInput = useRef<HTMLInputElement | null>(null);
@@ -49,6 +46,9 @@ export function FoldersPanel({
     for (const photo of portfolio.albumPhotos[album.id] ?? []) {
       photoById.set(photo.id, photo);
     }
+  }
+  for (const photo of portfolio.loosePhotos ?? []) {
+    photoById.set(photo.id, photo);
   }
   const assigned = assignedIds
     .map((id) => photoById.get(id))
@@ -88,8 +88,6 @@ export function FoldersPanel({
     { length: 4 },
     (_, index) => navFolderIds[index] ?? "",
   );
-  const effectiveUploadAlbumId =
-    uploadAlbumId || portfolio.albums[0]?.id || "";
 
   function updateNavSlot(index: number, value: string) {
     const next = [...navSlots];
@@ -103,13 +101,6 @@ export function FoldersPanel({
 
   async function uploadToFolder(fileList: FileList | null) {
     if (!fileList || fileList.length === 0 || !selected) return;
-    const album =
-      portfolio.albums.find((item) => item.id === effectiveUploadAlbumId) ??
-      portfolio.albums[0];
-    if (!album) {
-      setUploadError("还没有相册，请先在「相册」中创建一个相册。");
-      return;
-    }
 
     const files = Array.from(fileList).slice(0, 24);
     const form = new FormData();
@@ -140,7 +131,7 @@ export function FoldersPanel({
       }
 
       setPortfolio((prev) => {
-        const existing = prev.albumPhotos[album.id] ?? [];
+        const existing = prev.loosePhotos ?? [];
         const existingIds = new Set(existing.map((photo) => photo.id));
         const newPhotos = imported.filter(
           (photo) => !existingIds.has(photo.id),
@@ -151,19 +142,7 @@ export function FoldersPanel({
 
         return {
           ...prev,
-          albums: prev.albums.map((item) =>
-            item.id === album.id
-              ? {
-                  ...item,
-                  coverPhotoId:
-                    item.coverPhotoId ?? existing[0]?.id ?? newPhotos[0]?.id,
-                }
-              : item,
-          ),
-          albumPhotos: {
-            ...prev.albumPhotos,
-            [album.id]: [...existing, ...newPhotos],
-          },
+          loosePhotos: [...existing, ...newPhotos],
           folderPhotos: {
             ...prev.folderPhotos,
             [selected.id]: [...folderIds],
@@ -176,7 +155,7 @@ export function FoldersPanel({
           ? `，${payload.warnings.length} 条提醒`
           : "";
       onNotify(
-        `已上传 ${imported.length} 张到「${album.title}」，并加入专题「${selected.title}」${warning}。保存至磁盘后生效。`,
+        `已上传 ${imported.length} 张独立照片并加入专题「${selected.title}」${warning}。保存至磁盘后生效。`,
         "success",
       );
     } catch {
@@ -503,8 +482,8 @@ export function FoldersPanel({
                 <div>
                   <p className="font-display text-lg">上传照片到专题</p>
                   <p className="mt-0.5 text-[11px] leading-relaxed text-ink/45">
-                    照片会先存入选定相册，然后自动加入「{selected.title}」。
-                    顶级专题和子专题都可以使用。
+                    照片会作为独立照片保存，不归入相册，并自动加入「{selected.title}」。
+                    顶级专题和子专题都可以使用，上传后也会出现在「照片」管理中。
                   </p>
                 </div>
                 <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink/30">
@@ -513,23 +492,6 @@ export function FoldersPanel({
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <select
-                  className="field w-full sm:w-56"
-                  value={effectiveUploadAlbumId}
-                  onChange={(event) => setUploadAlbumId(event.target.value)}
-                  aria-label="上传照片的归属相册"
-                  disabled={portfolio.albums.length === 0 || uploading}
-                >
-                  {portfolio.albums.length === 0 ? (
-                    <option value="">还没有相册</option>
-                  ) : (
-                    portfolio.albums.map((album) => (
-                      <option key={album.id} value={album.id}>
-                        存入相册：{album.title}
-                      </option>
-                    ))
-                  )}
-                </select>
                 <input
                   ref={uploadInput}
                   type="file"
@@ -542,18 +504,16 @@ export function FoldersPanel({
                 />
                 <Button
                   variant="accent"
-                  disabled={uploading || portfolio.albums.length === 0}
+                  disabled={uploading}
                   onClick={() => uploadInput.current?.click()}
                 >
                   {uploading ? "上传中…" : "上传照片 ↑"}
                 </Button>
+                <span className="text-[10px] text-ink/40">
+                  单张 ≤ 60MB · 一次最多 24 张
+                </span>
               </div>
 
-              {portfolio.albums.length === 0 ? (
-                <p className="mt-2 text-[11px] text-red">
-                  还没有相册。请先在「相册」中创建相册，再上传到专题。
-                </p>
-              ) : null}
               {uploadError ? (
                 <p
                   role="alert"
@@ -644,9 +604,70 @@ export function FoldersPanel({
                   );
                 })}
 
-                {portfolio.albums.length === 0 ? (
+                {(portfolio.loosePhotos ?? []).length > 0 ? (
+                  <div>
+                    <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.24em] text-ink/35">
+                      独立照片 / {(portfolio.loosePhotos ?? []).length}
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-6">
+                      {(portfolio.loosePhotos ?? [])
+                        .filter((photo) => {
+                          if (!needle) return true;
+                          return (
+                            (photo.title ?? "")
+                              .toLowerCase()
+                              .includes(needle) ||
+                            photo.tags.some((tag) =>
+                              tag.toLowerCase().includes(needle),
+                            )
+                          );
+                        })
+                        .map((photo) => {
+                          const active = assignedIds.includes(photo.id);
+                          return (
+                            <button
+                              key={photo.id}
+                              type="button"
+                              onClick={() => togglePhoto(photo.id)}
+                              className={`group relative border p-0.5 transition-colors ${
+                                active
+                                  ? "border-red ring-1 ring-red"
+                                  : "border-ink/15 hover:border-ink/50"
+                              }`}
+                              aria-pressed={active}
+                              title={photo.title ?? photo.fileName}
+                            >
+                              <div className="relative aspect-square overflow-hidden bg-paper-2">
+                                <img
+                                  src={photo.thumb}
+                                  alt={photo.title ?? "照片"}
+                                  loading="lazy"
+                                  className="h-full w-full object-cover"
+                                />
+                                <span
+                                  className={`absolute left-1 top-1 flex h-4 w-4 items-center justify-center border border-ink text-[9px] ${
+                                    active
+                                      ? "bg-ink text-paper"
+                                      : "bg-white/85 text-transparent"
+                                  }`}
+                                >
+                                  ✓
+                                </span>
+                              </div>
+                              <span className="mt-0.5 block truncate px-0.5 text-[8px] text-ink/50">
+                                {formatDate(photo.dateTaken)}
+                              </span>
+                            </button>
+                          );
+                        })}
+                    </div>
+                  </div>
+                ) : null}
+
+                {portfolio.albums.length === 0 &&
+                (portfolio.loosePhotos ?? []).length === 0 ? (
                   <p className="py-8 text-center text-xs text-ink/40">
-                    还没有照片，先到「照片」标签导入作品。
+                    还没有照片，先到「照片」标签导入作品，或在上方直接上传到专题。
                   </p>
                 ) : null}
               </div>

@@ -52,6 +52,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
 export const EMPTY_PORTFOLIO: PortfolioData = {
   albums: [],
   albumPhotos: {},
+  loosePhotos: [],
   folders: [],
   folderPhotos: {},
   updatedAt: new Date(0).toISOString(),

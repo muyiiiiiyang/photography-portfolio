@@ -65,8 +65,10 @@ export interface Folder {
 export interface PortfolioData {
   albums: Album[];
   albumPhotos: Record<string, Photo[]>;
+  /** 不归属任何相册的独立照片（例如直接从专题上传的作品） */
+  loosePhotos: Photo[];
   folders: Folder[];
-  /** 专题只存照片 id，照片本体唯一存放在 albumPhotos 中 */
+  /** 专题只存照片 id，照片本体存放在 albumPhotos 或 loosePhotos 中 */
   folderPhotos: Record<string, string[]>;
   updatedAt: string;
 }

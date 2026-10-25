@@ -409,7 +409,7 @@ export function AlbumsPanel({
                           </div>
                           <div className="mt-1 flex items-baseline justify-between gap-2 px-0.5">
                             <span className="min-w-0 truncate text-[10px] text-ink/70">
-                              {photo.title ?? "Untitled"}
+                              {photo.title ?? ""}
                             </span>
                             <span className="shrink-0 font-mono text-[8px] text-ink/35">
                               {formatDate(photo.dateTaken)}

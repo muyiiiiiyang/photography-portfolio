@@ -39,10 +39,14 @@ export function AllFrames({ frames }: { frames: FrameView[] }) {
     if (!frame) return [];
 
     return [
-      {
-        label: `作品集 · ${frame.albumTitle}`,
-        href: `/albums/${frame.albumSlug}`,
-      },
+      ...(frame.albumSlug && frame.albumTitle
+        ? [
+            {
+              label: `作品集 · ${frame.albumTitle}`,
+              href: `/albums/${frame.albumSlug}`,
+            },
+          ]
+        : []),
       ...frame.series.map((series) => ({
         label: `专题 · ${series.parentTitle ? `${series.parentTitle} / ` : ""}${series.title}`,
         href: `/folders/${series.slug}`,

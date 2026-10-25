@@ -10,6 +10,7 @@ import type { Photo, PortfolioData } from "@/lib/types";
 import type { UploadSuccess } from "@/lib/admin/types";
 
 const ALL_ALBUMS = "__all__";
+const LOOSE_PHOTOS = "__loose__";
 
 interface PhotosPanelProps {
   portfolio: PortfolioData;
@@ -52,11 +53,14 @@ export function PhotosPanel({
 
   const activeAlbumId = albumId ?? localAlbumId;
   const isAll = activeAlbumId === ALL_ALBUMS;
-  const album = isAll
-    ? null
-    : (portfolio.albums.find((item) => item.id === activeAlbumId) ??
-      portfolio.albums[0] ??
-      null);
+  const isLoose = activeAlbumId === LOOSE_PHOTOS;
+  const loosePhotos = portfolio.loosePhotos ?? [];
+  const album =
+    isAll || isLoose
+      ? null
+      : (portfolio.albums.find((item) => item.id === activeAlbumId) ??
+        portfolio.albums[0] ??
+        null);
 
   const allEntries = useMemo(() => {
     const entries = portfolio.albums.flatMap((item) =>
@@ -66,6 +70,13 @@ export function PhotosPanel({
         albumTitle: item.title,
       })),
     );
+    for (const photo of portfolio.loosePhotos ?? []) {
+      entries.push({
+        photo,
+        albumId: LOOSE_PHOTOS,
+        albumTitle: "独立照片",
+      });
+    }
     return entries.sort(
       (a, b) => Date.parse(b.photo.dateTaken) - Date.parse(a.photo.dateTaken),
     );
@@ -99,9 +110,11 @@ export function PhotosPanel({
 
   const photos = isAll
     ? allEntries.map((entry) => entry.photo)
-    : album
-      ? portfolio.albumPhotos[album.id] ?? []
-      : [];
+    : isLoose
+      ? loosePhotos
+      : album
+        ? portfolio.albumPhotos[album.id] ?? []
+        : [];
   const editing = photos.find((photo) => photo.id === editingId) ?? null;
   const effectiveTargetAlbumId =
     targetAlbumId || portfolio.albums[0]?.id || "";
@@ -171,8 +184,18 @@ export function PhotosPanel({
 
   function updatePhoto(id: string, patch: Partial<Photo>) {
     const albumId = ownerAlbumId(id);
-    if (!albumId) return;
     setPortfolio((prev) => {
+      if (!albumId) {
+        if (!(prev.loosePhotos ?? []).some((photo) => photo.id === id)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          loosePhotos: (prev.loosePhotos ?? []).map((photo) =>
+            photo.id === id ? { ...photo, ...patch } : photo,
+          ),
+        };
+      }
       const updated = (prev.albumPhotos[albumId] ?? []).map((photo) =>
         photo.id === id ? { ...photo, ...patch } : photo,
       );
@@ -212,23 +235,28 @@ export function PhotosPanel({
     if (!tag || selected.size === 0) return;
 
     setPortfolio((prev) => {
+      const mapPhotos = (photo: Photo) => {
+        if (!selected.has(photo.id)) return photo;
+        const tags =
+          mode === "add"
+            ? uniqueTags([...photo.tags, tag])
+            : photo.tags.filter(
+                (item) => item.toLowerCase() !== tag.toLowerCase(),
+              );
+        return { ...photo, tags };
+      };
       const albumPhotos = Object.fromEntries(
         Object.entries(prev.albumPhotos).map(([albumKey, list]) => [
           albumKey,
-          list.map((photo) => {
-            if (!selected.has(photo.id)) return photo;
-            const tags =
-              mode === "add"
-                ? uniqueTags([...photo.tags, tag])
-                : photo.tags.filter(
-                    (item) => item.toLowerCase() !== tag.toLowerCase(),
-                  );
-            return { ...photo, tags };
-          }),
+          list.map(mapPhotos),
         ]),
       );
 
-      return { ...prev, albumPhotos };
+      return {
+        ...prev,
+        albumPhotos,
+        loosePhotos: (prev.loosePhotos ?? []).map(mapPhotos),
+      };
     });
 
     setBatchTag("");
@@ -256,14 +284,33 @@ export function PhotosPanel({
           list.filter((id) => !ids.has(id)),
         ]),
       );
+      const loosePhotos = (prev.loosePhotos ?? []).filter(
+        (photo) => !ids.has(photo.id),
+      );
       const albums = prev.albums.map((item) => {
         const remaining = albumPhotos[item.id] ?? [];
         return item.coverPhotoId && ids.has(item.coverPhotoId)
           ? { ...item, coverPhotoId: remaining[0]?.id }
           : item;
       });
+      const folders = prev.folders.map((folder) => {
+        if (!folder.coverPhotoId || !ids.has(folder.coverPhotoId)) {
+          return folder;
+        }
+        return {
+          ...folder,
+          coverPhotoId: folderPhotos[folder.id]?.[0],
+        };
+      });
 
-      return { ...prev, albums, albumPhotos, folderPhotos };
+      return {
+        ...prev,
+        albums,
+        albumPhotos,
+        folders,
+        folderPhotos,
+        loosePhotos,
+      };
     });
 
     setSelected((prev) => {
@@ -309,6 +356,12 @@ export function PhotosPanel({
         albumPhotos[item.id] = keep;
       }
 
+      const loosePhotos: Photo[] = [];
+      for (const photo of prev.loosePhotos ?? []) {
+        if (moving.has(photo.id)) moved.push(photo);
+        else loosePhotos.push(photo);
+      }
+
       albumPhotos[target.id] = [
         ...(albumPhotos[target.id] ?? []),
         ...moved,
@@ -324,7 +377,7 @@ export function PhotosPanel({
         };
       });
 
-      return { ...prev, albums, albumPhotos };
+      return { ...prev, albums, albumPhotos, loosePhotos };
     });
 
     onNotify(
@@ -349,6 +402,9 @@ export function PhotosPanel({
       for (const list of Object.values(prev.albumPhotos)) {
         for (const photo of list) dateById.set(photo.id, photo.dateTaken);
       }
+      for (const photo of prev.loosePhotos ?? []) {
+        dateById.set(photo.id, photo.dateTaken);
+      }
 
       const ordered = [...current].sort(
         (a, b) => Date.parse(dateById.get(b) ?? "") - Date.parse(dateById.get(a) ?? ""),
@@ -370,7 +426,9 @@ export function PhotosPanel({
     if (!fileList || fileList.length === 0) return;
     if (!album) {
       onNotify(
-        "「全部照片」用于筛选与分类；请在上方选择具体相册后再上传。",
+        isLoose
+          ? "独立照片请在「专题」中直接上传；这里用于查看、编辑与移动到作品集。"
+          : "「全部照片」用于筛选与分类；请在上方选择具体相册后再上传。",
         "error",
       );
       return;
@@ -451,7 +509,9 @@ export function PhotosPanel({
         description={
           isAll
             ? `全部照片：${allEntries.length} 张。可选中照片移动到作品集，或加入任意专题 / 子专题。`
-            : `当前相册：${album?.title ?? "未选择"}。拖拽上传后由 Sharp 自动压制成 WebP，并读取 EXIF 拍摄时间。`
+            : isLoose
+              ? `独立照片：${loosePhotos.length} 张。这些照片不属于任何相册，但会出现在专题与全部照片中。`
+              : `当前相册：${album?.title ?? "未选择"}。拖拽上传后由 Sharp 自动压制成 WebP，并读取 EXIF 拍摄时间。`
         }
         actions={
           <div className="flex items-center gap-3">
@@ -460,12 +520,15 @@ export function PhotosPanel({
             </span>
             <select
               className="field w-56"
-              value={isAll ? ALL_ALBUMS : album?.id ?? ""}
+              value={isAll ? ALL_ALBUMS : isLoose ? LOOSE_PHOTOS : album?.id ?? ""}
               onChange={(event) => switchAlbum(event.target.value)}
               aria-label="选择相册或全部照片"
             >
               <option value={ALL_ALBUMS}>
                 全部照片（{allEntries.length}）
+              </option>
+              <option value={LOOSE_PHOTOS}>
+                独立照片（{loosePhotos.length}）
               </option>
               {portfolio.albums.map((item) => (
                 <option key={item.id} value={item.id}>
@@ -523,10 +586,13 @@ export function PhotosPanel({
           </div>
         ) : (
           <div className="border border-dashed border-ink/25 bg-white/50 px-6 py-5 text-center">
-            <p className="font-display text-lg">全部照片视图</p>
+            <p className="font-display text-lg">
+              {isLoose ? "独立照片视图" : "全部照片视图"}
+            </p>
             <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
-              这里适合跨相册查看与分类。选中照片后可移动到作品集或加入专题；
-              上传请在上方选择具体相册。
+              {isLoose
+                ? "这些照片不属于任何相册。可在「专题」中上传新的独立照片，或把这里的照片移动到某个作品集。"
+                : "这里适合跨相册查看与分类。选中照片后可移动到作品集或加入专题；上传请在上方选择具体相册。"}
             </p>
           </div>
         )}
@@ -892,7 +958,7 @@ export function PhotosPanel({
                           {albumTitleByPhoto.get(photo.id)}
                         </span>
                       ) : null}
-                      {photo.title ?? "Untitled"}
+                      {photo.title ?? ""}
                     </span>
                     <span className="shrink-0 font-mono text-[8px] text-ink/35">
                       {formatDate(photo.dateTaken)}
@@ -939,7 +1005,9 @@ export function PhotosPanel({
           <p className="border border-dashed border-ink/20 px-6 py-12 text-center text-xs text-ink/40">
             {isAll
               ? "还没有照片，先到具体相册上传作品。"
-              : "这个相册还没有照片。拖拽上传第一批作品吧。"}
+              : isLoose
+                ? "还没有独立照片。可在「专题」中直接上传。"
+                : "这个相册还没有照片。拖拽上传第一批作品吧。"}
           </p>
         ) : null}
       </div>

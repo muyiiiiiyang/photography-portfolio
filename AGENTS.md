@@ -136,6 +136,7 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
       }
     ]
   },
+  "loosePhotos": [],
   "folders": [{ "id": "folder-portrait", "slug": "portrait", "title": "人像", "parentId": null, "createdAt": "…" }],
   "folderPhotos": { "folder-portrait": ["p_concrete_01", "p_silent_01"] },
   "updatedAt": "…"
@@ -145,8 +146,9 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 关键约定：
 
 - `albumPhotos[albumId]` 的数组顺序就是该相册的前台顺序；工作台拖动后由保存接口原样保留，不要按日期重排。
+- `loosePhotos` 保存不归属任何相册的独立照片；专题可以直接引用这些 id。保存清理图片时必须同时扫描 `loosePhotos`，否则会误删。
 - `folders` 使用 `parentId` 表示上级专题，`null` / 缺失为顶级专题；子专题可继续嵌套。
-- `folderPhotos` 只存照片 **id**，照片本体唯一存放在 `albumPhotos`；不要复制整份照片对象。
+- `folderPhotos` 只存照片 **id**，照片本体存放在 `albumPhotos` 或 `loosePhotos`；不要复制整份照片对象。
 - `id` 一经生成不再修改（专题引用依赖它）；`slug` 是前台 URL，发布后避免修改。
 - `coverPhotoId` 缺失时自动取该组最新一张；删除封面会自动回退。
 - `slug` 由后台/服务端清洗为小写字母、数字、中文和连字符，并自动去重。
@@ -171,7 +173,7 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 4. **工作台分区**：相册（含顶部导航作品集、作品集页引导语）、照片、专题（含专题页引导语）、关于作者、联系方式、版本快照。
 5. **关于作者**：品牌名、标语、个人照片、关于页大标题、合并后的个人简介/创作宣言、器材清单。
 6. **联系方式**：邮箱、所在地、社交链接、联系页文案。
-7. **专题上传**：专题面板选择任意顶级专题或子专题后，可指定一个归属相册上传新照片；上传会同时追加到该相册并引用到当前专题。
+7. **专题上传**：专题面板选择任意顶级专题或子专题后，可直接上传独立照片；照片不归入相册，保存到 `loosePhotos`，引用到当前专题，并同时出现在「照片」的「全部照片 / 独立照片」视图。
 8. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
 9. **版本快照** → 填写语义化 Commit Message → 提交。
 
@@ -202,7 +204,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 ### 4.4 删除级联规则
 
-- 删除照片：从 `albumPhotos[albumId]` 移除；同步从所有 `folderPhotos[*]` 移除该 id；若它是封面则回退到剩余最新一张；保存后清理 WebP 文件。
+- 删除照片：从 `albumPhotos` 或 `loosePhotos` 移除；同步从所有 `folderPhotos[*]` 移除该 id；若它是相册/专题封面则回退；保存后清理 WebP 文件。
 - 删除相册：移除相册记录与整个 `albumPhotos[albumId]`；保存后清理文件。
 - 删除专题：同时删除其所有子专题与 `folderPhotos` 引用，照片本身保留。
 - 任何批量删除前必须二次确认；保存前都只是草稿。

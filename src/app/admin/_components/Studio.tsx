@@ -96,7 +96,7 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
       Object.values(portfolio.albumPhotos).reduce(
         (sum, list) => sum + list.length,
         0,
-      ),
+      ) + (portfolio.loosePhotos ?? []).length,
     [portfolio],
   );
 

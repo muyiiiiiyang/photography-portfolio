@@ -295,7 +295,7 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
             </div>
             <div className="flex items-baseline justify-between gap-3 px-1 pt-2">
               <span className="truncate text-[10px] uppercase tracking-[0.18em] text-ink/60">
-                {photo.title ?? "Untitled"}
+                {photo.title ?? ""}
               </span>
               <span className="shrink-0 font-mono text-[9px] tracking-[0.06em] text-ink/35">
                 {formatDate(photo.dateTaken)}
@@ -360,9 +360,11 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
                   <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
                     {formatDate(active.dateTaken)}
                   </p>
-                  <h3 className="mt-1 font-display text-xl tracking-[-0.01em]">
-                    {active.title ?? "Untitled"}
-                  </h3>
+                  {active.title ? (
+                    <h3 className="mt-1 font-display text-xl tracking-[-0.01em]">
+                      {active.title}
+                    </h3>
+                  ) : null}
                   {active.caption ? (
                     <p className="mt-2 max-w-2xl whitespace-pre-line text-[13px] leading-relaxed text-ink/65">
                       {active.caption}

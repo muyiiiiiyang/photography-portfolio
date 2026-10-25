@@ -25,13 +25,25 @@ function FrameMeta({ frame }: { frame: FrameView }) {
   return (
     <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-ink/90 px-2.5 py-1.5 text-paper">
       <span className="truncate text-[10px] tracking-[0.02em]">
-        {frame.title ?? frame.albumTitle}
+        {frame.title ?? ""}
       </span>
       <span className="shrink-0 font-mono text-[8px] text-paper/55">
         {formatDate(frame.dateTaken)}
       </span>
     </div>
   );
+}
+
+function frameHref(frame: FrameView): string {
+  if (frame.albumSlug) return `/albums/${frame.albumSlug}`;
+  if (frame.series[0]) return `/folders/${frame.series[0].slug}`;
+  return "#all-frames";
+}
+
+function frameAria(frame: FrameView): string {
+  if (frame.albumTitle) return `查看相册：${frame.albumTitle}`;
+  if (frame.series[0]) return `查看专题：${frame.series[0].title}`;
+  return "查看照片";
 }
 
 export function RandomWall({ frames }: { frames: FrameView[] }) {
@@ -105,7 +117,7 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
             Random selection
           </p>
           <p className="mt-1 text-[11px] text-ink/55">
-            随机观看 · 点击进入所属相册
+            随机观看 · 点击进入所属内容
           </p>
         </div>
         <button
@@ -127,13 +139,13 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
         {lead ? (
           <Link
             key={lead.id}
-            href={`/albums/${lead.albumSlug}`}
+            href={frameHref(lead)}
             className="frame-in group relative col-span-2 overflow-hidden border border-ink bg-paper-2"
-            aria-label={`查看相册：${lead.albumTitle}`}
+            aria-label={frameAria(lead)}
           >
             <img
               src={lead.srcUrl}
-              alt={lead.title ?? lead.albumTitle}
+              alt={lead.title ?? "摄影作品"}
               width={lead.width}
               height={lead.height}
               loading="eager"
@@ -148,13 +160,13 @@ export function RandomWall({ frames }: { frames: FrameView[] }) {
         {rest.map((frame) => (
           <Link
             key={frame.id}
-            href={`/albums/${frame.albumSlug}`}
+            href={frameHref(frame)}
             className="frame-in group relative overflow-hidden border border-ink bg-paper-2"
-            aria-label={`查看相册：${frame.albumTitle}`}
+            aria-label={frameAria(frame)}
           >
             <img
               src={frame.srcUrl}
-              alt={frame.title ?? frame.albumTitle}
+              alt={frame.title ?? "摄影作品"}
               width={frame.width}
               height={frame.height}
               loading="lazy"

@@ -80,12 +80,14 @@ async function listFiles(dir: string): Promise<string[]> {
 
 function referencedFiles(data: PortfolioData): Set<string> {
   const references = new Set<string>();
-  for (const photos of Object.values(data.albumPhotos)) {
-    for (const photo of photos) {
-      for (const candidate of [photo.src, photo.thumb]) {
-        if (!candidate) continue;
-        references.add(path.resolve(ROOT, "public", candidate.replace(/^\//, "")));
-      }
+  const allPhotos = [
+    ...Object.values(data.albumPhotos).flat(),
+    ...(data.loosePhotos ?? []),
+  ];
+  for (const photo of allPhotos) {
+    for (const candidate of [photo.src, photo.thumb]) {
+      if (!candidate) continue;
+      references.add(path.resolve(ROOT, "public", candidate.replace(/^\//, "")));
     }
   }
   return references;

@@ -53,6 +53,7 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   return {
     albums: Array.isArray(data.albums) ? data.albums : [],
     albumPhotos: data.albumPhotos ?? {},
+    loosePhotos: Array.isArray(data.loosePhotos) ? data.loosePhotos : [],
     folders: Array.isArray(data.folders) ? data.folders : [],
     folderPhotos: data.folderPhotos ?? {},
     updatedAt: data.updatedAt ?? EMPTY_PORTFOLIO.updatedAt,
@@ -172,6 +173,9 @@ function photoIndex(data: PortfolioData): Map<string, { photo: Photo; albumId: s
       map.set(photo.id, { photo, albumId: album.id });
     }
   }
+  for (const photo of data.loosePhotos ?? []) {
+    map.set(photo.id, { photo, albumId: "" });
+  }
   return map;
 }
 
@@ -285,6 +289,11 @@ export async function getAllTags(): Promise<{ tag: string; count: number }[]> {
       }
     }
   }
+  for (const photo of data.loosePhotos ?? []) {
+    for (const tag of uniqueTags(photo.tags)) {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+  }
   return [...counts.entries()]
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, "zh-CN"));
@@ -325,6 +334,13 @@ export async function getAllFrames(): Promise<FrameView[]> {
     }
   }
 
+  for (const photo of data.loosePhotos ?? []) {
+    frames.push({
+      ...toPhotoView(photo),
+      series: seriesByPhoto.get(photo.id) ?? [],
+    });
+  }
+
   return frames.sort((a, b) => isoTime(b.dateTaken) - isoTime(a.dateTaken));
 }
 
@@ -346,6 +362,12 @@ export async function getPortfolioStats(): Promise<{
       if (isoTime(photo.dateTaken) > isoTime(latest)) {
         latest = photo.dateTaken;
       }
+    }
+  }
+  for (const photo of data.loosePhotos ?? []) {
+    photos += 1;
+    if (isoTime(photo.dateTaken) > isoTime(latest)) {
+      latest = photo.dateTaken;
     }
   }
 
