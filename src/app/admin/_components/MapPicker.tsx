@@ -100,7 +100,7 @@ export function MapPicker({ lat, lng, onChange }: MapPickerProps) {
           {view.tiles.map((tile) => (
             <img
               key={tile.key}
-              src={`https://tile.openstreetmap.org/${zoom}/${tile.x}/${tile.y}.png`}
+              src={`https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/${zoom}/${tile.y}/${tile.x}`}
               alt=""
               width={TILE}
               height={TILE}
@@ -148,7 +148,7 @@ export function MapPicker({ lat, lng, onChange }: MapPickerProps) {
         </div>
 
         <span className="absolute bottom-1 left-2 z-30 bg-paper/80 px-1 text-[8px] text-ink/50">
-          点击地图拾取坐标 · © OpenStreetMap contributors
+          点击地图拾取坐标 · Tiles © Esri
         </span>
       </div>
     </div>
