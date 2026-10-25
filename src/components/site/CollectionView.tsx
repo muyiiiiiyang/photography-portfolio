@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { CollectionGallery } from "@/components/site/CollectionGallery";
-import type { PhotoView } from "@/lib/view-types";
+import type { FolderSummary, PhotoView } from "@/lib/view-types";
 
 export interface CollectionViewProps {
   code: string;
@@ -11,6 +11,7 @@ export interface CollectionViewProps {
   meta: { label: string; value: string }[];
   cover: PhotoView | null;
   photos: PhotoView[];
+  childSeries?: FolderSummary[];
   backHref: string;
   backLabel: string;
   next?: { href: string; title: string; label: string };
@@ -24,6 +25,7 @@ export function CollectionView({
   meta,
   cover,
   photos,
+  childSeries,
   backHref,
   backLabel,
   next,
@@ -73,6 +75,55 @@ export function CollectionView({
           </div>
         </div>
       </header>
+
+      {childSeries && childSeries.length > 0 ? (
+        <section className="border-b border-ink/15">
+          <div className="mx-auto max-w-[1560px] px-5 py-10 sm:px-8 lg:px-12">
+            <div className="flex items-end justify-between gap-4 border-b border-ink/15 pb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/45">
+                子专题 / SUB SERIES
+              </p>
+              <span className="font-mono text-[9px] text-ink/35">
+                {String(childSeries.length).padStart(2, "0")}
+              </span>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {childSeries.map((child) => (
+                <Link
+                  key={child.id}
+                  href={`/folders/${child.slug}`}
+                  className="group flex items-center gap-4 border border-ink/15 bg-white p-3 transition-colors hover:border-ink"
+                >
+                  <span className="relative h-16 w-20 shrink-0 overflow-hidden bg-paper-2">
+                    {child.cover ? (
+                      <img
+                        src={child.cover.thumbUrl}
+                        alt={child.title}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : null}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-display text-lg leading-tight">
+                      {child.title}
+                    </span>
+                    <span className="mt-1 block truncate font-mono text-[9px] uppercase tracking-[0.14em] text-ink/40">
+                      {child.count} frames · {child.childCount} 子专题
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="text-ink/35 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-ink"
+                  >
+                    →
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {cover ? (
         <div className="mx-auto max-w-[1560px] px-5 pt-10 sm:px-8 lg:px-12">

@@ -4,6 +4,7 @@ import { getSiteConfig } from "@/lib/api/portfolio";
 
 const NAV = [
   { href: "/works", label: "作品集" },
+  { href: "/folders", label: "专题" },
   { href: "/about", label: "关于作者" },
   { href: "/contact", label: "联系" },
 ];

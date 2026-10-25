@@ -56,6 +56,8 @@ export interface Folder {
   title: string;
   subtitle?: string;
   description?: string;
+  /** 上级专题 id；为空表示顶级专题 */
+  parentId?: string;
   coverPhotoId?: string;
   createdAt: string;
 }

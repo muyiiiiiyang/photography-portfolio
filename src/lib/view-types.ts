@@ -29,15 +29,25 @@ export interface FolderSummary extends Omit<Folder, "coverPhotoId"> {
   latestTakenAt: string | null;
   tags: string[];
   accent: Accent;
+  childCount: number;
 }
 
 export interface FolderView extends FolderSummary {
   photos: PhotoView[];
+  children: FolderSummary[];
+  parent: FolderSummary | null;
+}
+
+export interface FrameSeriesLink {
+  slug: string;
+  title: string;
+  parentTitle?: string;
 }
 
 export interface FrameView extends PhotoView {
   albumSlug: string;
   albumTitle: string;
+  series: FrameSeriesLink[];
 }
 
 export type { Accent };

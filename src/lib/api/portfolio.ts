@@ -167,6 +167,7 @@ function buildFolderSummary(
   folder: Folder,
   photos: Photo[],
   accent: Accent,
+  childCount = 0,
 ): FolderSummary {
   const sorted = sortPhotosByTakenDateDesc(photos);
   const latestTakenAt = latestOf(sorted);
@@ -179,27 +180,38 @@ function buildFolderSummary(
     title: folder.title,
     subtitle: folder.subtitle,
     description: folder.description,
+    parentId: folder.parentId,
     createdAt: folder.createdAt,
     cover: cover ? toPhotoView(cover) : null,
     count: sorted.length,
     latestTakenAt,
     tags: uniqueTags(sorted.flatMap((photo) => photo.tags)),
     accent,
+    childCount,
   };
 }
 
 export async function getFolders(): Promise<FolderSummary[]> {
   const data = await getPortfolioData();
   const index = photoIndex(data);
+  const childCounts = new Map<string, number>();
+  for (const folder of data.folders) {
+    if (folder.parentId) {
+      childCounts.set(folder.parentId, (childCounts.get(folder.parentId) ?? 0) + 1);
+    }
+  }
 
-  return data.folders
-    .map((folder, i) => {
-      const photos = (data.folderPhotos[folder.id] ?? [])
-        .map((id) => index.get(id)?.photo)
-        .filter((photo): photo is Photo => Boolean(photo));
-      return buildFolderSummary(folder, photos, ACCENTS[i % ACCENTS.length]);
-    })
-    .sort((a, b) => a.title.localeCompare(b.title, "zh-CN"));
+  return data.folders.map((folder, i) => {
+    const photos = (data.folderPhotos[folder.id] ?? [])
+      .map((id) => index.get(id)?.photo)
+      .filter((photo): photo is Photo => Boolean(photo));
+    return buildFolderSummary(
+      folder,
+      photos,
+      ACCENTS[i % ACCENTS.length],
+      childCounts.get(folder.id) ?? 0,
+    );
+  });
 }
 
 export async function getFolderBySlug(slug: string): Promise<FolderView | null> {
@@ -212,15 +224,41 @@ export async function getFolderBySlug(slug: string): Promise<FolderView | null> 
   const photos = (data.folderPhotos[folder.id] ?? [])
     .map((id) => index.get(id)?.photo)
     .filter((photo): photo is Photo => Boolean(photo));
-  const summary = buildFolderSummary(
-    folder,
-    photos,
-    ACCENTS[folderIndex % ACCENTS.length],
-  );
+
+  const childCounts = new Map<string, number>();
+  for (const item of data.folders) {
+    if (item.parentId) {
+      childCounts.set(item.parentId, (childCounts.get(item.parentId) ?? 0) + 1);
+    }
+  }
+
+  const summaryFor = (item: Folder) => {
+    const itemPhotos = (data.folderPhotos[item.id] ?? [])
+      .map((id) => index.get(id)?.photo)
+      .filter((photo): photo is Photo => Boolean(photo));
+    return buildFolderSummary(
+      item,
+      itemPhotos,
+      ACCENTS[data.folders.indexOf(item) % ACCENTS.length],
+      childCounts.get(item.id) ?? 0,
+    );
+  };
+
+  const children = data.folders
+    .filter((item) => item.parentId === folder.id)
+    .map(summaryFor);
+
+  const parentFolder = folder.parentId
+    ? data.folders.find((item) => item.id === folder.parentId) ?? null
+    : null;
+
+  const summary = summaryFor(folder);
 
   return {
     ...summary,
     photos: sortPhotosByTakenDateDesc(photos).map(toPhotoView),
+    children,
+    parent: parentFolder ? summaryFor(parentFolder) : null,
   };
 }
 
@@ -240,10 +278,29 @@ export async function getAllTags(): Promise<{ tag: string; count: number }[]> {
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, "zh-CN"));
 }
 
-/** 首页随机墙：全站照片 + 所属相册信息，按拍摄时间降序。 */
+/** 首页随机墙：全站照片 + 所属相册/专题信息，按拍摄时间降序。 */
 export async function getAllFrames(): Promise<FrameView[]> {
   const data = await getPortfolioData();
   const frames: FrameView[] = [];
+  const folderById = new Map(data.folders.map((folder) => [folder.id, folder]));
+  const seriesByPhoto = new Map<string, FrameView["series"]>();
+
+  for (const folder of data.folders) {
+    const parentTitle = folder.parentId
+      ? folderById.get(folder.parentId)?.title
+      : undefined;
+    for (const photoId of data.folderPhotos[folder.id] ?? []) {
+      const list = seriesByPhoto.get(photoId) ?? [];
+      if (!list.some((item) => item.slug === folder.slug)) {
+        list.push({
+          slug: folder.slug,
+          title: folder.title,
+          parentTitle,
+        });
+      }
+      seriesByPhoto.set(photoId, list);
+    }
+  }
 
   for (const album of data.albums) {
     for (const photo of data.albumPhotos[album.id] ?? []) {
@@ -251,6 +308,7 @@ export async function getAllFrames(): Promise<FrameView[]> {
         ...toPhotoView(photo),
         albumSlug: album.slug,
         albumTitle: album.title,
+        series: seriesByPhoto.get(photo.id) ?? [],
       });
     }
   }

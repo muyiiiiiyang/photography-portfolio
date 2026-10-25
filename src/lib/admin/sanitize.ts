@@ -203,6 +203,8 @@ export function sanitizePortfolio(raw: unknown): PortfolioData {
   const folderPhotos: Record<string, string[]> = {};
   const usedFolderIds = new Set<string>();
   const usedFolderSlugs = new Set<string>();
+  const originalFolderIds = new Map<string, string>();
+  const folderParentOriginals = new Map<string, string | undefined>();
 
   foldersRaw.forEach((rawFolder, index) => {
     if (!rawFolder || typeof rawFolder !== "object") return;
@@ -216,6 +218,7 @@ export function sanitizePortfolio(raw: unknown): PortfolioData {
       suffix += 1;
     }
     usedFolderIds.add(id);
+    if (originalId) originalFolderIds.set(originalId, id);
 
     const createdAtRaw = asString(value.createdAt);
     const createdAt =
@@ -251,8 +254,37 @@ export function sanitizePortfolio(raw: unknown): PortfolioData {
       createdAt,
     });
 
+    folderParentOriginals.set(id, asString(value.parentId));
     folderPhotos[id] = ids;
   });
+
+  // 解析 parentId，并阻断自引用与环。
+  const folderIds = new Set(folders.map((folder) => folder.id));
+  for (const folder of folders) {
+    const parentOriginal = folderParentOriginals.get(folder.id);
+    const parentId = parentOriginal
+      ? originalFolderIds.get(parentOriginal)
+      : undefined;
+
+    if (!parentId || parentId === folder.id || !folderIds.has(parentId)) {
+      continue;
+    }
+
+    let cursor: string | undefined = parentId;
+    const chain = new Set([folder.id]);
+    let valid = true;
+    while (cursor) {
+      if (chain.has(cursor)) {
+        valid = false;
+        break;
+      }
+      chain.add(cursor);
+      const nextOriginal = folderParentOriginals.get(cursor);
+      cursor = nextOriginal ? originalFolderIds.get(nextOriginal) : undefined;
+    }
+
+    if (valid) folder.parentId = parentId;
+  }
 
   return {
     albums,

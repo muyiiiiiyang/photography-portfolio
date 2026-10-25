@@ -3,3 +3,4 @@
  * 生成一个不会出现在导航中的占位页，用户首次上传后会被真实路由替换。
  */
 export const PLACEHOLDER_ALBUM_SLUG = "coming-soon";
+export const PLACEHOLDER_FOLDER_SLUG = "coming-soon";

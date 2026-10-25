@@ -2,13 +2,15 @@ import Link from "next/link";
 
 import { SiteNav } from "./SiteNav";
 import type { NavItem } from "./SiteNav";
-import { getAlbums, getSiteConfig } from "@/lib/api/portfolio";
+import { getAlbums, getFolders, getSiteConfig } from "@/lib/api/portfolio";
 
 export async function SiteHeader({ floating = false }: { floating?: boolean }) {
-  const [albums, config] = await Promise.all([
+  const [albums, folders, config] = await Promise.all([
     getAlbums(),
+    getFolders(),
     getSiteConfig(),
   ]);
+  const topFolders = folders.filter((folder) => !folder.parentId);
 
   const albumById = new Map(albums.map((album) => [album.id, album]));
   const seenIds = new Set<string>();
@@ -37,6 +39,22 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
           meta: `${album.count} 张`,
         })),
         { label: "更多作品集", href: "/works", en: "MORE", meta: "全部" },
+      ],
+    },
+    {
+      href: "/folders",
+      label: "专题",
+      en: "Series",
+      children: [
+        { label: "全部专题", href: "/folders", en: "ALL" },
+        ...topFolders.map((folder) => ({
+          label: folder.title,
+          href: `/folders/${folder.slug}`,
+          en: folder.subtitle,
+          meta: folder.childCount > 0
+            ? `${folder.childCount} 子专题`
+            : `${folder.count} 张`,
+        })),
       ],
     },
     {
