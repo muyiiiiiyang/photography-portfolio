@@ -1,4 +1,4 @@
-# AGENTS.md — BOK_HAMM Photography 运维手册
+# AGENTS.md — Bok_Hamm Photography 运维手册
 
 > 面向 AI Agent 与人类协作者的单一事实文档。改代码、改数据、部署之前先读第 2 节的四条铁律。
 > 技术栈：Next.js 16（App Router）· React 19 · TypeScript strict · Tailwind CSS 4 · sharp · exifr · pnpm 11。
@@ -156,8 +156,8 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 
 ### 3.2 `src/data/site-config.json`
 
-`photographer`、`title`、`tagline`、`statement`、`bio`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`。
-前台文案优先读这里，不要在页面里重复硬编码。
+`photographer`、`title`、`tagline`、`portrait`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`。
+前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。
 
 ---
 
@@ -194,6 +194,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 | GET | `/api/admin/data/` | 返回 `{ portfolio, config, git }` |
 | PUT | `/api/admin/data/` | `{ portfolio?, config? }`，保存并返回最新快照 |
 | POST | `/api/admin/upload/` | multipart：`files[]` + 可选 `tags`，只写图片文件、不改 JSON |
+| POST | `/api/admin/portrait/` | multipart：`file`，压制成 `public/portrait/*.webp`，供关于页个人照片使用 |
 | GET | `/api/admin/git/` | 工作区状态 |
 | POST | `/api/admin/git/` | `{ message }`，`git add -A && git commit` |
 
@@ -236,7 +237,8 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 ### 5.2 页面与组件
 
-- 封面：`src/app/page.tsx`，逐字 `letter-in` 动画 + 缓入缓出；纯白底、蓝色矩形与红色方块；下方 `EnterLink` 进入 `/works`。
+- 首页：`src/app/page.tsx`，纯白左右分栏；左侧 `Bok_Hamm / Photography` 混合大小写标题与分类导航，右侧 `RandomWall` 随机照片墙（客户端每次加载/换一组重抽）。不再使用大色块或全大写标题。
+- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。Studio「站点设置 → 个人照片」上传。
 - 导航：`SiteHeader`（服务端，读取 albums/folders）→ `SiteNav`（客户端 hover 子目录面板）；新增分类页时同步修改 `SiteHeader` 的 `items`。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
 - 作品墙：`PhotoGallery`（客户端灯箱）；相册卡片：`CollectionCard`；筛选：`WorksExplorer`。
@@ -249,7 +251,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 - 断点：`sm 640` / `md 768` / `lg 1024` / `xl 1280`。
 - 页头在 `<640px` 变成两行（品牌 + 导航），导航不得横向溢出。
-- 封面文字使用 `clamp()`；移动端几何色块与 CTA 不能遮挡正文。
+- 首页标题使用 `clamp()`；移动端先标题/分类、后随机照片，几何占位不能遮挡正文。
 - 修改后至少检查 390 / 768 / 1440 三个宽度。
 
 ---
@@ -325,7 +327,7 @@ pwsh -File scripts/enable-pages.ps1
 | Windows 构建报 `EPERM .next/...` | dev server 占用 `.next` | 停止 `pnpm dev`，结束残留 node，删除 `.next` 后重试 |
 | `pnpm build:static` 后 admin 目录消失 | 构建中断未还原 | 检查 `.stash/static-*`，手动移回 `src/app/admin`、`src/app/api`、`src/lib/admin` |
 | 公网图片 404 | 数据里写了 basePath 前缀 / 忘记 `withBasePath` | 检查 JSON 是否为 `/photos/...`；检查 `<img src>` |
-| 新相册/专题页面 404 | `generateStaticParams` 未包含 | 确认构建前数据已保存，重新构建 |
+| 新相册/专题页面 404 | `generateStaticParams` 未包含 | 确认构建前数据已保存，重新构建；本地 dev 新建后重启 `pnpm dev` 以刷新参数缓存 |
 | 照片排序不对 | 缺 `dateTaken` 或手改了 JSON | 后台校时；运行 `scripts/fix-missing-dates.mjs` |
 | 上传后中文变乱码 | 用 PowerShell 5.1 直接调 API（未按 UTF-8 解码） | 改用 `/admin` 页面或 Node `fetch`；不要用 PS 5.1 回写 JSON |
 | `sharp` 安装后不可用 | pnpm 忽略了 build script | 在 `pnpm-workspace.yaml` 的 `allowBuilds` 中允许 `sharp`，重装 |

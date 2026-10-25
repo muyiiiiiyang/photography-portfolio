@@ -1,4 +1,4 @@
-# BOK_HAMM Photography
+# Bok_Hamm Photography
 
 一个包豪斯（Bauhaus）视觉取向的个人摄影作品集：几何网格、三原色、硬边阴影与克制的编辑排版，让作品本身成为页面主角。
 
@@ -10,7 +10,7 @@
 
 | 路由 | 说明 |
 | --- | --- |
-| `/` | 封面：`BOK_HAMM / PHOTOGRAPHY` 艺术字、缓入缓出动效、进入作品集 |
+| `/` | 首页：左右分栏。左侧 `Bok_Hamm / Photography` 标题与分类导航，右侧随机抽取照片展示（可换一组） |
 | `/works` | 作品集索引，按相册展示，支持标签筛选 |
 | `/albums/[slug]` | 相册详情：大图封面 + 按拍摄时间倒序的作品墙 + 灯箱 |
 | `/folders`、`/folders/[slug]` | 跨相册的专题序列 |
@@ -74,7 +74,7 @@ pnpm dev
    - 从 EXIF 读取 `DateTimeOriginal` / `CreateDate`，统一存为 ISO-8601 UTC
    - 提取相机、镜头、焦距、光圈、快门、ISO、GPS
 3. **专题**：跨相册勾选照片，组成主题序列（只保存照片 id 引用）。
-4. **站点设置**：姓名、标语、Bio、邮箱、社交链接、器材清单。
+4. **站点设置**：姓名、标语、个人照片、Bio、邮箱、社交链接、器材清单。
 5. **保存至磁盘**：把草稿写入 `src/data/*.json`，并清理不再被引用的图片。
 6. **版本快照**：填写 Commit Message，一键 `git add -A && git commit`。
 
@@ -170,8 +170,8 @@ src/
     admin/               本地工作台（CI 会删除）
     api/admin/           本地 API（CI 会删除）
     globals.css          包豪斯设计令牌与动效
-    page.tsx             封面
-  components/site/       封面、导航、作品墙、灯箱等
+    page.tsx             首页（左右分栏 + 随机照片）
+  components/site/       首页、导航、随机照片墙、作品墙、灯箱等
   lib/
     api/portfolio.ts     只读数据层 + 排序 + basePath 视图模型
     admin/               鉴权、上传管线、原子写入、Git（CI 会删除）
