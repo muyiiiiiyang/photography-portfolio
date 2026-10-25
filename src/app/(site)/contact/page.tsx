@@ -18,16 +18,21 @@ export default async function ContactPage() {
           <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
             <span>Index / 04</span>
             <span className="h-px w-10 bg-ink/25" />
-            <span>Say hello</span>
+            <span>{config.contact.eyebrow}</span>
           </div>
           <h1 className="mt-8 font-display text-[clamp(2.8rem,7vw,6.5rem)] leading-[0.92] tracking-[-0.035em]">
-            一起做点
-            <br />
-            有光的事<span className="text-red">.</span>
+            {config.contact.title.split("\n").map((line, index, lines) => (
+              <span key={`${line}-${index}`}>
+                {line}
+                {index === lines.length - 1 ? (
+                  <span className="text-red">.</span>
+                ) : null}
+                {index < lines.length - 1 ? <br /> : null}
+              </span>
+            ))}
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink/65">
-            商业拍摄、建筑与空间、编辑约稿、展览与出版合作，都欢迎来信。
-            通常会在两个工作日内回复。
+            {config.contact.intro}
           </p>
         </div>
       </header>
@@ -50,7 +55,7 @@ export default async function ContactPage() {
 
         <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
           <div id="elsewhere" className="scroll-mt-28">
-            <p className="label">Elsewhere</p>
+            <p className="label">{config.contact.elsewhereLabel}</p>
             <ul className="mt-4 divide-y divide-ink/15 border-t border-ink/15">
               {config.socials.map((social, index) => (
                 <li key={`${social.label}-${social.url}`}>
@@ -80,35 +85,33 @@ export default async function ContactPage() {
 
           <div className="grid gap-8 sm:grid-cols-2">
             <div>
-              <p className="label">Based in</p>
+              <p className="label">{config.contact.basedInLabel}</p>
               <p className="mt-2 font-display text-xl">{config.location}</p>
               <p className="mt-2 text-xs leading-relaxed text-ink/50">
-                接受国内及海外委托，可灵活安排行程。
+                {config.contact.basedInNote}
               </p>
             </div>
             <div>
-              <p className="label">Availability</p>
+              <p className="label">{config.contact.availabilityLabel}</p>
               <p className="mt-2 flex items-center gap-2 font-display text-xl">
                 <span className="h-2 w-2 rounded-full bg-red" aria-hidden />
-                接受新项目
+                {config.contact.availabilityStatus}
               </p>
               <p className="mt-2 text-xs leading-relaxed text-ink/50">
-                2026 年秋季档期开放中。
+                {config.contact.availabilityNote}
               </p>
             </div>
             <div id="services" className="scroll-mt-28 sm:col-span-2">
-              <p className="label">Services</p>
+              <p className="label">{config.contact.servicesLabel}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                {["建筑 / 空间", "品牌视觉", "编辑肖像", "展览 / 出版"].map(
-                  (service) => (
-                    <span
-                      key={service}
-                      className="border border-ink/20 px-3 py-1.5 text-[11px] tracking-[0.06em] text-ink/65"
-                    >
-                      {service}
-                    </span>
-                  ),
-                )}
+                {config.contact.services.map((service) => (
+                  <span
+                    key={service}
+                    className="border border-ink/20 px-3 py-1.5 text-[11px] tracking-[0.06em] text-ink/65"
+                  >
+                    {service}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -119,13 +122,13 @@ export default async function ContactPage() {
         <div className="mx-auto max-w-[1560px] px-5 py-14 sm:px-8 lg:px-12">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-display text-[clamp(1.6rem,3.4vw,2.6rem)] leading-tight tracking-[-0.02em]">
-              先看看作品？<span className="text-blue"> →</span>
+              {config.contact.ctaTitle}<span className="text-blue"> →</span>
             </p>
             <Link
               href="/works"
               className="inline-flex w-fit items-center gap-4 border border-ink px-5 py-3 text-[11px] tracking-[0.16em] transition-colors hover:bg-ink hover:text-paper"
             >
-              进入作品集 <span aria-hidden>↗</span>
+              {config.contact.ctaButton} <span aria-hidden>↗</span>
             </Link>
           </div>
         </div>

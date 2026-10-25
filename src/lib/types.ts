@@ -76,6 +76,29 @@ export interface SocialLink {
   url: string;
 }
 
+export interface PageCopy {
+  aboutHeadingLead: string;
+  aboutHeadingAccent: string;
+  worksIntro: string;
+  foldersIntro: string;
+}
+
+export interface ContactCopy {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  elsewhereLabel: string;
+  basedInLabel: string;
+  basedInNote: string;
+  availabilityLabel: string;
+  availabilityStatus: string;
+  availabilityNote: string;
+  servicesLabel: string;
+  services: string[];
+  ctaTitle: string;
+  ctaButton: string;
+}
+
 export interface SiteConfig {
   photographer: string;
   title: string;
@@ -91,4 +114,6 @@ export interface SiteConfig {
   socials: SocialLink[];
   equipment: string[];
   copyright: string;
+  pageCopy: PageCopy;
+  contact: ContactCopy;
 }

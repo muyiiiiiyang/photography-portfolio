@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { WorksExplorer } from "@/components/site/WorksExplorer";
-import { getAllTags, getAlbums } from "@/lib/api/portfolio";
+import { getAllTags, getAlbums, getSiteConfig } from "@/lib/api/portfolio";
 
 export const metadata: Metadata = {
   title: "作品集",
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function WorksPage() {
-  const [albums, tags] = await Promise.all([getAlbums(), getAllTags()]);
+  const [albums, tags, config] = await Promise.all([
+    getAlbums(),
+    getAllTags(),
+    getSiteConfig(),
+  ]);
   const totalPhotos = albums.reduce((sum, album) => sum + album.count, 0);
 
   return (
@@ -29,7 +33,7 @@ export default async function WorksPage() {
             </h1>
             <div className="max-w-md lg:pb-3">
               <p className="text-sm leading-relaxed text-ink/65">
-                按相册收录。每张作品以相机原始拍摄时间排序，最新的光永远在最前面。
+                {config.pageCopy.worksIntro}
               </p>
               <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.24em] text-ink/40">
                 {albums.length > 0

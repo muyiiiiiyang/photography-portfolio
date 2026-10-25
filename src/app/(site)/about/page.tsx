@@ -42,9 +42,11 @@ export default async function AboutPage() {
             <span>About the photographer</span>
           </div>
           <h1 className="mt-8 max-w-5xl font-display text-[clamp(2.6rem,6.4vw,6rem)] leading-[0.98] tracking-[-0.035em]">
-            用几何的秩序，
+            {config.pageCopy.aboutHeadingLead}
             <br />
-            <span className="text-outline">观看光。</span>
+            <span className="text-outline">
+              {config.pageCopy.aboutHeadingAccent}
+            </span>
           </h1>
         </div>
       </header>

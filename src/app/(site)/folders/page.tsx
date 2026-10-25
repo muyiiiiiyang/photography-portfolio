@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CollectionCard } from "@/components/site/CollectionCard";
-import { getFolders } from "@/lib/api/portfolio";
+import { getFolders, getSiteConfig } from "@/lib/api/portfolio";
 import { formatYear } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -11,7 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default async function FoldersPage() {
-  const folders = await getFolders();
+  const [folders, config] = await Promise.all([
+    getFolders(),
+    getSiteConfig(),
+  ]);
   const topLevel = folders.filter((folder) => !folder.parentId);
   const childrenByParent = new Map<string, typeof folders>();
   for (const folder of folders) {
@@ -37,7 +40,7 @@ export default async function FoldersPage() {
             </h1>
             <div className="max-w-md lg:pb-3">
               <p className="text-sm leading-relaxed text-ink/65">
-                从主题到子专题，逐层收拢照片。先选一个大方向，再进入下一层继续细分。
+                {config.pageCopy.foldersIntro}
               </p>
               <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.24em] text-ink/40">
                 {topLevel.length} top series · {folders.length} total

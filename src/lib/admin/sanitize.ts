@@ -334,6 +334,60 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
         .slice(0, 4)
     : fallback.navAlbumIds ?? [];
 
+  const pageCopyRaw =
+    source.pageCopy && typeof source.pageCopy === "object"
+      ? (source.pageCopy as Record<string, unknown>)
+      : {};
+  const pageCopy = {
+    aboutHeadingLead:
+      asString(pageCopyRaw.aboutHeadingLead) ??
+      fallback.pageCopy.aboutHeadingLead,
+    aboutHeadingAccent:
+      asString(pageCopyRaw.aboutHeadingAccent) ??
+      fallback.pageCopy.aboutHeadingAccent,
+    worksIntro:
+      asString(pageCopyRaw.worksIntro) ?? fallback.pageCopy.worksIntro,
+    foldersIntro:
+      asString(pageCopyRaw.foldersIntro) ?? fallback.pageCopy.foldersIntro,
+  };
+
+  const contactRaw =
+    source.contact && typeof source.contact === "object"
+      ? (source.contact as Record<string, unknown>)
+      : {};
+  const contactServices = Array.isArray(contactRaw.services)
+    ? contactRaw.services
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .slice(0, 16)
+    : fallback.contact.services;
+  const contact = {
+    eyebrow: asString(contactRaw.eyebrow) ?? fallback.contact.eyebrow,
+    title: asString(contactRaw.title) ?? fallback.contact.title,
+    intro: asString(contactRaw.intro) ?? fallback.contact.intro,
+    elsewhereLabel:
+      asString(contactRaw.elsewhereLabel) ?? fallback.contact.elsewhereLabel,
+    basedInLabel:
+      asString(contactRaw.basedInLabel) ?? fallback.contact.basedInLabel,
+    basedInNote:
+      asString(contactRaw.basedInNote) ?? fallback.contact.basedInNote,
+    availabilityLabel:
+      asString(contactRaw.availabilityLabel) ??
+      fallback.contact.availabilityLabel,
+    availabilityStatus:
+      asString(contactRaw.availabilityStatus) ??
+      fallback.contact.availabilityStatus,
+    availabilityNote:
+      asString(contactRaw.availabilityNote) ??
+      fallback.contact.availabilityNote,
+    servicesLabel:
+      asString(contactRaw.servicesLabel) ?? fallback.contact.servicesLabel,
+    services: contactServices,
+    ctaTitle: asString(contactRaw.ctaTitle) ?? fallback.contact.ctaTitle,
+    ctaButton: asString(contactRaw.ctaButton) ?? fallback.contact.ctaButton,
+  };
+
   return {
     photographer: asString(source.photographer) ?? fallback.photographer,
     title: asString(source.title) ?? fallback.title,
@@ -347,5 +401,7 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
     socials,
     equipment,
     copyright: asString(source.copyright) ?? fallback.copyright,
+    pageCopy,
+    contact,
   };
 }

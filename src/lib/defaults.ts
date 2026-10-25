@@ -22,6 +22,30 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
     "Kodak Portra 400",
   ],
   copyright: "© 2026 Bok Hamm. All rights reserved.",
+  pageCopy: {
+    aboutHeadingLead: "用几何的秩序，",
+    aboutHeadingAccent: "观看光。",
+    worksIntro:
+      "按相册收录。每张作品以相机原始拍摄时间排序，最新的光永远在最前面。",
+    foldersIntro:
+      "从主题到子专题，逐层收拢照片。先选一个大方向，再进入下一层继续细分。",
+  },
+  contact: {
+    eyebrow: "Say hello",
+    title: "一起做点\n有光的事",
+    intro:
+      "商业拍摄、建筑与空间、编辑约稿、展览与出版合作，都欢迎来信。通常会在两个工作日内回复。",
+    elsewhereLabel: "Elsewhere",
+    basedInLabel: "Based in",
+    basedInNote: "接受国内及海外委托，可灵活安排行程。",
+    availabilityLabel: "Availability",
+    availabilityStatus: "接受新项目",
+    availabilityNote: "2026 年秋季档期开放中。",
+    servicesLabel: "Services",
+    services: ["建筑 / 空间", "品牌视觉", "编辑肖像", "展览 / 出版"],
+    ctaTitle: "先看看作品？",
+    ctaButton: "进入作品集",
+  },
 };
 
 export const EMPTY_PORTFOLIO: PortfolioData = {

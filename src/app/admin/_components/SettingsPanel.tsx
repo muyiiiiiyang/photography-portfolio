@@ -33,6 +33,20 @@ export function SettingsPanel({
     setConfig((prev) => ({ ...prev, ...patchValue }));
   }
 
+  function patchPageCopy(patchValue: Partial<SiteConfig["pageCopy"]>) {
+    setConfig((prev) => ({
+      ...prev,
+      pageCopy: { ...prev.pageCopy, ...patchValue },
+    }));
+  }
+
+  function patchContact(patchValue: Partial<SiteConfig["contact"]>) {
+    setConfig((prev) => ({
+      ...prev,
+      contact: { ...prev.contact, ...patchValue },
+    }));
+  }
+
   function updateNavSlot(index: number, value: string) {
     const next = [...navSlots];
     const existing = next.indexOf(value);
@@ -262,6 +276,32 @@ export function SettingsPanel({
         <section className="border border-ink/15 bg-white p-5">
           <p className="font-display text-lg">关于页文本</p>
           <div className="mt-4 space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label="关于页大标题 / 第一行"
+                hint="例如「用几何的秩序，」。"
+              >
+                <input
+                  className="field"
+                  value={config.pageCopy.aboutHeadingLead}
+                  onChange={(event) =>
+                    patchPageCopy({ aboutHeadingLead: event.target.value })
+                  }
+                />
+              </Field>
+              <Field
+                label="关于页大标题 / 描边行"
+                hint="会以空心描边字体显示。"
+              >
+                <input
+                  className="field"
+                  value={config.pageCopy.aboutHeadingAccent}
+                  onChange={(event) =>
+                    patchPageCopy({ aboutHeadingAccent: event.target.value })
+                  }
+                />
+              </Field>
+            </div>
             <Field label="创作宣言 / Statement">
               <textarea
                 className="field min-h-24"
@@ -283,6 +323,179 @@ export function SettingsPanel({
                 onChange={(event) => patch({ bio: event.target.value })}
               />
             </Field>
+          </div>
+        </section>
+
+        <section className="border border-ink/15 bg-white p-5">
+          <p className="font-display text-lg">作品集 / 专题页引导语</p>
+          <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+            这两段文字分别显示在作品集索引和专题索引页面的大标题右侧。
+          </p>
+          <div className="mt-4 space-y-4">
+            <Field label="作品集页引导语">
+              <textarea
+                className="field min-h-20"
+                rows={3}
+                value={config.pageCopy.worksIntro}
+                onChange={(event) =>
+                  patchPageCopy({ worksIntro: event.target.value })
+                }
+              />
+            </Field>
+            <Field label="专题页引导语">
+              <textarea
+                className="field min-h-20"
+                rows={3}
+                value={config.pageCopy.foldersIntro}
+                onChange={(event) =>
+                  patchPageCopy({ foldersIntro: event.target.value })
+                }
+              />
+            </Field>
+          </div>
+        </section>
+
+        <section className="border border-ink/15 bg-white p-5">
+          <p className="font-display text-lg">联系页文案</p>
+          <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+            邮箱、所在地和社交链接分别在「品牌信息」「社交链接」中修改；其余联系页文字都在这里。
+          </p>
+          <div className="mt-4 space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="顶部小标 / Eyebrow">
+                <input
+                  className="field"
+                  value={config.contact.eyebrow}
+                  onChange={(event) =>
+                    patchContact({ eyebrow: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="主标题" hint="用换行控制断行，句末会自动加红点。">
+                <textarea
+                  className="field min-h-20"
+                  rows={3}
+                  value={config.contact.title}
+                  onChange={(event) =>
+                    patchContact({ title: event.target.value })
+                  }
+                />
+              </Field>
+            </div>
+            <Field label="介绍文字">
+              <textarea
+                className="field min-h-24"
+                rows={4}
+                value={config.contact.intro}
+                onChange={(event) =>
+                  patchContact({ intro: event.target.value })
+                }
+              />
+            </Field>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="社交区块标题">
+                <input
+                  className="field"
+                  value={config.contact.elsewhereLabel}
+                  onChange={(event) =>
+                    patchContact({ elsewhereLabel: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="服务区块标题">
+                <input
+                  className="field"
+                  value={config.contact.servicesLabel}
+                  onChange={(event) =>
+                    patchContact({ servicesLabel: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="所在地标题">
+                <input
+                  className="field"
+                  value={config.contact.basedInLabel}
+                  onChange={(event) =>
+                    patchContact({ basedInLabel: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="所在地说明">
+                <input
+                  className="field"
+                  value={config.contact.basedInNote}
+                  onChange={(event) =>
+                    patchContact({ basedInNote: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="档期标题">
+                <input
+                  className="field"
+                  value={config.contact.availabilityLabel}
+                  onChange={(event) =>
+                    patchContact({ availabilityLabel: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="档期状态">
+                <input
+                  className="field"
+                  value={config.contact.availabilityStatus}
+                  onChange={(event) =>
+                    patchContact({ availabilityStatus: event.target.value })
+                  }
+                />
+              </Field>
+            </div>
+
+            <Field label="档期说明">
+              <input
+                className="field"
+                value={config.contact.availabilityNote}
+                onChange={(event) =>
+                  patchContact({ availabilityNote: event.target.value })
+                }
+              />
+            </Field>
+
+            <Field label="Services 列表" hint="一行一项，会渲染为标签。">
+              <textarea
+                className="field min-h-28 font-mono text-[11px]"
+                rows={5}
+                value={config.contact.services.join("\n")}
+                onChange={(event) =>
+                  patchContact({
+                    services: event.target.value
+                      .split(/\r?\n/)
+                      .map((item) => item.trim())
+                      .filter(Boolean),
+                  })
+                }
+              />
+            </Field>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="底部 CTA 标题">
+                <input
+                  className="field"
+                  value={config.contact.ctaTitle}
+                  onChange={(event) =>
+                    patchContact({ ctaTitle: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="底部 CTA 按钮">
+                <input
+                  className="field"
+                  value={config.contact.ctaButton}
+                  onChange={(event) =>
+                    patchContact({ ctaButton: event.target.value })
+                  }
+                />
+              </Field>
+            </div>
           </div>
         </section>
 
