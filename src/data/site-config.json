@@ -9,6 +9,12 @@
     "album-guangyuan-2024",
     "album-southbound-2026"
   ],
+  "navFolderIds": [
+    "folder-landscape",
+    "folder-portrait",
+    "folder-product",
+    "folder_mvnxbdjn"
+  ],
   "statement": "",
   "bio": "2025年毕业于四川传媒学院 摄影专业\n师从普耘，何博，姬韶康",
   "location": "GanZhou,JiangXi, CN",
@@ -60,11 +66,5 @@
     ],
     "ctaTitle": "先看看作品？",
     "ctaButton": "进入作品集"
-  },
-  "navFolderIds": [
-    "folder-landscape",
-    "folder-portrait",
-    "folder-product",
-    "folder_mvnxbdjn"
-  ]
+  }
 }
