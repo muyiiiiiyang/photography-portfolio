@@ -2,7 +2,7 @@
 
 一个包豪斯（Bauhaus）视觉取向的个人摄影作品集：几何网格、三原色、硬边阴影与克制的编辑排版，让作品本身成为页面主角。
 
-前台是纯静态站点，可零成本部署到 GitHub Pages；本地则带一个只在这台机器上运行的可视化工作台（`/admin`），负责上传、WebP 压制、EXIF 解析、拍摄时间排序、专题编排与 Git 快照。
+前台是纯静态站点，可零成本部署到 GitHub Pages；本地则带一个只在这台机器上运行的可视化工作台（`/admin`），负责上传、WebP 压制、EXIF 解析、拍摄时间排序与 Git 快照。
 
 ---
 
@@ -10,11 +10,10 @@
 
 | 路由 | 说明 |
 | --- | --- |
-| `/` | 首页：左右分栏。左侧 `Bok_Hamm / Photography` 标题与分类导航，右侧随机抽取照片展示（可换一组） |
+| `/` | 首页：左右分栏。左侧 `Bok_Hamm / Photography` 标题与分类导航，右侧每 5 秒自动轮换照片 |
 | `/works` | 作品集索引，按相册展示，支持标签筛选 |
-| `/albums/[slug]` | 相册详情：大图封面 + 按拍摄时间倒序的作品墙 + 灯箱 |
-| `/folders`、`/folders/[slug]` | 跨相册的专题序列 |
-| `/about` | 关于摄影师、创作宣言、器材与社交链接 |
+| `/albums/[slug]` | 相册详情：大图封面 + 按拍摄时间排序的作品墙 + 灯箱 |
+| `/about` | 关于作者、创作宣言、器材与社交链接 |
 | `/contact` | 联系方式、合作类型与社交入口 |
 | `/admin` | **仅本地**的可视化工作台（生产构建中会被物理删除） |
 
@@ -73,10 +72,9 @@ pnpm dev
    - 生成 1000px 缩略图与 24px 模糊占位图
    - 从 EXIF 读取 `DateTimeOriginal` / `CreateDate`，统一存为 ISO-8601 UTC
    - 提取相机、镜头、焦距、光圈、快门、ISO、GPS
-3. **专题**：跨相册勾选照片，组成主题序列（只保存照片 id 引用）。
-4. **站点设置**：姓名、标语、个人照片、Bio、邮箱、社交链接、器材清单。
-5. **保存至磁盘**：把草稿写入 `src/data/*.json`，并清理不再被引用的图片。
-6. **版本快照**：填写 Commit Message，一键 `git add -A && git commit`。
+3. **站点设置**：姓名、标语、**导航作品集**、个人照片、Bio、邮箱、社交链接、器材清单。
+4. **保存至磁盘**：把草稿写入 `src/data/*.json`，并清理不再被引用的图片。
+5. **版本快照**：填写 Commit Message，一键 `git add -A && git commit`。
 
 > 上传接口只负责把图片写进 `public/photos/<年份>/` 并返回元数据；点击「保存至磁盘」才会更新 JSON。未保存的上传会在下次保存时按规则清理。
 
@@ -98,8 +96,8 @@ node scripts/reset-demo.mjs --yes
 
 单一真相源：
 
-- `src/data/portfolio-data.json`：`albums` / `albumPhotos` / `folders` / `folderPhotos`
-- `src/data/site-config.json`：站点文案与社交链接
+- `src/data/portfolio-data.json`：`albums` / `albumPhotos`（`folders` / `folderPhotos` 仅保留兼容，专题功能已移除）
+- `src/data/site-config.json`：站点文案、导航作品集与社交链接
 
 三条不可破坏的规则：
 

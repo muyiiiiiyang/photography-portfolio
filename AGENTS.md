@@ -149,6 +149,7 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 
 关键约定：
 
+- `folders` / `folderPhotos` 仅为旧数据兼容字段；专题功能已从导航、路由、后台移除，默认保持空数组/空对象。
 - `folderPhotos` 只存照片 **id**，照片本体唯一存放在 `albumPhotos`；不要复制整份照片对象。
 - `id` 一经生成不再修改（专题引用依赖它）；`slug` 是前台 URL，发布后避免修改。
 - `coverPhotoId` 缺失时自动取该组最新一张；删除封面会自动回退。
@@ -156,8 +157,8 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 
 ### 3.2 `src/data/site-config.json`
 
-`photographer`、`title`、`tagline`、`portrait`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`。
-前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。
+`photographer`、`title`、`tagline`、`portrait`、`navAlbumIds`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`。
+前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。`navAlbumIds` 最多四个，控制顶部「作品集」下拉展示哪四组；未选择时回退前四个相册。
 
 ---
 
@@ -173,7 +174,6 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 3. 勾选照片批量加/减标签、删除、编辑标题与拍摄时间。
 4. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
 5. **版本快照** → 填写语义化 Commit Message → 提交。
-6. **专题** → 跨相册勾选照片 → 保存。
 
 ### 4.2 批量导入
 
@@ -203,15 +203,14 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 ### 4.4 删除级联规则
 
 - 删除照片：从 `albumPhotos[albumId]` 移除；同步从所有 `folderPhotos[*]` 移除该 id；若它是封面则回退到剩余最新一张；保存后清理 WebP 文件。
-- 删除相册：移除相册记录与整个 `albumPhotos[albumId]`；同步清理专题中引用这些照片的 id；保存后清理文件。
-- 删除专题：只移除 `folders` 与 `folderPhotos`，**不删除照片与文件**。
+- 删除相册：移除相册记录与整个 `albumPhotos[albumId]`；保存后清理文件。
 - 任何批量删除前必须二次确认；保存前都只是草稿。
 
 ### 4.5 排序与校验
 
 - 保存接口会重新执行 `sanitizePortfolio()`：字段类型清洗、slug 去重、文件夹引用过滤、按时间排序、`updatedAt` 刷新。
 - 服务端会丢弃 `src` 不以 `/photos/` 开头的照片记录，防止手写 JSON 注入外链或路径穿越。
-- 相册/专题 slug 冲突会自动追加 `-2`、`-3`；不要依赖旧 slug 的链接。
+- 相册 slug 冲突会自动追加 `-2`、`-3`；不要依赖旧 slug 的链接。
 
 ---
 
@@ -240,12 +239,12 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 - 首页：`src/app/page.tsx`，纯白左右分栏；左侧 `Bok_Hamm / Photography` 混合大小写标题与分类导航，右侧 `RandomWall` 随机照片墙（每 5 秒自动换一组，也可手动换一组）。不再使用大色块或全大写标题。
 - 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。Studio「站点设置 → 个人照片」上传。导航只保留「关于作者」直达链接，不再有 About 子目录。
-- 导航：`SiteHeader`（服务端，读取 albums/folders）→ `SiteNav`（客户端 hover 子目录面板；`children` 为空时只渲染直达链接）。新增分类页时同步修改 `SiteHeader` 的 `items`。
+- 导航：`SiteHeader`（服务端，读取 albums + `config.navAlbumIds`）→ `SiteNav`（客户端 hover 子目录面板；`children` 为空时只渲染直达链接）。「作品集」下拉固定为四个可配置相册 + 「更多作品集」，不再包含专题。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
 - 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩 + 打开/切图过渡，简介与说明居中显示）；相册卡片：`CollectionCard`（作品集封面使用 3:2 比例，无彩色偏移描边）；筛选：`WorksExplorer`（xl 四列）。
-- 相册/专题详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 提供“按拍摄时间倒序/正序”切换。
+- 相册详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 提供“按拍摄时间倒序/正序”切换。
 - 图片一律使用 `<img>` + `withBasePath()`（已关闭 `@next/next/no-img-element`），必须带 `width`/`height`、`loading`、`decoding`。
-- 内页静态生成：`generateStaticParams()` 必须穷举所有 albums/folders，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
+- 内页静态生成：`generateStaticParams()` 必须穷举所有 albums，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
 - 空作品集时，两个动态路由会返回 `coming-soon` 占位参数（`src/lib/constants.ts`），避免 `output: export` 报 “empty array”；有数据后自动恢复真实参数。这个兜底不要删除。
 - 客户端组件只 import 纯类型/纯函数（如 `@/lib/view-types`、`@/lib/photos`）；禁止从带 `fs` 的 `@/lib/api/portfolio`、`@/lib/admin/*` 导入运行时代码。
 
@@ -329,7 +328,7 @@ pwsh -File scripts/enable-pages.ps1
 | Windows 构建报 `EPERM .next/...` | dev server 占用 `.next` | 停止 `pnpm dev`，结束残留 node，删除 `.next` 后重试 |
 | `pnpm build:static` 后 admin 目录消失 | 构建中断未还原 | 检查 `.stash/static-*`，手动移回 `src/app/admin`、`src/app/api`、`src/lib/admin` |
 | 公网图片 404 | 数据里写了 basePath 前缀 / 忘记 `withBasePath` | 检查 JSON 是否为 `/photos/...`；检查 `<img src>` |
-| 新相册/专题页面 404 | `generateStaticParams` 未包含 | 确认构建前数据已保存，重新构建；本地 dev 新建后重启 `pnpm dev` 以刷新参数缓存 |
+| 新相册页面 404 | `generateStaticParams` 未包含 | 确认构建前数据已保存，重新构建；本地 dev 新建后重启 `pnpm dev` 以刷新参数缓存 |
 | 照片排序不对 | 缺 `dateTaken` 或手改了 JSON | 后台校时；运行 `scripts/fix-missing-dates.mjs` |
 | 上传后中文变乱码 | 用 PowerShell 5.1 直接调 API（未按 UTF-8 解码） | 改用 `/admin` 页面或 Node `fetch`；不要用 PS 5.1 回写 JSON |
 | `sharp` 安装后不可用 | pnpm 忽略了 build script | 在 `pnpm-workspace.yaml` 的 `allowBuilds` 中允许 `sharp`，重装 |
