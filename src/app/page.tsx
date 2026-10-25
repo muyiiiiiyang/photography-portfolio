@@ -103,7 +103,7 @@ export default async function CoverPage() {
           <div className="mt-9 flex flex-col gap-8 sm:mt-12 sm:flex-row sm:items-end sm:justify-between">
             <EnterLink />
             <p
-              className="fade-up max-w-xs text-[13px] leading-relaxed text-ink/60 sm:text-right"
+              className="fade-up max-w-xs text-[13px] leading-relaxed text-ink/75 sm:text-right"
               style={{ animationDelay: "1.08s" }}
             >
               {config.tagline}

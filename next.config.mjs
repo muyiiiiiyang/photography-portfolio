@@ -21,6 +21,8 @@ const nextConfig = {
   images: { unoptimized: true },
   reactStrictMode: true,
   poweredByHeader: false,
+  // 本地预览时隐藏 Next 开发指示器，避免遮挡版式。
+  devIndicators: false,
 };
 
 export default nextConfig;
