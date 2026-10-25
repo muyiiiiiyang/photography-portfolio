@@ -45,8 +45,9 @@ export default async function CoverPage() {
       <SiteHeader />
 
       <main className="grid flex-1 lg:grid-cols-[0.92fr_1.08fr]">
-        <section className="flex flex-col justify-between border-b border-ink/15 px-5 pb-8 pt-10 sm:px-8 lg:border-b-0 lg:border-r lg:px-12 lg:pb-10 lg:pt-14">
-          <div>
+        <section className="flex flex-col border-b border-ink/15 px-5 pb-8 pt-10 sm:px-8 lg:border-b-0 lg:border-r lg:px-12 lg:pb-10 lg:pt-14">
+          <div className="flex flex-1 flex-col justify-center">
+            <div>
             <p
               className="fade-up flex items-center gap-3 font-mono text-[9px] tracking-[0.22em] text-ink/45 sm:text-[10px]"
               style={{ animationDelay: "0.05s" }}
@@ -122,18 +123,19 @@ export default async function CoverPage() {
                 </Link>
               ))}
             </nav>
-          </div>
 
-          <div
-            className="fade-up mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-4 font-mono text-[9px] tracking-[0.16em] text-ink/40"
-            style={{ animationDelay: "1.26s" }}
-          >
-            <span>{config.location}</span>
-            <span>
-              {stats.photos > 0
-                ? `${stats.photos} frames · ${stats.albums} series`
-                : "Portfolio 2026"}
-            </span>
+            <div
+              className="fade-up mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-4 font-mono text-[9px] tracking-[0.16em] text-ink/40"
+              style={{ animationDelay: "1.26s" }}
+            >
+              <span>{config.location}</span>
+              <span>
+                {stats.photos > 0
+                  ? `${stats.photos} frames · ${stats.albums} series`
+                  : "Portfolio 2026"}
+              </span>
+            </div>
+            </div>
           </div>
         </section>
 

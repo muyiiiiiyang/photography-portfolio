@@ -45,9 +45,11 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
   return (
     <>
       <div
-        className={`grid grid-cols-1 items-start gap-5 sm:grid-cols-2 ${
-          photos.length > 4 ? "lg:grid-cols-3" : ""
-        } lg:gap-6`}
+        className={
+          photos.length > 4
+            ? "columns-1 gap-5 sm:columns-2 lg:columns-3 lg:gap-6"
+            : "grid grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:gap-6"
+        }
       >
         {photos.map((photo, index) => (
           <button
@@ -55,7 +57,9 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
             type="button"
             onClick={() => setActiveIndex(index)}
             aria-label={`查看作品：${photo.title ?? "未命名"}`}
-            className="group block w-full border border-ink/15 bg-white p-2 text-left transition-colors duration-300 hover:border-ink"
+            className={`group block w-full border border-ink/15 bg-white p-2 text-left transition-colors duration-300 hover:border-ink ${
+              photos.length > 4 ? "mb-5 break-inside-avoid lg:mb-6" : ""
+            }`}
           >
             <div className="relative overflow-hidden bg-paper-2">
               <img
