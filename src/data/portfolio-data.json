@@ -11,6 +11,17 @@
       },
       "coverPhotoId": "p_ebab922056",
       "createdAt": "2026-10-25T14:31:30.415Z"
+    },
+    {
+      "id": "album_mvnzkl1y",
+      "slug": "new-series-2",
+      "title": "现实中的梦",
+      "description": "现实中的梦\n还是梦中梦",
+      "location": {
+        "name": "丰乡"
+      },
+      "coverPhotoId": "p_8b8edfdeea",
+      "createdAt": "2026-10-25T15:32:11.542Z"
     }
   ],
   "albumPhotos": {
@@ -915,6 +926,293 @@
         "camera": "NORITSU KOKI EZ Controller",
         "addedAt": "2026-10-25T14:37:12.216Z"
       }
+    ],
+    "album_mvnzkl1y": [
+      {
+        "id": "p_3098efa168",
+        "fileName": "20240503064712-09d04a.webp",
+        "src": "/photos/2024/20240503064712-09d04a.webp",
+        "thumb": "/photos/2024/20240503064712-09d04a-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAABwBQCdASoYABIAPvVwrFGqpiQiqAqpUB6JQBdmZDAUvhvVB743GSVpiEymF0RZwcSefd0AAP7QuVaVqDNwVpzJhXlpu9hHj52ABzbHTXxtwz22/Z73FE0bNvHD2IkY+K7PNAiskrVSqZ0TcVut6+N/bKKFw2bPYybk+Gy1uUI99ydl0G2YWn5q4UoPjCG7h9gxEySuyHZkEiFvtfiCmqZN1fsxHehRWBVwAA==",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:47:12.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:32.782Z"
+      },
+      {
+        "id": "p_bcf4fee804",
+        "fileName": "20240504163152-825f08.webp",
+        "src": "/photos/2024/20240504163152-825f08.webp",
+        "thumb": "/photos/2024/20240504163152-825f08-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAAAQBQCdASoYABIAPvFkrE4ppaSiMBgMATAeCWUAqPQQzZbyFkr2k5axtRReVch2dXHAAP6vDz1DKWyudjvFZgHqBcQu3/rZ89grqkpMLhkSJIu3OhYJlONCE9OKfmwdhHjEusaRr7Urk+7ZYYwgkHJ0a0mmpPZq33XTR2Me/u82PRs7P4z/6LrfIipYwHs6wPT31ukIbn/0AA==",
+        "tags": [],
+        "dateTaken": "2024-05-04T16:31:52.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:33.548Z"
+      },
+      {
+        "id": "p_a2a440921b",
+        "fileName": "20240503064713-94caf1.webp",
+        "src": "/photos/2024/20240503064713-94caf1.webp",
+        "thumb": "/photos/2024/20240503064713-94caf1-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAAAQBQCdASoYABIAPvVssFEqpaSiqAqpUB6JYwCxH47vQAhARxR/dxT69LDf/mFaxeQAAP5esaV9HmedEJW9QkHhrsV+1pU3WeGPEySSIU/pZnFBIlhZTCC8kCucYKFOxiTrhtlK4ZWTcZgmiv0IpG+pDeoRkMfDehuxAro1tcOqFRqC6XRoXn1W/UjXU7794bZfitwyFlwExdRyK0TkHxb4AA0zAAAA",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:47:13.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:34.353Z"
+      },
+      {
+        "id": "p_636a4e37be",
+        "fileName": "20240504163152-60c9d3.webp",
+        "src": "/photos/2024/20240504163152-60c9d3.webp",
+        "thumb": "/photos/2024/20240504163152-60c9d3-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAADwBACdASoYABIAPvVusFEqpiSiqAqpUB6JYwCdM2QBZED8TD/42I1HO0x/aOu+kAAA/sGBeeNOYYd/15xFRCfRJQKG41eileFmdsdulRs1PD81CgEdSBIInhcW1BvGtazZW5uqIl30z2zSr8FbZAvC62SfGieuYcm6dhKKDxc1JX/3bjnspnw+kAJt8c2K/LgdBMxBXclmfTR/qOzyixP7aaAmc2AA",
+        "tags": [],
+        "dateTaken": "2024-05-04T16:31:52.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:35.064Z"
+      },
+      {
+        "id": "p_0a9d062c80",
+        "fileName": "20240504163152-df508e.webp",
+        "src": "/photos/2024/20240504163152-df508e.webp",
+        "thumb": "/photos/2024/20240504163152-df508e-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRtoAAABXRUJQVlA4IM4AAAAwBQCdASoYABIAPvVysFMqpqSiqAgBUB6JZQCsMw82QAOBN1sUQXgg6eRsHe+JWYq+gADifSbFCgiCZtjZh1/p2wgmbDA9nHzHea83cLfFI5uWVLnlyPGvrWAbjQTlXqLpNq9hEAZVDHsRnrns28StB8yQTdN4X/9Ee5yPmyxRzjO6swhRahRD47R+yiG+Wat5HH876HfKniP3XdcHZ4hFjXc7xxhioN4MYt7k8yjWumu2S6ZORFMTmxoToKblSxn3VTd7tYJqAILC1YuQAA==",
+        "tags": [],
+        "dateTaken": "2024-05-04T16:31:52.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:35.773Z"
+      },
+      {
+        "id": "p_d84ab665ec",
+        "fileName": "20240503065005-08915e.webp",
+        "src": "/photos/2024/20240503065005-08915e.webp",
+        "thumb": "/photos/2024/20240503065005-08915e-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRr4AAABXRUJQVlA4ILIAAADQBACdASoYABIAPvVwrFGqpiOiqAqpUB6JQBUege0eVGvwJXIRpB/DmJt4ZzSXFAD+wjUPZC73whIeVchGAws2lzGIchlyyhSCPaHc/gngGjzdKmNwEbV8AMPg3fQ424ThwU3T+rBcxP+7FXI3bz0e/KtFs+X/ml7uW0LKiiWEKj7xVS5rSK0DIi80Tu49/AIkgsFBQLzwK5ohbpzMCwZUV3thPCL268OwtSvNxq5MagAA",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:05.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:36.549Z"
+      },
+      {
+        "id": "p_51a0f524c2",
+        "fileName": "20240503065006-c342dd.webp",
+        "src": "/photos/2024/20240503065006-c342dd.webp",
+        "thumb": "/photos/2024/20240503065006-c342dd-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAACwBACdASoYABIAPvVur1EqpiQiqAqpUB6JZQCsAAxRpX2K4XOsVm9k6mPnu9BIAP7Q32vzYaisoqJrowyfNFQe8ihe2TghS+Ge/KVnsyzlF3Tx5lhDGUZiVHKse44kGFO5jZVi7SyVGjUC2lCctBmhERQ+HYtw11vCX8WXZve/dQw3yDf69TRLjZjOMCir4gyVz9gA",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:06.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:37.298Z"
+      },
+      {
+        "id": "p_f752ed7567",
+        "fileName": "20240503065007-135ae6.webp",
+        "src": "/photos/2024/20240503065007-135ae6.webp",
+        "thumb": "/photos/2024/20240503065007-135ae6-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAADQBACdASoYABIAPvVoq04qpiQiMAgBUB6JZQAAQ/c6w6RIbqLZrpydGdZXz1p7AAD+Ri3itbkrqpdCM4pE+tK0lfnpi9iFo7vq8KgTJK0Tp64BunPxHeFzsL4So85dbE4hnC0iiy9muJjBqtbD1fDCTojLNSvMFyRfchnEwuzwAA==",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:07.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:38.038Z"
+      },
+      {
+        "id": "p_8bc7e7da12",
+        "fileName": "20240503065007-32c981.webp",
+        "src": "/photos/2024/20240503065007-32c981.webp",
+        "thumb": "/photos/2024/20240503065007-32c981-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRsoAAABXRUJQVlA4IL4AAAAQBQCdASoYABIAPvVkrFCqpSQisBgIAVAeiWMAtQltAULAVO/3udFYWBsM47iYko8AAP5w588amxMkx9eMBsYo0FNC71qr45D1RoryxKk0nZUwVzJLgLgkJyWnFPvUM4fZsGDPV17JaROKn/qt8h7nfgiuwnnFHh0iFZw2DIb4mQPluYSFQXarpDVAyRFm+YCVkjMrEaGAIzW8S+fz5NeaMXBrfy6GnVE6PIqMmsHc4GNvjGwQHYzF8s0cgAAA",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:07.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:38.790Z"
+      },
+      {
+        "id": "p_558308a71c",
+        "fileName": "20240503065008-358b32.webp",
+        "src": "/photos/2024/20240503065008-358b32.webp",
+        "thumb": "/photos/2024/20240503065008-358b32-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAABQBQCdASoYABIAPvVwrFGqpiQiqAqpUB6JYwDBzA9aJKLA8mJQSt2UPWPPMji2eOPiSuAA/lnvNZxdusY36c64Ry2CGC1R7SQKX+qeabOBME8UNRz6EA912BW4ivPdtJGXoFWpgkB5vOW2zZ1Dgry/4KjyE2jT5ZMfSEx0uR4PrNPrHBDNNZBExD4AAA==",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:08.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:39.576Z"
+      },
+      {
+        "id": "p_ea3da32ad3",
+        "fileName": "20240503065009-81073f.webp",
+        "src": "/photos/2024/20240503065009-81073f.webp",
+        "thumb": "/photos/2024/20240503065009-81073f-thumb.webp",
+        "width": 2048,
+        "height": 1499,
+        "blurDataURL": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAQBQCdASoYABIAPvVkrlCqpSQisBgIAVAeiWMAsOwREGSkHg3YbDieCejkdBKJJciAAPeMvSvW8+oPMjAtEMU5qpUY03Uwnf4a+rLKjZjK00Eplpay6QvJya26RPtQQ435/9UCtAFNBMpYleP916XZGWGgJxnZswGVQbLnLJlLC3AAAAA=",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:09.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:40.397Z"
+      },
+      {
+        "id": "p_195b6dd303",
+        "fileName": "20240503065010-18d7bb.webp",
+        "src": "/photos/2024/20240503065010-18d7bb.webp",
+        "thumb": "/photos/2024/20240503065010-18d7bb-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAABwBACdASoYABIAPvVirVCqpKQisBgIAVAeiWMAACnRC3KHiExd+hDXoJsCQAD+aCv7XAmBImJKX9q9JGDXfQ3+T2INh/pZUWUyuL9bbc5R7G4afgGT2LO+3gekYNVZOXCgPa+Z4R2Di2Fo6iJIzd7pts8p6Uz7rISst6MzZy8i17WC/Lr3V99FNyKXH5AA",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:10.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:41.154Z"
+      },
+      {
+        "id": "p_b62b38e51e",
+        "fileName": "20240503065010-481950.webp",
+        "src": "/photos/2024/20240503065010-481950.webp",
+        "thumb": "/photos/2024/20240503065010-481950-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAACQBQCdASoYABIAPvVysVMqpqSiqAgBUB6JYwCw8aglHchYvv4X9w8AyUINUsLJ2OExYz2EAAD+gwkT0rHwf2s4ORI3N+ZCXYpBheZWmGhNHMnzT93/syH6H1hj2Vo63cmhwnrB7eXS/UqbvByEMZ83GbaVv7A/nogkfke9+4Vx/lVxCzveOWo7ebVavGiTeaY+vYIDhNAx1KgszGfgUNERnQHkgferij9+evOugRWAxnn/WRv0dN4AAAA=",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:10.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:41.869Z"
+      },
+      {
+        "id": "p_6c86e29d44",
+        "fileName": "20240503065011-dd08de.webp",
+        "src": "/photos/2024/20240503065011-dd08de.webp",
+        "thumb": "/photos/2024/20240503065011-dd08de-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAAAQBQCdASoYABIAPvVwrFIqpiOiqAqpUB6JZQC06AxJjXkxzC3YOBR+zfrZ97/vIg8AAPhSBBiX+tqLrD9tTBaQWVur23aQFz4wejt6JjVhY40MUyUUnnYCWpEIluaDr95+5wQwbn2h3zQTk/pIO/oSt3ErDCwmn0S9xxAtzvvuW1uqsOt++WaqXrrBCDUdYgAywsbt/dzclDIIAAA=",
+        "tags": [],
+        "dateTaken": "2024-05-03T06:50:11.000Z",
+        "dateTakenSource": "exif",
+        "addedAt": "2026-10-25T15:36:42.606Z"
+      },
+      {
+        "id": "p_2e74046ba6",
+        "fileName": "20240421000222-caa9d7.webp",
+        "src": "/photos/2024/20240421000222-caa9d7.webp",
+        "thumb": "/photos/2024/20240421000222-caa9d7-thumb.webp",
+        "width": 2048,
+        "height": 1366,
+        "blurDataURL": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoYABAAPvVorE6qpiQiMAgBUB6JZwDA4agBnRK+/ozCguiUCAAA/u1G8fiiIzRmR6m3067sqca+CQFFV6poLbcJVjn1uuAUbm0vy2BEvc8oVtUMgwrnTS5/xBiYF/lTIAk5ADFwQ4AAAA==",
+        "tags": [],
+        "dateTaken": "2024-04-21T00:02:22.000Z",
+        "dateTakenSource": "exif",
+        "camera": "SONY ILCE-7RM3",
+        "lens": "FE 24-105mm F4 G OSS",
+        "focalLength": "39mm",
+        "aperture": "f/4",
+        "shutterSpeed": "1/320s",
+        "iso": 100,
+        "addedAt": "2026-10-25T15:36:43.183Z"
+      },
+      {
+        "id": "p_330404854b",
+        "fileName": "20240421002050-86c622.webp",
+        "src": "/photos/2024/20240421002050-86c622.webp",
+        "thumb": "/photos/2024/20240421002050-86c622-thumb.webp",
+        "width": 2048,
+        "height": 1275,
+        "blurDataURL": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADQAwCdASoYAA8APvVmrE6qpaQiMAgBUB6JaACdABbQTu58vOTX3+gA8gsUdCOKH2coXV6uLuA5fTeUBmM1rymRMxJ1fjDR9uL0oGv0UugKmFF16BkxKPimzAOpxvc/XoN6giYv3mjGIAAA",
+        "tags": [],
+        "dateTaken": "2024-04-21T00:20:50.000Z",
+        "dateTakenSource": "exif",
+        "camera": "SONY ILCE-7RM3",
+        "lens": "FE 24-105mm F4 G OSS",
+        "focalLength": "57mm",
+        "aperture": "f/4",
+        "shutterSpeed": "1/60s",
+        "iso": 2000,
+        "addedAt": "2026-10-25T15:36:43.636Z"
+      },
+      {
+        "id": "p_7c38a13958",
+        "fileName": "20261025153643-14bfbc.webp",
+        "src": "/photos/2026/20261025153643-14bfbc.webp",
+        "thumb": "/photos/2026/20261025153643-14bfbc-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAADQBACdASoYABIAPvVssFEqpaSiqAqpUB6JZQC7AA8hw1NLuRSPMYufDRkpB9p4AAD9tCPbRoVIRJxx+6XTWJHwbNCbMupthv2Ofqfp71hUo6lEQLlFs9nF1W+pURC8IkDjdsWKrzsd2/J9yb/lyOvqTOhtR5jDOYguJjEZ5tq/G17uPkNhLWdpFehq5HIpwAA=",
+        "tags": [],
+        "dateTaken": "2026-10-25T15:36:43.637Z",
+        "dateTakenSource": "fallback",
+        "addedAt": "2026-10-25T15:36:44.369Z"
+      },
+      {
+        "id": "p_a7910e7cab",
+        "fileName": "20261025153644-ac78c2.webp",
+        "src": "/photos/2026/20261025153644-ac78c2.webp",
+        "thumb": "/photos/2026/20261025153644-ac78c2-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACQBACdASoYABIAPvVsq1AqpiOisBgIAVAeiWcAwNwPRHA1Qg6A0ISwthMlyAAA+NGa/H5eZUQAoJImrybBqmdd+Ts6wPdfrifN10NYqhr0zTP2dVubaBTkU2Oc6AQVHOCpSDtHG9hqLFVCMObvdXkL7CakPXgbg6AAAA==",
+        "tags": [],
+        "dateTaken": "2026-10-25T15:36:44.370Z",
+        "dateTakenSource": "fallback",
+        "addedAt": "2026-10-25T15:36:45.065Z"
+      },
+      {
+        "id": "p_49462969f0",
+        "fileName": "20261025153645-8271f6.webp",
+        "src": "/photos/2026/20261025153645-8271f6.webp",
+        "thumb": "/photos/2026/20261025153645-8271f6-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAAAQBQCdASoYABIAPvVsrVAqpiQisBgIAVAeiWUAwcwMXEiJWUK1q5xjBZx/kQiZVcZoAP7svj5OaNQ8LpzhiZbhXpuEAP8s9LTPkqsIyHiFT3b6to4l+JMqYziUD49tmtN1OZVUnIGzy6LMV1w0k5sb7iczdHzMjG8Na3A5YWnO6TjurKc5a2L3mfcdA9CVnOEGOyyQPpWuxpMyDODqOsEuvHgAAA==",
+        "tags": [],
+        "dateTaken": "2026-10-25T15:36:45.066Z",
+        "dateTakenSource": "fallback",
+        "addedAt": "2026-10-25T15:36:45.810Z"
+      },
+      {
+        "id": "p_8ffbf2bde7",
+        "fileName": "20261025153645-ff62d0.webp",
+        "src": "/photos/2026/20261025153645-ff62d0.webp",
+        "thumb": "/photos/2026/20261025153645-ff62d0-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACQBACdASoYABIAPvVwrFGqpiQiqAqpUB6JZwDN/Aa/0RoYHafvf3puZNOVABgA/u/XR57kMWEFPlhV2t7V2tnjnqtZa/HkZLIBM6o16xTg3aft0OERKhjKl2ph1WsDr9S+DS6t2j8LL0DAy1f/yEJ/ZUmnV1/uAcbxZ7xIDrVSg+/eZPlOqf9NAmLMip5upbyAAA==",
+        "tags": [],
+        "dateTaken": "2026-10-25T15:36:45.811Z",
+        "dateTakenSource": "fallback",
+        "addedAt": "2026-10-25T15:36:46.580Z"
+      },
+      {
+        "id": "p_8b8edfdeea",
+        "fileName": "20261025153646-57e59f.webp",
+        "src": "/photos/2026/20261025153646-57e59f.webp",
+        "thumb": "/photos/2026/20261025153646-57e59f-thumb.webp",
+        "width": 2048,
+        "height": 1500,
+        "blurDataURL": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAwBQCdASoYABIAPvVmrVAqpSQisBgIAVAeiWcAyrQQ76slCF2CYfRJoba0/QxYuVPvAAD+7U3jQp9V7ACP19SvXH0v+zLlZ3VjotDfcSfZwSfVBclEp8MSL+vQZ91Y8CtjAyggGX5NWPiXwJ1/QLT9XG+mD6+nIp6uU4toAAA=",
+        "tags": [],
+        "dateTaken": "2026-10-25T15:36:46.582Z",
+        "dateTakenSource": "fallback",
+        "addedAt": "2026-10-25T15:36:47.294Z"
+      }
     ]
   },
   "loosePhotos": [
@@ -1486,5 +1784,5 @@
       "p_d76a054323"
     ]
   },
-  "updatedAt": "2026-10-25T15:09:51.700Z"
+  "updatedAt": "2026-10-25T15:37:29.262Z"
 }
