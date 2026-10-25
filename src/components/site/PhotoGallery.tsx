@@ -283,7 +283,11 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
                   width={active.width}
                   height={active.height}
                   onClick={(event) => event.stopPropagation()}
-                  style={{ transformOrigin: "top left" }}
+                  style={{
+                    transformOrigin: "top left",
+                    width: "auto",
+                    height: "auto",
+                  }}
                   className="max-h-full max-w-full object-contain shadow-[0_24px_80px_rgba(20,18,16,0.22)]"
                 />
               </div>
