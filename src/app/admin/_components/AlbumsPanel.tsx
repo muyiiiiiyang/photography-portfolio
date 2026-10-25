@@ -11,12 +11,20 @@ interface AlbumsPanelProps {
   portfolio: PortfolioData;
   setPortfolio: Dispatch<SetStateAction<PortfolioData>>;
   onUploadPhotos: (albumId: string) => void;
+  navAlbumIds: string[];
+  onNavAlbumIdsChange: (albumIds: string[]) => void;
+  worksIntro: string;
+  onWorksIntroChange: (value: string) => void;
 }
 
 export function AlbumsPanel({
   portfolio,
   setPortfolio,
   onUploadPhotos,
+  navAlbumIds,
+  onNavAlbumIdsChange,
+  worksIntro,
+  onWorksIntroChange,
 }: AlbumsPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.albums[0]?.id ?? "");
   const selected =
@@ -25,6 +33,25 @@ export function AlbumsPanel({
     null;
 
   const photos = selected ? portfolio.albumPhotos[selected.id] ?? [] : [];
+
+  const configuredNavIds =
+    navAlbumIds.length > 0
+      ? navAlbumIds
+      : portfolio.albums.slice(0, 4).map((album) => album.id);
+  const navSlots = Array.from(
+    { length: 4 },
+    (_, index) => configuredNavIds[index] ?? "",
+  );
+
+  function updateNavSlot(index: number, value: string) {
+    const next = [...navSlots];
+    const existing = next.indexOf(value);
+    if (value && existing !== -1 && existing !== index) {
+      next[existing] = next[index];
+    }
+    next[index] = value;
+    onNavAlbumIdsChange(next.filter(Boolean));
+  }
 
   function patchAlbum(patch: Partial<Album>) {
     if (!selected) return;
@@ -117,6 +144,57 @@ export function AlbumsPanel({
           </div>
         }
       />
+
+      <section className="mt-6 border border-ink/15 bg-white p-4 sm:p-5">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <p className="font-display text-lg">顶部导航作品集</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+              顶部「作品集」下拉只展示这四组，最后固定为「更多作品集」；留空则少展示一组。
+            </p>
+          </div>
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink/35">
+            {configuredNavIds.length} / 4
+          </p>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {navSlots.map((albumId, index) => (
+            <Field
+              key={`nav-album-${index}`}
+              label={`位置 ${String(index + 1).padStart(2, "0")}`}
+            >
+              <select
+                className="field"
+                value={albumId}
+                onChange={(event) =>
+                  updateNavSlot(index, event.target.value)
+                }
+              >
+                <option value="">未选择</option>
+                {portfolio.albums.map((album) => (
+                  <option key={album.id} value={album.id}>
+                    {album.title}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-4 border border-ink/15 bg-white p-4 sm:p-5">
+        <Field
+          label="作品集页引导语"
+          hint="显示在作品集索引页大标题右侧，支持换行。"
+        >
+          <textarea
+            className="field min-h-20"
+            rows={3}
+            value={worksIntro}
+            onChange={(event) => onWorksIntroChange(event.target.value)}
+          />
+        </Field>
+      </section>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[250px_1fr]">
         <aside className="space-y-1">

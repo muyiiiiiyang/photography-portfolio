@@ -10,9 +10,16 @@ import type { Folder, Photo, PortfolioData } from "@/lib/types";
 interface FoldersPanelProps {
   portfolio: PortfolioData;
   setPortfolio: Dispatch<SetStateAction<PortfolioData>>;
+  foldersIntro: string;
+  onFoldersIntroChange: (value: string) => void;
 }
 
-export function FoldersPanel({ portfolio, setPortfolio }: FoldersPanelProps) {
+export function FoldersPanel({
+  portfolio,
+  setPortfolio,
+  foldersIntro,
+  onFoldersIntroChange,
+}: FoldersPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.folders[0]?.id ?? "");
   const [query, setQuery] = useState("");
 
@@ -199,6 +206,20 @@ export function FoldersPanel({ portfolio, setPortfolio }: FoldersPanelProps) {
           </Button>
         }
       />
+
+      <section className="mt-6 border border-ink/15 bg-white p-4 sm:p-5">
+        <Field
+          label="专题页引导语"
+          hint="显示在专题索引页大标题右侧，支持换行。"
+        >
+          <textarea
+            className="field min-h-20"
+            rows={3}
+            value={foldersIntro}
+            onChange={(event) => onFoldersIntroChange(event.target.value)}
+          />
+        </Field>
+      </section>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[250px_1fr]">
         <aside className="space-y-1">

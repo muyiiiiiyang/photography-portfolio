@@ -8,20 +8,22 @@ import {
   Images,
   Layers,
   LogOut,
+  Mail,
   Save,
-  Settings,
+  User,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { AboutPanel } from "./AboutPanel";
 import { AlbumsPanel } from "./AlbumsPanel";
+import { ContactPanel } from "./ContactPanel";
 import { FoldersPanel } from "./FoldersPanel";
 import { GitPanel } from "./GitPanel";
 import { PhotosPanel } from "./PhotosPanel";
-import { SettingsPanel } from "./SettingsPanel";
 import type { AdminSnapshot } from "@/lib/admin/types";
 import type { PortfolioData, SiteConfig } from "@/lib/types";
 
-type Tab = "albums" | "photos" | "folders" | "settings" | "git";
+type Tab = "albums" | "photos" | "folders" | "about" | "contact" | "git";
 
 type Tone = "success" | "error" | "info";
 
@@ -39,7 +41,8 @@ const TABS: {
   { id: "albums", label: "相册", icon: Layers },
   { id: "photos", label: "照片", icon: Images },
   { id: "folders", label: "专题", icon: FolderOpen },
-  { id: "settings", label: "站点设置", icon: Settings },
+  { id: "about", label: "关于作者", icon: User },
+  { id: "contact", label: "联系方式", icon: Mail },
   { id: "git", label: "版本快照", icon: GitBranch },
 ];
 
@@ -215,7 +218,8 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
     albums: portfolio.albums.length,
     photos: totalPhotos,
     folders: portfolio.folders.length,
-    settings: "—",
+    about: "—",
+    contact: "—",
     git: git.isRepo ? (git.clean ? "✓" : git.changes.length) : "!",
   };
 
@@ -227,7 +231,7 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
             href="/admin"
             className="flex items-baseline gap-1.5 font-display text-[15px] tracking-[-0.01em]"
           >
-            Bok_Hamm
+            {config.photographer || "Bok_Hamm"}
             <span className="text-[11px] tracking-[0.18em] text-yellow">
               Studio
             </span>
@@ -324,6 +328,17 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
               portfolio={portfolio}
               setPortfolio={setPortfolio}
               onUploadPhotos={openPhotoUpload}
+              navAlbumIds={config.navAlbumIds ?? []}
+              onNavAlbumIdsChange={(navAlbumIds) =>
+                setConfig((prev) => ({ ...prev, navAlbumIds }))
+              }
+              worksIntro={config.pageCopy.worksIntro}
+              onWorksIntroChange={(worksIntro) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  pageCopy: { ...prev.pageCopy, worksIntro },
+                }))
+              }
             />
           ) : null}
           {tab === "photos" ? (
@@ -336,14 +351,23 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
             />
           ) : null}
           {tab === "folders" ? (
-            <FoldersPanel portfolio={portfolio} setPortfolio={setPortfolio} />
-          ) : null}
-          {tab === "settings" ? (
-            <SettingsPanel
-              config={config}
-              setConfig={setConfig}
-              albums={portfolio.albums}
+            <FoldersPanel
+              portfolio={portfolio}
+              setPortfolio={setPortfolio}
+              foldersIntro={config.pageCopy.foldersIntro}
+              onFoldersIntroChange={(foldersIntro) =>
+                setConfig((prev) => ({
+                  ...prev,
+                  pageCopy: { ...prev.pageCopy, foldersIntro },
+                }))
+              }
             />
+          ) : null}
+          {tab === "about" ? (
+            <AboutPanel config={config} setConfig={setConfig} />
+          ) : null}
+          {tab === "contact" ? (
+            <ContactPanel config={config} setConfig={setConfig} />
           ) : null}
           {tab === "git" ? (
             <GitPanel

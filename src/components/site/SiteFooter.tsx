@@ -22,7 +22,7 @@ export async function SiteFooter() {
               aria-hidden={copy === 1}
               className="flex shrink-0 items-center gap-6 pr-6 text-[9px] uppercase tracking-[0.32em]"
             >
-              <span>Bok_Hamm Photography</span>
+              <span>{config.photographer || "Bok_Hamm"} Photography</span>
               <span className="text-yellow">●</span>
               <span>Selected Works 2019—2026</span>
               <span className="text-red">■</span>
@@ -37,7 +37,7 @@ export async function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
             <p className="font-display text-[clamp(2.6rem,6vw,5.2rem)] leading-[0.85] tracking-[-0.04em]">
-              Bok_Hamm
+              {config.photographer || "Bok_Hamm"}
             </p>
             <p className="mt-4 max-w-xs text-xs leading-relaxed text-ink/55">
               {config.tagline}

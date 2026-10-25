@@ -23,35 +23,48 @@ export default async function AboutPage() {
     ? `${config.photographer} 的个人照片`
     : `${config.photographer} 的作品`;
   const portraitCaption = config.portrait ? "Portrait / 个人照片" : "Selected work";
-  const paragraphs = config.bio
+  const aboutText = [config.statement, config.bio]
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join("\n\n");
+  const paragraphs = aboutText
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
+  const headingLead = config.pageCopy.aboutHeadingLead.trim();
+  const headingAccent = config.pageCopy.aboutHeadingAccent.trim();
+  const hasHeading = Boolean(headingLead || headingAccent);
 
   return (
     <div className="page-enter">
-      <header className="relative overflow-hidden border-b border-ink/15">
-        <div
-          aria-hidden
-          className="absolute -right-24 top-1/2 h-72 w-56 -translate-y-1/2 bg-blue/10"
-        />
-        <div className="relative mx-auto max-w-[1560px] px-5 pb-12 pt-10 sm:px-8 lg:px-12 lg:pb-20 lg:pt-16">
-          <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
-            <span>关于作者</span>
-            <span className="h-px w-10 bg-ink/25" />
-            <span>About the photographer</span>
+      {hasHeading ? (
+        <header className="relative grid min-h-[42vh] place-items-center overflow-hidden border-b border-ink/15 py-12 lg:py-16">
+          <div
+            aria-hidden
+            className="absolute -right-24 top-1/2 h-72 w-56 -translate-y-1/2 bg-blue/10"
+          />
+          <div className="relative mx-auto w-full max-w-[1560px] px-5 pt-8 sm:px-8 lg:px-12">
+            <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
+              <span>关于作者</span>
+              <span className="h-px w-10 bg-ink/25" />
+              <span>About the photographer</span>
+            </div>
+            <h1 className="mt-8 max-w-5xl font-display text-[clamp(2.6rem,6.4vw,6rem)] leading-[0.98] tracking-[-0.035em]">
+              {headingLead}
+              {headingLead && headingAccent ? <br /> : null}
+              {headingAccent ? (
+                <span className="text-outline">{headingAccent}</span>
+              ) : null}
+            </h1>
           </div>
-          <h1 className="mt-8 max-w-5xl font-display text-[clamp(2.6rem,6.4vw,6rem)] leading-[0.98] tracking-[-0.035em]">
-            {config.pageCopy.aboutHeadingLead}
-            <br />
-            <span className="text-outline">
-              {config.pageCopy.aboutHeadingAccent}
-            </span>
-          </h1>
-        </div>
-      </header>
+        </header>
+      ) : null}
 
-      <section className="mx-auto grid max-w-[1560px] gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20 lg:px-12 lg:py-20">
+      <section
+        className={`mx-auto grid max-w-[1560px] gap-12 px-5 pb-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20 lg:px-12 lg:pb-20 ${
+          hasHeading ? "pt-14 lg:pt-20" : "pt-16 lg:pt-24"
+        }`}
+      >
         <div id="portrait" className="scroll-mt-28">
           <div className="sticky top-24">
             <div className="relative">
@@ -95,16 +108,21 @@ export default async function AboutPage() {
         </div>
 
         <div>
-          <p
+          <div
             id="statement"
-            className="scroll-mt-28 font-display text-[clamp(1.4rem,2.5vw,2.1rem)] leading-snug tracking-[-0.01em]"
+            className="scroll-mt-28 space-y-5 text-sm leading-loose text-ink/70"
           >
-            {config.statement}
-          </p>
-
-          <div className="mt-8 space-y-5 border-t border-ink/15 pt-8 text-sm leading-loose text-ink/70">
-            {paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+            {paragraphs.map((paragraph, index) => (
+              <p
+                key={`${paragraph.slice(0, 24)}-${index}`}
+                className={
+                  index === 0
+                    ? "whitespace-pre-line font-display text-[clamp(1.3rem,2.2vw,1.9rem)] leading-snug tracking-[-0.01em] text-ink"
+                    : "whitespace-pre-line"
+                }
+              >
+                {paragraph}
+              </p>
             ))}
           </div>
 

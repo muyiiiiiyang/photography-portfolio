@@ -1,6 +1,11 @@
 import Link from "next/link";
 
-export default function NotFound() {
+import { getSiteConfig } from "@/lib/api/portfolio";
+
+export default async function NotFound() {
+  const config = await getSiteConfig();
+  const brand = config.photographer || "Bok_Hamm";
+
   return (
     <main className="relative flex min-h-svh flex-col overflow-hidden">
       <div
@@ -12,7 +17,7 @@ export default function NotFound() {
           href="/"
           className="font-display text-[15px] font-semibold tracking-[-0.01em] sm:text-[17px]"
         >
-          Bok_Hamm<span className="text-red">.</span>
+          {brand}<span className="text-red">.</span>
         </Link>
         <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
           Error / 404

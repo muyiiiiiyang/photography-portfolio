@@ -24,6 +24,7 @@ export default async function CoverPage() {
     getPortfolioStats(),
     getAllFrames(),
   ]);
+  const brand = config.photographer || TITLE;
 
   const categories = [
     {
@@ -58,13 +59,13 @@ export default async function CoverPage() {
               Photographic portfolio — est. 2019
             </p>
 
-            <h1 className="mt-7" aria-label="Bok Hamm Photography">
-              <span className="sr-only">Bok Hamm Photography</span>
+            <h1 className="mt-7" aria-label={`${brand} Photography`}>
+              <span className="sr-only">{brand} Photography</span>
               <span
                 aria-hidden
                 className="wordmark block whitespace-nowrap text-[clamp(3rem,6.9vw,7rem)]"
               >
-                {TITLE.split("").map((char, index) => (
+                {brand.split("").map((char, index) => (
                   <span
                     key={`${char}-${index}`}
                     className={`wordmark-letter ${

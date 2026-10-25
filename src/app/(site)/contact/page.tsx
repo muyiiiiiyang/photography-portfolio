@@ -31,7 +31,7 @@ export default async function ContactPage() {
               </span>
             ))}
           </h1>
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink/65">
+          <p className="mt-6 max-w-xl whitespace-pre-line text-sm leading-relaxed text-ink/65">
             {config.contact.intro}
           </p>
         </div>

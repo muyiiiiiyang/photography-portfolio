@@ -93,10 +93,10 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
         <Link
           href="/"
           className="group flex shrink-0 items-center gap-2"
-          aria-label="Bok Hamm Photography 首页"
+          aria-label={`${config.photographer || "Bok_Hamm"} Photography 首页`}
         >
           <span className="font-display text-[15px] font-semibold tracking-[-0.01em] sm:text-[17px]">
-            Bok_Hamm
+            {config.photographer || "Bok_Hamm"}
           </span>
           <span
             className="mb-[1px] h-1.5 w-1.5 bg-red transition-transform duration-300 group-hover:rotate-45"

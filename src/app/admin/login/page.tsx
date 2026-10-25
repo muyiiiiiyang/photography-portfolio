@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { LoginForm } from "../_components/LoginForm";
 import { isAuthenticated } from "@/lib/admin/auth";
+import { getSiteConfig } from "@/lib/api/portfolio";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
   if (await isAuthenticated()) redirect("/admin");
+  const config = await getSiteConfig();
 
   return (
     <main className="grid min-h-svh lg:grid-cols-[1.1fr_1fr]">
@@ -31,7 +33,8 @@ export default async function LoginPage() {
         />
 
         <p className="relative font-display text-[17px] font-semibold tracking-[-0.01em]">
-          Bok_Hamm<span className="text-red">.</span>
+          {config.photographer || "Bok_Hamm"}
+          <span className="text-red">.</span>
         </p>
 
         <div className="relative">

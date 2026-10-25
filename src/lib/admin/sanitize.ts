@@ -14,6 +14,12 @@ function asString(value: unknown): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+/** 与 asString 相同，但允许有意留空（用于可清空的页面文案）。 */
+function asText(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  return value.trim();
+}
+
 function asNumber(value: unknown): number | undefined {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && value.trim() !== "") {
@@ -340,15 +346,15 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
       : {};
   const pageCopy = {
     aboutHeadingLead:
-      asString(pageCopyRaw.aboutHeadingLead) ??
+      asText(pageCopyRaw.aboutHeadingLead) ??
       fallback.pageCopy.aboutHeadingLead,
     aboutHeadingAccent:
-      asString(pageCopyRaw.aboutHeadingAccent) ??
+      asText(pageCopyRaw.aboutHeadingAccent) ??
       fallback.pageCopy.aboutHeadingAccent,
     worksIntro:
-      asString(pageCopyRaw.worksIntro) ?? fallback.pageCopy.worksIntro,
+      asText(pageCopyRaw.worksIntro) ?? fallback.pageCopy.worksIntro,
     foldersIntro:
-      asString(pageCopyRaw.foldersIntro) ?? fallback.pageCopy.foldersIntro,
+      asText(pageCopyRaw.foldersIntro) ?? fallback.pageCopy.foldersIntro,
   };
 
   const contactRaw =
@@ -363,29 +369,29 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
         .slice(0, 16)
     : fallback.contact.services;
   const contact = {
-    eyebrow: asString(contactRaw.eyebrow) ?? fallback.contact.eyebrow,
-    title: asString(contactRaw.title) ?? fallback.contact.title,
-    intro: asString(contactRaw.intro) ?? fallback.contact.intro,
+    eyebrow: asText(contactRaw.eyebrow) ?? fallback.contact.eyebrow,
+    title: asText(contactRaw.title) ?? fallback.contact.title,
+    intro: asText(contactRaw.intro) ?? fallback.contact.intro,
     elsewhereLabel:
-      asString(contactRaw.elsewhereLabel) ?? fallback.contact.elsewhereLabel,
+      asText(contactRaw.elsewhereLabel) ?? fallback.contact.elsewhereLabel,
     basedInLabel:
-      asString(contactRaw.basedInLabel) ?? fallback.contact.basedInLabel,
+      asText(contactRaw.basedInLabel) ?? fallback.contact.basedInLabel,
     basedInNote:
-      asString(contactRaw.basedInNote) ?? fallback.contact.basedInNote,
+      asText(contactRaw.basedInNote) ?? fallback.contact.basedInNote,
     availabilityLabel:
-      asString(contactRaw.availabilityLabel) ??
+      asText(contactRaw.availabilityLabel) ??
       fallback.contact.availabilityLabel,
     availabilityStatus:
-      asString(contactRaw.availabilityStatus) ??
+      asText(contactRaw.availabilityStatus) ??
       fallback.contact.availabilityStatus,
     availabilityNote:
-      asString(contactRaw.availabilityNote) ??
+      asText(contactRaw.availabilityNote) ??
       fallback.contact.availabilityNote,
     servicesLabel:
-      asString(contactRaw.servicesLabel) ?? fallback.contact.servicesLabel,
+      asText(contactRaw.servicesLabel) ?? fallback.contact.servicesLabel,
     services: contactServices,
-    ctaTitle: asString(contactRaw.ctaTitle) ?? fallback.contact.ctaTitle,
-    ctaButton: asString(contactRaw.ctaButton) ?? fallback.contact.ctaButton,
+    ctaTitle: asText(contactRaw.ctaTitle) ?? fallback.contact.ctaTitle,
+    ctaButton: asText(contactRaw.ctaButton) ?? fallback.contact.ctaButton,
   };
 
   return {
@@ -394,7 +400,7 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
     tagline: asString(source.tagline) ?? fallback.tagline,
     portrait,
     navAlbumIds,
-    statement: asString(source.statement) ?? fallback.statement,
+    statement: asText(source.statement) ?? fallback.statement,
     bio: typeof source.bio === "string" ? source.bio : fallback.bio,
     location: asString(source.location) ?? fallback.location,
     email: asString(source.email) ?? fallback.email,
