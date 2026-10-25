@@ -26,5 +26,11 @@
     "FE 35mm f/1.4 ZA",
     "Kodak Portra 400"
   ],
-  "copyright": "© 2026 Bok Hamm. All rights reserved."
+  "copyright": "© 2026 Bok Hamm. All rights reserved.",
+  "navAlbumIds": [
+    "album-japan-2024",
+    "album-hk-sg-2025",
+    "album-guangyuan-2024",
+    "album-southbound-2026"
+  ]
 }

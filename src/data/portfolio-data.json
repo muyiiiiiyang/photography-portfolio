@@ -1569,31 +1569,7 @@
       }
     ]
   },
-  "folders": [
-    {
-      "id": "folder-selected",
-      "slug": "selected-2024-2026",
-      "title": "编辑精选",
-      "subtitle": "SELECTED 2024 — 2026",
-      "description": "从四个长期拍摄地中挑出的十一张照片，一条关于城市与旅途的线索。",
-      "coverPhotoId": "p_a19a20513b",
-      "createdAt": "2026-10-01T00:00:00.000Z"
-    }
-  ],
-  "folderPhotos": {
-    "folder-selected": [
-      "p_a19a20513b",
-      "p_a90648c33e",
-      "p_5b1e9d8bfd",
-      "p_19305ab1d4",
-      "p_496423085d",
-      "p_a3d270f8f9",
-      "p_f50a750c39",
-      "p_902a13341e",
-      "p_b7f247fe80",
-      "p_a767f4886b",
-      "p_4cb6ee3f7f"
-    ]
-  },
-  "updatedAt": "2026-10-25T11:23:30.862Z"
+  "folders": [],
+  "folderPhotos": {},
+  "updatedAt": "2026-10-25T11:52:55.069Z"
 }
