@@ -1569,7 +1569,64 @@
       }
     ]
   },
-  "folders": [],
-  "folderPhotos": {},
-  "updatedAt": "2026-10-25T11:52:55.069Z"
+  "folders": [
+    {
+      "id": "folder-landscape",
+      "slug": "landscape",
+      "title": "景观",
+      "subtitle": "LANDSCAPE",
+      "description": "自然、城市与光线构成的空间秩序。",
+      "coverPhotoId": "p_0bf7ec747c",
+      "createdAt": "2026-10-25T12:06:07.161Z"
+    },
+    {
+      "id": "folder-portrait",
+      "slug": "portrait",
+      "title": "人像",
+      "subtitle": "PORTRAIT",
+      "description": "在短暂停顿里，记录人的状态与距离。",
+      "coverPhotoId": "p_dfb293b937",
+      "createdAt": "2026-10-25T12:06:07.161Z"
+    },
+    {
+      "id": "folder-product",
+      "slug": "product",
+      "title": "产品",
+      "subtitle": "PRODUCT",
+      "description": "关于材质、形态与光的静物练习。",
+      "coverPhotoId": "p_55f18bc5bb",
+      "createdAt": "2026-10-25T12:06:07.161Z"
+    }
+  ],
+  "folderPhotos": {
+    "folder-landscape": [
+      "p_0bf7ec747c",
+      "p_a19a20513b",
+      "p_54b22ec506",
+      "p_a90648c33e",
+      "p_cc5e07c853",
+      "p_3375185b3f",
+      "p_f50a750c39",
+      "p_c11a76219a",
+      "p_b7f247fe80",
+      "p_a767f4886b",
+      "p_4cb6ee3f7f",
+      "p_b3a62e9d39",
+      "p_6c7feb0801",
+      "p_142e7da79d"
+    ],
+    "folder-portrait": [
+      "p_dfb293b937",
+      "p_1c72b539f5",
+      "p_3ec8bce67e",
+      "p_8c32a2fc33",
+      "p_0551b8d129"
+    ],
+    "folder-product": [
+      "p_55f18bc5bb",
+      "p_aba7984980",
+      "p_5b1e9d8bfd"
+    ]
+  },
+  "updatedAt": "2026-10-25T12:20:15.600Z"
 }
