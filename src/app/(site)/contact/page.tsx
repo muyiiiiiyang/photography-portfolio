@@ -23,7 +23,7 @@ export default async function ContactPage() {
           <h1 className="mt-8 font-display text-[clamp(2.8rem,7vw,6.5rem)] leading-[0.92] tracking-[-0.035em]">
             一起做点
             <br />
-            有光的事<span className="text-red">。</span>
+            有光的事<span className="text-red">.</span>
           </h1>
           <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink/65">
             商业拍摄、建筑与空间、编辑约稿、展览与出版合作，都欢迎来信。
@@ -49,7 +49,7 @@ export default async function ContactPage() {
         </a>
 
         <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
-          <div>
+          <div id="elsewhere" className="scroll-mt-28">
             <p className="label">Elsewhere</p>
             <ul className="mt-4 divide-y divide-ink/15 border-t border-ink/15">
               {config.socials.map((social, index) => (
@@ -96,7 +96,7 @@ export default async function ContactPage() {
                 2026 年秋季档期开放中。
               </p>
             </div>
-            <div className="sm:col-span-2">
+            <div id="services" className="scroll-mt-28 sm:col-span-2">
               <p className="label">Services</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {["建筑 / 空间", "品牌视觉", "编辑肖像", "展览 / 出版"].map(

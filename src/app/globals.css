@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f2ede2;
-  --color-paper-2: #e6ddcc;
+  --color-paper: #ffffff;
+  --color-paper-2: #f2f2f0;
   --color-ink: #141210;
   --color-red: #df3b2f;
   --color-yellow: #f2c230;
   --color-blue: #1f4e8c;
-  --color-line: #cec4b2;
+  --color-line: #d9d9d6;
 
   --font-display:
     "Bahnschrift", "DIN Alternate", "Helvetica Neue", "Arial Narrow", Arial,
@@ -50,18 +50,6 @@
   h2,
   h3 {
     text-wrap: balance;
-  }
-
-  /* 纸张颗粒：让大面积米色不显得像纯色块 */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    pointer-events: none;
-    opacity: 0.045;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
@@ -270,7 +258,7 @@
 .field {
   width: 100%;
   border: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
-  background: #fffdf7;
+  background: #ffffff;
   padding: 0.55rem 0.7rem;
   font-size: 0.82rem;
   line-height: 1.35;

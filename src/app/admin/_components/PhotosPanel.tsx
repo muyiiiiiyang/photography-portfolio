@@ -219,6 +219,10 @@ export function PhotosPanel({
         addPhotos(album.id, imported);
       }
 
+      const gpsCount = imported.filter((photo) => photo.gps).length;
+      const gpsNote =
+        gpsCount > 0 ? `，其中 ${gpsCount} 张已读取 GPS` : "，未读取到 GPS";
+
       if (payload.errors && payload.errors.length > 0) {
         onNotify(
           `${payload.errors.length} 张处理失败：${payload.errors[0].message}`,
@@ -226,12 +230,12 @@ export function PhotosPanel({
         );
       } else if (payload.warnings && payload.warnings.length > 0) {
         onNotify(
-          `已导入 ${imported.length} 张，有 ${payload.warnings.length} 条提醒（多为缺少拍摄时间），请检查。`,
+          `已导入 ${imported.length} 张${gpsNote}，有 ${payload.warnings.length} 条提醒（多为缺少拍摄时间），请检查。`,
           "info",
         );
       } else {
         onNotify(
-          `已导入 ${imported.length} 张。点击「保存至磁盘」写入数据。`,
+          `已导入 ${imported.length} 张${gpsNote}。点击「保存至磁盘」写入数据。`,
           "success",
         );
       }
@@ -328,7 +332,7 @@ export function PhotosPanel({
         </div>
 
         {selected.size > 0 ? (
-          <div className="flex flex-wrap items-center gap-2 border border-ink bg-[#fffdf7] p-2.5">
+          <div className="flex flex-wrap items-center gap-2 border border-ink bg-white p-2.5">
             <span className="px-1 text-[11px]">
               已选 <strong>{selected.size}</strong> 张
             </span>
@@ -499,12 +503,25 @@ export function PhotosPanel({
                   }
                 />
               </Field>
-              <Field label="GPS">
-                <p className="field font-mono text-ink/55">
-                  {editing.gps
-                    ? `${editing.gps.lat.toFixed(4)}, ${editing.gps.lng.toFixed(4)}`
-                    : "—"}
-                </p>
+              <Field label="GPS（上传时自动读取）">
+                {editing.gps ? (
+                  <a
+                    href={`https://www.openstreetmap.org/?mlat=${editing.gps.lat}&mlon=${editing.gps.lng}#map=14/${editing.gps.lat}/${editing.gps.lng}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="field flex items-center justify-between gap-2 font-mono text-ink/70 transition-colors hover:border-ink hover:text-ink"
+                  >
+                    <span>
+                      {editing.gps.lat.toFixed(5)},{" "}
+                      {editing.gps.lng.toFixed(5)}
+                    </span>
+                    <span aria-hidden className="text-[10px] text-ink/40">
+                      地图 ↗
+                    </span>
+                  </a>
+                ) : (
+                  <p className="field font-mono text-ink/40">未读取到</p>
+                )}
               </Field>
             </div>
 
@@ -565,6 +582,11 @@ export function PhotosPanel({
                     {photo.dateTakenSource === "fallback" ? (
                       <span className="absolute right-1.5 top-1.5 bg-red px-1 py-0.5 font-mono text-[8px] tracking-[0.08em] text-white">
                         NO DATE
+                      </span>
+                    ) : null}
+                    {photo.gps ? (
+                      <span className="absolute bottom-1.5 left-1.5 bg-ink/85 px-1 py-0.5 font-mono text-[8px] tracking-[0.08em] text-white">
+                        GPS
                       </span>
                     ) : null}
                   </div>

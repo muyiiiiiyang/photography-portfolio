@@ -26,7 +26,7 @@ export default async function AboutPage() {
       <header className="relative overflow-hidden border-b border-ink/15">
         <div
           aria-hidden
-          className="absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-yellow/20"
+          className="absolute -right-24 top-1/2 h-72 w-56 -translate-y-1/2 bg-blue/10"
         />
         <div className="relative mx-auto max-w-[1560px] px-5 pb-12 pt-10 sm:px-8 lg:px-12 lg:pb-20 lg:pt-16">
           <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
@@ -46,21 +46,37 @@ export default async function AboutPage() {
         <div>
           <div className="sticky top-24">
             <div className="relative">
-              <span
-                aria-hidden
-                className="absolute -left-2 -top-2 h-full w-full bg-yellow"
-              />
               {portrait ? (
-                <img
-                  src={portrait.srcUrl}
-                  alt={`${config.photographer} 的作品`}
-                  width={portrait.width}
-                  height={portrait.height}
-                  className="relative aspect-[4/5] w-full border border-ink object-cover"
-                />
+                <>
+                  <span
+                    aria-hidden
+                    className="absolute -left-2 -top-2 h-full w-full bg-yellow"
+                  />
+                  <img
+                    src={portrait.srcUrl}
+                    alt={`${config.photographer} 的作品`}
+                    width={portrait.width}
+                    height={portrait.height}
+                    className="relative aspect-[4/5] w-full border border-ink object-cover"
+                  />
+                </>
               ) : (
-                <div className="relative flex aspect-[4/5] w-full items-center justify-center border border-ink bg-paper-2 font-mono text-[10px] uppercase tracking-[0.3em] text-ink/35">
-                  Portrait
+                <div className="relative aspect-[4/5] w-full overflow-hidden border border-ink bg-paper-2">
+                  <span
+                    aria-hidden
+                    className="absolute left-[12%] top-[10%] h-[26%] w-[34%] bg-blue"
+                  />
+                  <span
+                    aria-hidden
+                    className="absolute bottom-[16%] right-[12%] h-16 w-16 bg-red"
+                  />
+                  <span
+                    aria-hidden
+                    className="absolute left-[12%] right-[12%] top-1/2 h-px bg-ink/20"
+                  />
+                  <span className="absolute bottom-6 left-6 font-mono text-[9px] uppercase tracking-[0.22em] text-ink/35">
+                    Portrait / Soon
+                  </span>
                 </div>
               )}
             </div>
@@ -72,7 +88,10 @@ export default async function AboutPage() {
         </div>
 
         <div>
-          <p className="font-display text-[clamp(1.4rem,2.5vw,2.1rem)] leading-snug tracking-[-0.01em]">
+          <p
+            id="statement"
+            className="scroll-mt-28 font-display text-[clamp(1.4rem,2.5vw,2.1rem)] leading-snug tracking-[-0.01em]"
+          >
             {config.statement}
           </p>
 
@@ -101,7 +120,7 @@ export default async function AboutPage() {
             </div>
           </dl>
 
-          <div className="mt-10">
+          <div id="equipment" className="mt-10 scroll-mt-28">
             <p className="label">Equipment</p>
             <ul className="mt-4 divide-y divide-ink/10 border-t border-ink/10">
               {config.equipment.map((item, index) => (

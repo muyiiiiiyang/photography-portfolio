@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ComingSoon } from "@/components/site/ComingSoon";
 import { CollectionView } from "@/components/site/CollectionView";
 import { getFolderBySlug, getFolders } from "@/lib/api/portfolio";
+import { PLACEHOLDER_FOLDER_SLUG } from "@/lib/constants";
 import { formatDate } from "@/lib/format";
 
 interface FolderPageProps {
@@ -13,6 +15,7 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const folders = await getFolders();
+  if (folders.length === 0) return [{ slug: PLACEHOLDER_FOLDER_SLUG }];
   return folders.map((folder) => ({ slug: folder.slug }));
 }
 
@@ -22,7 +25,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const folder = await getFolderBySlug(slug);
 
-  if (!folder) return { title: "专题未找到" };
+  if (!folder) {
+    if (slug === PLACEHOLDER_FOLDER_SLUG) {
+      return { title: "专题即将上线", robots: { index: false, follow: false } };
+    }
+    return { title: "专题未找到" };
+  }
 
   return {
     title: folder.title,
@@ -33,7 +41,21 @@ export async function generateMetadata({
 export default async function FolderPage({ params }: FolderPageProps) {
   const { slug } = await params;
   const folder = await getFolderBySlug(slug);
-  if (!folder) notFound();
+
+  if (!folder) {
+    if (slug === PLACEHOLDER_FOLDER_SLUG) {
+      return (
+        <ComingSoon
+          eyebrow="Series / Soon"
+          title="专题即将上线"
+          description="一组照片，一条线索。新的主题序列将和作品一起上线。"
+          backHref="/folders"
+          backLabel="返回专题 / SERIES"
+        />
+      );
+    }
+    notFound();
+  }
 
   const folders = await getFolders();
   const index = folders.findIndex((item) => item.slug === folder.slug);

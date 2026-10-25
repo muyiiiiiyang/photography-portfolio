@@ -25,26 +25,29 @@ export default async function CoverPage() {
 
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-grid opacity-80"
+        className="pointer-events-none absolute inset-0 bg-grid opacity-60"
       />
 
+      {/* 右上：蓝色矩形与红色方块，替代原先的黄色圆形 */}
       <div
         aria-hidden
-        className="shape-in pointer-events-none absolute -right-[18vw] bottom-[8vh] h-[48vw] w-[48vw] min-h-[180px] min-w-[180px] sm:bottom-auto sm:-right-[11vw] sm:top-[44px] sm:h-[44vw] sm:w-[44vw] sm:min-h-[240px] sm:min-w-[240px]"
-      >
-        <div className="drift h-full w-full rounded-full bg-yellow/85" />
-      </div>
-
+        className="shape-in pointer-events-none absolute right-0 top-[76px] hidden h-[15vh] w-[20vw] bg-blue sm:block"
+      />
       <div
         aria-hidden
-        className="shape-in pointer-events-none absolute left-[2vw] top-[10vh] hidden h-[26vh] w-[7px] bg-blue sm:block"
-        style={{ animationDelay: "0.35s" }}
+        className="shape-in pointer-events-none absolute right-[20vw] top-[calc(15vh+88px)] hidden h-3 w-3 bg-red sm:block"
+        style={{ animationDelay: "0.38s" }}
       />
 
+      {/* 移动端：右下角的小型蓝块与红方块 */}
       <div
         aria-hidden
-        className="shape-in pointer-events-none absolute left-[62vw] top-[56vh] hidden h-3 w-3 bg-red sm:block"
-        style={{ animationDelay: "0.5s" }}
+        className="shape-in pointer-events-none absolute bottom-[12vh] right-0 h-24 w-24 bg-blue sm:hidden"
+      />
+      <div
+        aria-hidden
+        className="shape-in pointer-events-none absolute bottom-[calc(12vh+90px)] right-[90px] h-3 w-3 bg-red sm:hidden"
+        style={{ animationDelay: "0.3s" }}
       />
 
       <div
@@ -120,9 +123,11 @@ export default async function CoverPage() {
             Photography / Architecture / Landscape
           </span>
           <span>
-            {String(stats.photos).padStart(2, "0")} frames ·{" "}
-            {String(stats.albums).padStart(2, "0")} series ·{" "}
-            {formatYear(stats.latest)}
+            {stats.photos > 0
+              ? `${String(stats.photos).padStart(2, "0")} frames · ${String(
+                  stats.albums,
+                ).padStart(2, "0")} series · ${formatYear(stats.latest)}`
+              : "Portfolio 2026"}
           </span>
         </div>
       </div>

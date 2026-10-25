@@ -55,7 +55,7 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
             type="button"
             onClick={() => setActiveIndex(index)}
             aria-label={`查看作品：${photo.title ?? "未命名"}`}
-            className="group block w-full border border-ink/15 bg-[#faf7ef] p-2 text-left transition-colors duration-300 hover:border-ink"
+            className="group block w-full border border-ink/15 bg-white p-2 text-left transition-colors duration-300 hover:border-ink"
           >
             <div className="relative overflow-hidden bg-paper-2">
               <img

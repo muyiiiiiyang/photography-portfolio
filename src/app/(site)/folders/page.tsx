@@ -15,10 +15,6 @@ export default async function FoldersPage() {
   return (
     <div className="page-enter">
       <header className="relative overflow-hidden border-b border-ink/15">
-        <div
-          aria-hidden
-          className="absolute -left-16 -top-16 h-52 w-52 rounded-full border-[18px] border-blue/15"
-        />
         <div className="relative mx-auto max-w-[1560px] px-5 pb-10 pt-10 sm:px-8 lg:px-12 lg:pb-16 lg:pt-16">
           <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
             <span>Index / 02</span>
@@ -62,11 +58,22 @@ export default async function FoldersPage() {
             ))}
           </div>
         ) : (
-          <div className="border border-dashed border-ink/25 px-6 py-20 text-center">
-            <p className="font-display text-2xl">还没有专题</p>
-            <p className="mt-2 text-sm text-ink/50">
-              在本地 Studio 的「专题」面板里创建第一组序列。
-            </p>
+          <div className="grid gap-10 border border-ink/15 bg-white p-8 sm:p-12 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-ink/40">
+                Series / 00
+              </p>
+              <p className="mt-4 font-display text-[clamp(2rem,4vw,3.2rem)] leading-tight tracking-[-0.02em]">
+                专题正在整理中。
+              </p>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-ink/50">
+                一组照片，一条线索。新的主题序列将和作品一起上线。
+              </p>
+            </div>
+            <div className="flex items-start gap-2">
+              <span aria-hidden className="h-16 w-16 bg-blue" />
+              <span aria-hidden className="mt-6 h-10 w-10 bg-red" />
+            </div>
           </div>
         )}
       </section>
