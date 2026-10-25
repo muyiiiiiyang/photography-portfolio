@@ -36,4 +36,6 @@ export interface CommitResult {
   branch?: string;
   reason?: string;
   output?: string;
+  pushed?: boolean;
+  pushError?: string;
 }

@@ -50,7 +50,7 @@ export function GitPanel({
       <PanelHeader
         eyebrow="Version"
         title="版本快照"
-        description="把当前 JSON 与图片一起提交到 Git，随时可以回滚。"
+        description="把当前 JSON 与图片提交到 Git，并推送到 GitHub；推送后 Actions 自动构建 Pages。"
         actions={
           <Button onClick={() => void refresh()} disabled={refreshing}>
             {refreshing ? "刷新中…" : "刷新状态"}
@@ -145,14 +145,15 @@ export function GitPanel({
               <p className="text-[11px] text-ink/45">
                 {dirty
                   ? "有未保存的改动，提交前会先执行一次「保存至磁盘」。"
-                  : "数据已落盘，可以直接提交。"}
+                  : "数据已落盘，可以直接提交发布。"}
+                提交成功后自动推送到 origin。
               </p>
               <Button
                 variant="solid"
                 disabled={busy || !message.trim()}
                 onClick={() => void onCommit(message)}
               >
-                {busy ? "提交中…" : "提交快照 →"}
+                {busy ? "提交中…" : "提交并发布 →"}
               </Button>
             </div>
           </section>
@@ -176,7 +177,8 @@ git push -u origin main`}</pre>
             Deployment
           </p>
           <p className="mt-2 text-xs leading-relaxed text-ink/60">
-            推送到 GitHub 后，Actions 会先物理删除
+            点击「提交并发布」会先提交本地快照，再推送到 GitHub；
+            推送后 Actions 会物理删除
             <code className="font-mono"> src/app/admin</code>、
             <code className="font-mono"> src/app/api</code>、
             <code className="font-mono"> src/lib/admin</code>，再构建纯静态产物发布到

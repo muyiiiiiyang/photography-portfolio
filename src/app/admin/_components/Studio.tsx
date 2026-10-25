@@ -163,7 +163,13 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
         const payload = (await response.json().catch(() => ({}))) as {
           error?: string;
           git?: AdminSnapshot["git"];
-          result?: { committed?: boolean; hash?: string; reason?: string };
+          result?: {
+            committed?: boolean;
+            hash?: string;
+            reason?: string;
+            pushed?: boolean;
+            pushError?: string;
+          };
         };
 
         if (!response.ok) {
@@ -174,9 +180,28 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
         if (payload.git) setGit(payload.git);
 
         if (payload.result?.committed) {
-          notify(`快照已创建：${payload.result.hash ?? ""}`, "success");
+          if (payload.result.pushed) {
+            notify(
+              `快照已创建并推送到 GitHub：${payload.result.hash ?? ""}。Pages 正在构建。`,
+              "success",
+            );
+          } else {
+            notify(
+              `快照已创建：${payload.result.hash ?? ""}，但推送失败：${
+                payload.result.pushError ?? "未知错误"
+              }`,
+              "error",
+            );
+          }
+        } else if (payload.result?.pushed) {
+          notify("没有新更改，已推送现有快照。", "success");
         } else {
-          notify(payload.result?.reason ?? "没有需要提交的更改。", "info");
+          notify(
+            payload.result?.pushError ??
+              payload.result?.reason ??
+              "没有需要提交的更改。",
+            "info",
+          );
         }
       } catch {
         notify("提交失败：无法连接本地服务。", "error");

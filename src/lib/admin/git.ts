@@ -94,6 +94,28 @@ export async function getGitStatus(): Promise<GitStatus> {
   }
 }
 
+async function pushToOrigin(
+  branch: string,
+): Promise<{ pushed: boolean; pushError?: string }> {
+  let remote = "";
+  try {
+    const result = await runGit(["remote", "get-url", "origin"], 8000);
+    remote = result.stdout.trim();
+  } catch {
+    remote = "";
+  }
+  if (!remote) {
+    return { pushed: false, pushError: "未配置 origin 远程仓库，快照只保存在本地。" };
+  }
+
+  try {
+    await runGit(["push", "origin", `HEAD:${branch}`], 120_000);
+    return { pushed: true };
+  } catch (error) {
+    return { pushed: false, pushError: messageOf(error) };
+  }
+}
+
 export async function commitAll(message: string): Promise<CommitResult> {
   const trimmed = message.trim();
   if (!trimmed) {
@@ -107,21 +129,38 @@ export async function commitAll(message: string): Promise<CommitResult> {
   if (!status.isRepo) {
     throw new Error("当前目录还不是 Git 仓库，请先执行 git init。");
   }
+  const branch = status.branch || "main";
   if (status.clean) {
-    return { committed: false, reason: "没有需要提交的更改。" };
+    const push = await pushToOrigin(branch);
+    return {
+      committed: false,
+      branch,
+      pushed: push.pushed,
+      pushError: push.pushError,
+      reason: push.pushed
+        ? "没有新更改，已推送现有快照。"
+        : "没有需要提交的更改。",
+    };
   }
 
+  let head = "";
+  let output = "";
   try {
     await runGit(["add", "-A"]);
     const result = await runGit(["commit", "-m", trimmed], 30_000);
-    const head = await runGit(["rev-parse", "--short", "HEAD"], 8000);
-    return {
-      committed: true,
-      hash: head.stdout.trim(),
-      branch: status.branch,
-      output: result.stdout.trim().split(/\r?\n/).slice(0, 6).join("\n"),
-    };
+    head = (await runGit(["rev-parse", "--short", "HEAD"], 8000)).stdout.trim();
+    output = result.stdout.trim().split(/\r?\n/).slice(0, 6).join("\n");
   } catch (error) {
     throw new Error(messageOf(error));
   }
+
+  const push = await pushToOrigin(branch);
+  return {
+    committed: true,
+    hash: head,
+    branch,
+    output,
+    pushed: push.pushed,
+    pushError: push.pushError,
+  };
 }
