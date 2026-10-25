@@ -10,9 +10,14 @@ import type { Album, PortfolioData } from "@/lib/types";
 interface AlbumsPanelProps {
   portfolio: PortfolioData;
   setPortfolio: Dispatch<SetStateAction<PortfolioData>>;
+  onUploadPhotos: (albumId: string) => void;
 }
 
-export function AlbumsPanel({ portfolio, setPortfolio }: AlbumsPanelProps) {
+export function AlbumsPanel({
+  portfolio,
+  setPortfolio,
+  onUploadPhotos,
+}: AlbumsPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.albums[0]?.id ?? "");
   const selected =
     portfolio.albums.find((album) => album.id === selectedId) ??
@@ -97,9 +102,19 @@ export function AlbumsPanel({ portfolio, setPortfolio }: AlbumsPanelProps) {
         title="相册"
         description="一个相册对应一组作品。slug 是前台路由，发布后请避免随意修改。"
         actions={
-          <Button variant="solid" onClick={addAlbum}>
-            + 新建相册
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {selected ? (
+              <Button
+                variant="accent"
+                onClick={() => onUploadPhotos(selected.id)}
+              >
+                上传照片 ↑
+              </Button>
+            ) : null}
+            <Button variant="solid" onClick={addAlbum}>
+              + 新建相册
+            </Button>
+          </div>
         }
       />
 
@@ -150,7 +165,14 @@ export function AlbumsPanel({ portfolio, setPortfolio }: AlbumsPanelProps) {
                 </p>
                 <p className="mt-1 font-display text-xl">{selected.title}</p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="accent"
+                  size="sm"
+                  onClick={() => onUploadPhotos(selected.id)}
+                >
+                  上传照片 ↑
+                </Button>
                 <a
                   href={`/albums/${selected.slug}`}
                   target="_blank"
@@ -163,6 +185,26 @@ export function AlbumsPanel({ portfolio, setPortfolio }: AlbumsPanelProps) {
                   删除
                 </Button>
               </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border border-ink/15 bg-paper-2/50 p-4">
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink/40">
+                  Frames / {photos.length}
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-ink/50">
+                  {photos.length > 0
+                    ? "继续添加照片，或到「照片」里调整标题、标签与拍摄时间；上传完成后记得保存至磁盘。"
+                    : "这个相册还没有照片。点右侧按钮会直接打开「照片」并选中当前相册，上传完成后记得保存至磁盘。"}
+                </p>
+              </div>
+              <Button
+                variant="accent"
+                size="sm"
+                onClick={() => onUploadPhotos(selected.id)}
+              >
+                {photos.length > 0 ? "继续上传" : "上传第一批照片"} ↑
+              </Button>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -305,7 +347,7 @@ export function AlbumsPanel({ portfolio, setPortfolio }: AlbumsPanelProps) {
           <div className="flex min-h-64 flex-col items-center justify-center border border-dashed border-ink/20 bg-white/50 p-8 text-center">
             <p className="font-display text-xl">先建一个相册</p>
             <p className="mt-2 max-w-sm text-xs leading-relaxed text-ink/45">
-              相册是作品的基本容器，新建后即可拖拽上传照片。
+              相册是作品的基本容器。新建后点「上传照片」会跳到照片面板并自动选中它。
             </p>
             <Button variant="solid" className="mt-5" onClick={addAlbum}>
               + 新建相册

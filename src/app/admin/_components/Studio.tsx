@@ -59,12 +59,20 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
     config: JSON.stringify(initial.config),
   });
   const [tab, setTab] = useState<Tab>("albums");
+  const [photoAlbumId, setPhotoAlbumId] = useState(
+    initial.portfolio.albums[0]?.id ?? "",
+  );
   const [saving, setSaving] = useState(false);
   const [committing, setCommitting] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
 
   const notify = useCallback((message: string, tone: Tone = "info") => {
     setToast({ id: Date.now(), message, tone });
+  }, []);
+
+  const openPhotoUpload = useCallback((albumId: string) => {
+    setPhotoAlbumId(albumId);
+    setTab("photos");
   }, []);
 
   useEffect(() => {
@@ -312,13 +320,19 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
 
         <section className="min-w-0">
           {tab === "albums" ? (
-            <AlbumsPanel portfolio={portfolio} setPortfolio={setPortfolio} />
+            <AlbumsPanel
+              portfolio={portfolio}
+              setPortfolio={setPortfolio}
+              onUploadPhotos={openPhotoUpload}
+            />
           ) : null}
           {tab === "photos" ? (
             <PhotosPanel
               portfolio={portfolio}
               setPortfolio={setPortfolio}
               onNotify={notify}
+              albumId={photoAlbumId}
+              onAlbumChange={setPhotoAlbumId}
             />
           ) : null}
           {tab === "folders" ? (

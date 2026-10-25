@@ -13,6 +13,8 @@ interface PhotosPanelProps {
   portfolio: PortfolioData;
   setPortfolio: Dispatch<SetStateAction<PortfolioData>>;
   onNotify: (message: string, tone?: "success" | "error" | "info") => void;
+  albumId?: string;
+  onAlbumChange?: (albumId: string) => void;
 }
 
 function toDateTimeLocal(iso: string): string {
@@ -28,8 +30,12 @@ export function PhotosPanel({
   portfolio,
   setPortfolio,
   onNotify,
+  albumId,
+  onAlbumChange,
 }: PhotosPanelProps) {
-  const [albumId, setAlbumId] = useState(portfolio.albums[0]?.id ?? "");
+  const [localAlbumId, setLocalAlbumId] = useState(
+    portfolio.albums[0]?.id ?? "",
+  );
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tagText, setTagText] = useState("");
@@ -38,15 +44,17 @@ export function PhotosPanel({
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const activeAlbumId = albumId ?? localAlbumId;
   const album =
-    portfolio.albums.find((item) => item.id === albumId) ??
+    portfolio.albums.find((item) => item.id === activeAlbumId) ??
     portfolio.albums[0] ??
     null;
   const photos = album ? portfolio.albumPhotos[album.id] ?? [] : [];
   const editing = photos.find((photo) => photo.id === editingId) ?? null;
 
   function switchAlbum(nextId: string) {
-    setAlbumId(nextId);
+    setLocalAlbumId(nextId);
+    onAlbumChange?.(nextId);
     setSelected(new Set());
     setEditingId(null);
   }
@@ -267,7 +275,7 @@ export function PhotosPanel({
       <PanelHeader
         eyebrow="Photos"
         title="照片"
-        description="拖拽上传后由 Sharp 自动压制成 WebP，并读取 EXIF 拍摄时间。"
+        description={`当前相册：${album?.title ?? "未选择"}。拖拽上传后由 Sharp 自动压制成 WebP，并读取 EXIF 拍摄时间。`}
         actions={
           <div className="flex items-center gap-3">
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink/40">
@@ -316,7 +324,9 @@ export function PhotosPanel({
             onChange={(event) => void handleFiles(event.target.files)}
           />
           <p className="font-display text-lg">
-            {uploading ? "正在压制 WebP 并读取 EXIF…" : "拖拽照片到这里"}
+            {uploading
+              ? "正在压制 WebP 并读取 EXIF…"
+              : `拖拽照片到「${album?.title ?? "当前相册"}」`}
           </p>
           <p className="mt-1 text-[11px] text-ink/45">
             JPG / PNG / WebP / HEIC · 单张 ≤ 60MB · 一次最多 24 张
