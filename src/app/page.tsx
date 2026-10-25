@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { AllFrames } from "@/components/site/AllFrames";
 import { RandomWall } from "@/components/site/RandomWall";
+import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import {
   getAllFrames,
@@ -30,6 +32,12 @@ export default async function CoverPage() {
       en: "Works",
       meta: stats.albums > 0 ? `${stats.albums} 组` : "Soon",
     },
+    {
+      href: "/folders",
+      label: "专题",
+      en: "Series",
+      meta: stats.folders > 0 ? `${stats.folders} 组` : "Soon",
+    },
     { href: "/about", label: "关于作者", en: "About", meta: "Profile" },
     { href: "/contact", label: "联系", en: "Contact", meta: "Say hello" },
   ];
@@ -38,7 +46,7 @@ export default async function CoverPage() {
     <div className="flex min-h-svh flex-col">
       <SiteHeader />
 
-      <main className="grid flex-1 lg:grid-cols-[0.92fr_1.08fr]">
+      <main className="grid min-h-[calc(100svh-68px)] flex-1 lg:grid-cols-[0.92fr_1.08fr]">
         <section className="flex flex-col border-b border-ink/15 px-5 pb-8 pt-10 sm:px-8 lg:border-b-0 lg:border-r lg:px-12 lg:pb-10 lg:pt-14">
           <div className="flex flex-1 flex-col justify-center">
             <div>
@@ -137,6 +145,9 @@ export default async function CoverPage() {
           <RandomWall frames={frames} />
         </section>
       </main>
+
+      <AllFrames frames={frames} />
+      <SiteFooter />
     </div>
   );
 }
