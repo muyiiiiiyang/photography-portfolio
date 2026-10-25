@@ -169,7 +169,7 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 2. **照片** → 拖拽上传。服务端会：
    - 校验格式与大小（≤60MB，单次 ≤24 张）
    - sharp 旋转/缩放/转 WebP、生成缩略图与 blur
-   - exifr 解析拍摄时间与器材
+   - exifr 解析拍摄时间、器材与 GPS 经纬度；有 GPS 的照片会自动写入 `photo.gps`，后台缩略图显示 `GPS` 徽标，编辑面板可跳转地图。
 3. 勾选照片批量加/减标签、删除、编辑标题与拍摄时间。
 4. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
 5. **版本快照** → 填写语义化 Commit Message → 提交。
@@ -222,8 +222,8 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 | Token | Value | 用途 |
 | --- | --- | --- |
-| `paper` | `#f2ede2` | 纸张底色 |
-| `paper-2` | `#e6ddcc` | 图片占位/次级面板 |
+| `paper` | `#ffffff` | 纯白底色 |
+| `paper-2` | `#f2f2f0` | 图片占位/次级面板 |
 | `ink` | `#141210` | 文字、硬边框 |
 | `red` | `#df3b2f` | 主强调、下划线、删除 |
 | `yellow` | `#f2c230` | 几何色块、高亮 |
@@ -236,11 +236,13 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 
 ### 5.2 页面与组件
 
-- 封面：`src/app/page.tsx`，艺术字逐字 `letter-in` 动画 + 缓入缓出；下方 `EnterLink` 进入 `/works`。
+- 封面：`src/app/page.tsx`，逐字 `letter-in` 动画 + 缓入缓出；纯白底、蓝色矩形与红色方块；下方 `EnterLink` 进入 `/works`。
+- 导航：`SiteHeader`（服务端，读取 albums/folders）→ `SiteNav`（客户端 hover 子目录面板）；新增分类页时同步修改 `SiteHeader` 的 `items`。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
 - 作品墙：`PhotoGallery`（客户端灯箱）；相册卡片：`CollectionCard`；筛选：`WorksExplorer`。
 - 图片一律使用 `<img>` + `withBasePath()`（已关闭 `@next/next/no-img-element`），必须带 `width`/`height`、`loading`、`decoding`。
 - 内页静态生成：`generateStaticParams()` 必须穷举所有 albums/folders，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
+- 空作品集时，两个动态路由会返回 `coming-soon` 占位参数（`src/lib/constants.ts`），避免 `output: export` 报 “empty array”；有数据后自动恢复真实参数。这个兜底不要删除。
 - 客户端组件只 import 纯类型/纯函数（如 `@/lib/view-types`、`@/lib/photos`）；禁止从带 `fs` 的 `@/lib/api/portfolio`、`@/lib/admin/*` 导入运行时代码。
 
 ### 5.3 响应式
