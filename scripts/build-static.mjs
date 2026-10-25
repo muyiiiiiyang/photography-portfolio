@@ -72,6 +72,15 @@ function run(command, args, env) {
 }
 
 async function main() {
+  // 开发模式会写入 .next/dev/types，静态导出前必须清掉，否则 Next 的类型检查会引用已删除的 admin 路由。
+  try {
+    await fs.rm(path.join(ROOT, ".next"), { recursive: true, force: true });
+  } catch {
+    console.warn(
+      "⚠ 无法清空 .next（可能被 dev server 占用）。请先停止 pnpm dev 再重试。",
+    );
+  }
+
   console.log("→ stripping local studio from the build…");
   for (const relative of TARGETS) {
     const source = path.join(ROOT, relative);

@@ -114,7 +114,7 @@ node scripts/reset-demo.mjs --yes
 | 命令 | 作用 |
 | --- | --- |
 | `pnpm dev` | 本地开发（含 `/admin`） |
-| `pnpm check` | TypeScript 类型检查（`tsc --noEmit`） |
+| `pnpm check` | 生成 Next 路由类型并做 TypeScript 检查（`next typegen && tsc --noEmit`） |
 | `pnpm lint` | ESLint |
 | `pnpm build` | 服务端模式构建（本地完整功能） |
 | `pnpm build:static` | 模拟 CI：移出 admin/api → `output: export` → 还原源码 |

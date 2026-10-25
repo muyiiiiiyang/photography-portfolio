@@ -9,7 +9,7 @@
 
 ```bash
 pnpm dev                 # 本地站点 + /admin，默认 3000
-pnpm check               # tsc --noEmit
+pnpm check               # next typegen + tsc --noEmit
 pnpm lint                # eslint
 pnpm build               # 服务端模式构建（保留 /admin）
 pnpm build:static        # 模拟 CI：物理移出 admin/api → 静态导出 → 还原
@@ -269,7 +269,8 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 | `ci` | 流水线 | `ci: strip proxy.ts` |
 | `revert` | 回滚 | `revert: feat(admin) ...` |
 
-提交前门禁（代码改动必须执行）：
+- 本地 `next-env.d.ts` 由 `pnpm check` / `next dev` / `next build` 生成，已在 `.gitignore` 中忽略；不要手写或提交它。
+- 提交前门禁（代码改动必须执行）：
 
 ```powershell
 pnpm check; if ($LASTEXITCODE -ne 0) { exit 1 }

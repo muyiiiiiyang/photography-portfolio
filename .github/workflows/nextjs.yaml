@@ -53,6 +53,10 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # 清掉 dev/typegen 缓存，避免静态导出时引用已删除的 admin 路由类型。
+      - name: Clean Next cache
+        run: rm -rf .next
+
       - name: Build static site
         run: pnpm build
         env:

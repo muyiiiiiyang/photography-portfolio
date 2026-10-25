@@ -8,7 +8,7 @@
     "build": "next build",
     "build:static": "node scripts/build-static.mjs",
     "start": "next start",
-    "check": "tsc --noEmit",
+    "check": "next typegen && tsc --noEmit",
     "lint": "eslint .",
     "seed:demo": "node scripts/seed-demo.mjs",
     "reset:demo": "node scripts/reset-demo.mjs"
