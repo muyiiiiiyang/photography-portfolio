@@ -97,7 +97,7 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
               role="dialog"
               aria-modal="true"
               aria-label="作品大图"
-              className="fixed inset-0 z-[80] flex flex-col bg-white/60 text-ink backdrop-blur-3xl backdrop-saturate-150"
+              className="lightbox-backdrop fixed inset-0 z-[80] flex flex-col bg-white/60 text-ink backdrop-blur-3xl backdrop-saturate-150"
               onClick={close}
             >
           <div className="flex items-center justify-between border-b border-ink/10 px-4 py-3 sm:px-8">
@@ -120,9 +120,10 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
             onClick={(event) => event.stopPropagation()}
           >
             <img
+              key={active.id}
               src={active.srcUrl}
               alt={active.title ?? "摄影作品"}
-              className="max-h-full max-w-full object-contain shadow-[0_24px_80px_rgba(20,18,16,0.22)]"
+              className="lightbox-media max-h-full max-w-full object-contain shadow-[0_24px_80px_rgba(20,18,16,0.22)]"
             />
           </div>
 
@@ -130,32 +131,35 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
             className="border-t border-ink/10 bg-white/30 px-4 py-4 sm:px-8"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex flex-wrap items-end justify-between gap-5">
-              <div className="min-w-0">
-                <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
-                  {formatDate(active.dateTaken)}
+            <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+              <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
+                {formatDate(active.dateTaken)}
+              </p>
+              <h3 className="mt-1 font-display text-xl tracking-[-0.01em]">
+                {active.title ?? "Untitled"}
+              </h3>
+              {active.caption ? (
+                <p className="mt-2 max-w-2xl whitespace-pre-line text-[13px] leading-relaxed text-ink/65">
+                  {active.caption}
                 </p>
-                <h3 className="mt-1 truncate font-display text-xl tracking-[-0.01em]">
-                  {active.title ?? "Untitled"}
-                </h3>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-ink/50">
-                  {exifLine(active) || active.fileName}
-                </p>
-                {active.tags.length > 0 ? (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {active.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="border border-ink/15 px-1.5 py-0.5 text-[9px] tracking-[0.08em] text-ink/55"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
+              ) : null}
+              <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-ink/50">
+                {exifLine(active) || active.fileName}
+              </p>
+              {active.tags.length > 0 ? (
+                <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+                  {active.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="border border-ink/15 px-1.5 py-0.5 text-[9px] tracking-[0.08em] text-ink/55"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
 
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="mt-4 flex items-center justify-center gap-2">
                 <button
                   type="button"
                   onClick={() => step(-1)}
