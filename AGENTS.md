@@ -157,8 +157,8 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 
 ### 3.2 `src/data/site-config.json`
 
-`photographer`、`title`、`tagline`、`portrait`、`navAlbumIds`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`。
-前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。`navAlbumIds` 最多四个，控制顶部「作品集」下拉展示哪四组；未选择时回退前四个相册。
+`photographer`、`title`、`tagline`、`portrait`、`navAlbumIds`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`、`pageCopy`、`contact`。
+前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。`navAlbumIds` 最多四个，控制顶部「作品集」下拉展示哪四组；未选择时回退前四个相册。`pageCopy` 控制关于页大标题、作品集/专题页引导语；`contact` 控制联系页全部可见文案（邮箱/所在地/社交仍来自顶层字段）。
 
 ---
 
@@ -240,7 +240,9 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 ### 5.2 页面与组件
 
 - 首页：`src/app/page.tsx`，纯白左右分栏；左侧标题与分类导航，右侧 `RandomWall` 每 5 秒自动换一组；下方 `AllFrames` 随机展示全部照片，点开可查看并进入作品集/专题。
-- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。Studio「站点设置 → 个人照片」上传。导航只保留「关于作者」直达链接。
+- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。大标题读取 `config.pageCopy.aboutHeadingLead / aboutHeadingAccent`；编辑入口在 Studio「站点设置 → 关于页文本」。Studio「站点设置 → 个人照片」上传。导航只保留「关于作者」直达链接。
+- 作品集/专题索引引导语：分别读取 `config.pageCopy.worksIntro / foldersIntro`，在 Studio「站点设置 → 作品集 / 专题页引导语」修改。
+- 联系页：可见文案读取 `config.contact`（标题、介绍、Elsewhere/Based in/Availability/Services 标签与说明、Services 列表、底部 CTA），在 Studio「站点设置 → 联系页文案」修改；邮箱/所在地/社交仍来自品牌信息与社交链接。
 - 导航：`SiteHeader`（服务端，读取 albums / folders / `config.navAlbumIds`）→ `SiteNav`（客户端 hover 子目录面板）。「作品集」为四组可配置相册 + 更多作品集；「专题」列出顶级专题，子专题在专题页内浏览。
 - 专题页：`/folders` 展示顶级专题与子专题列表；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
