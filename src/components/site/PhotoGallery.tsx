@@ -85,10 +85,9 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
 
     const imageAnimation = image.animate(
       [
-        { transform: "none", opacity: 1 },
+        { transform: "none" },
         {
           transform: `translate(${dx}px, ${dy}px) scale(${scale})`,
-          opacity: 0.25,
         },
       ],
       {
@@ -99,8 +98,14 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
     );
     const backdropAnimation = dialog.animate(
       [
-        { opacity: 1, backdropFilter: "blur(32px)" },
-        { opacity: 0, backdropFilter: "blur(0px)" },
+        {
+          backgroundColor: "rgba(255,255,255,0.6)",
+          backdropFilter: "blur(32px)",
+        },
+        {
+          backgroundColor: "rgba(255,255,255,0)",
+          backdropFilter: "blur(0px)",
+        },
       ],
       {
         duration: 360,
@@ -137,12 +142,19 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
 
     document.addEventListener("keydown", onKeyDown);
     const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
     closeRef.current?.focus();
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
     };
   }, [activeIndex, close, step]);
 
@@ -161,8 +173,14 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
 
     dialog.animate(
       [
-        { opacity: 0, backdropFilter: "blur(0px)" },
-        { opacity: 1, backdropFilter: "blur(32px)" },
+        {
+          backgroundColor: "rgba(255,255,255,0)",
+          backdropFilter: "blur(0px)",
+        },
+        {
+          backgroundColor: "rgba(255,255,255,0.6)",
+          backdropFilter: "blur(32px)",
+        },
       ],
       {
         duration: 380,
@@ -188,9 +206,8 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
       [
         {
           transform: `translate(${dx}px, ${dy}px) scale(${scale})`,
-          opacity: 0.4,
         },
-        { transform: "none", opacity: 1 },
+        { transform: "none" },
       ],
       {
         duration: 520,
@@ -217,7 +234,7 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
             aria-label={`查看作品：${photo.title ?? "未命名"}`}
             className={`group block w-full border border-ink/15 bg-white p-2 text-left transition-colors duration-300 hover:border-ink ${
               photos.length > 4 ? "mb-5 break-inside-avoid lg:mb-6" : ""
-            }`}
+            } ${active?.id === photo.id ? "opacity-0" : ""}`}
           >
             <div className="relative overflow-hidden bg-paper-2">
               <img
@@ -287,6 +304,10 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
                     transformOrigin: "top left",
                     width: "auto",
                     height: "auto",
+                    backgroundImage: `url(${active.thumbUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    willChange: "transform",
                   }}
                   className="max-h-full max-w-full object-contain shadow-[0_24px_80px_rgba(20,18,16,0.22)]"
                 />

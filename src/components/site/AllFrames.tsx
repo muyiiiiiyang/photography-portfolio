@@ -18,11 +18,13 @@ function shuffle<T>(items: T[]): T[] {
 export function AllFrames({ frames }: { frames: FrameView[] }) {
   const [items, setItems] = useState<FrameView[]>(frames);
   const [round, setRound] = useState(0);
+  const [ready, setReady] = useState(frames.length < 2);
 
   useEffect(() => {
     if (frames.length < 2) return;
     const timer = window.setTimeout(() => {
       setItems(shuffle(frames));
+      setReady(true);
     }, 0);
     return () => window.clearTimeout(timer);
   }, [frames, round]);
@@ -87,8 +89,14 @@ export function AllFrames({ frames }: { frames: FrameView[] }) {
           </div>
         </div>
 
-        <div className="mt-7">
-          <PhotoGallery photos={items} links={linksFor} />
+        <div className="mt-7" aria-busy={!ready}>
+          {ready ? (
+            <PhotoGallery photos={items} links={linksFor} />
+          ) : (
+            <p className="border border-dashed border-ink/20 px-6 py-16 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-ink/35">
+              正在随机排列 {frames.length} 张照片…
+            </p>
+          )}
         </div>
       </div>
     </section>
