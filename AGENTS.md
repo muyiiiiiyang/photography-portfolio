@@ -241,6 +241,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 - 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。大标题读取 `config.pageCopy.aboutHeadingLead / aboutHeadingAccent`（两行都为空时整块标题不显示，标题区垂直居中），编辑入口在 Studio「关于作者」。个人简介与创作宣言已合并为同一个文本字段，空行分段、段内换行保留。导航只保留「关于作者」直达链接。
 - 作品集/专题索引引导语：分别读取 `config.pageCopy.worksIntro / foldersIntro`，编辑入口分别在 Studio「相册」顶部与「专题」顶部。
 - 联系页：可见文案读取 `config.contact`（标题、介绍、Elsewhere/Based in/Availability/Services 标签与说明、Services 列表、底部 CTA），编辑入口在 Studio「联系方式」；邮箱/所在地/社交也在此面板。介绍文字支持回车换行。
+- 多行文案换行规则：所有后台用 `<textarea>` 编辑、且在前台按段落展示的字段，都必须带 `whitespace-pre-line`（或等效样式）。当前包括：关于页简介、作品集/专题引导语、相册/专题描述、照片 Caption、联系页介绍/所在地说明/档期说明/CTA 标题。不要只用 `text-sm` 之类样式直接渲染，否则换行会被 HTML 折叠。
 - 品牌名：前台左上角、首页大字、页脚、浏览器标题与 Studio 标题均读取 `config.photographer`，不要再硬编码 `Bok_Hamm`。
 - 导航：`SiteHeader`（服务端，读取 albums / folders / `config.navAlbumIds`）→ `SiteNav`（客户端 hover 子目录面板）。「作品集」为四组可配置相册 + 更多作品集；「专题」列出顶级专题，子专题在专题页内浏览。
 - 专题页：`/folders` 展示顶级专题与子专题列表；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。

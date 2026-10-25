@@ -87,7 +87,7 @@ export default async function ContactPage() {
             <div>
               <p className="label">{config.contact.basedInLabel}</p>
               <p className="mt-2 font-display text-xl">{config.location}</p>
-              <p className="mt-2 text-xs leading-relaxed text-ink/50">
+              <p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-ink/50">
                 {config.contact.basedInNote}
               </p>
             </div>
@@ -97,7 +97,7 @@ export default async function ContactPage() {
                 <span className="h-2 w-2 rounded-full bg-red" aria-hidden />
                 {config.contact.availabilityStatus}
               </p>
-              <p className="mt-2 text-xs leading-relaxed text-ink/50">
+              <p className="mt-2 whitespace-pre-line text-xs leading-relaxed text-ink/50">
                 {config.contact.availabilityNote}
               </p>
             </div>
@@ -121,7 +121,7 @@ export default async function ContactPage() {
       <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1560px] px-5 py-14 sm:px-8 lg:px-12">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-display text-[clamp(1.6rem,3.4vw,2.6rem)] leading-tight tracking-[-0.02em]">
+            <p className="whitespace-pre-line font-display text-[clamp(1.6rem,3.4vw,2.6rem)] leading-tight tracking-[-0.02em]">
               {config.contact.ctaTitle}<span className="text-blue"> →</span>
             </p>
             <Link

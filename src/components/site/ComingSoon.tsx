@@ -30,7 +30,7 @@ export function ComingSoon({
             {title}
             <span className="text-red">.</span>
           </h1>
-          <p className="mt-6 max-w-md text-sm leading-relaxed text-ink/55">
+          <p className="mt-6 max-w-md whitespace-pre-line text-sm leading-relaxed text-ink/55">
             {description}
           </p>
         </div>

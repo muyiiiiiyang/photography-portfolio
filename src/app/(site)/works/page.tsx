@@ -32,7 +32,7 @@ export default async function WorksPage() {
               作品集<span className="text-red">.</span>
             </h1>
             <div className="max-w-md lg:pb-3">
-              <p className="text-sm leading-relaxed text-ink/65">
+              <p className="whitespace-pre-line text-sm leading-relaxed text-ink/65">
                 {config.pageCopy.worksIntro}
               </p>
               <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.24em] text-ink/40">

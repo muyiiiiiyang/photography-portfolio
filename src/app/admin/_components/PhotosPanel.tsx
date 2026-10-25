@@ -689,9 +689,10 @@ export function PhotosPanel({
                   onBlur={commitTags}
                 />
               </Field>
-              <Field label="说明 / Caption">
-                <input
-                  className="field"
+              <Field label="说明 / Caption" hint="支持换行，前台灯箱按原样显示。">
+                <textarea
+                  className="field min-h-20"
+                  rows={3}
                   value={editing.caption ?? ""}
                   onChange={(event) =>
                     updatePhoto(editing.id, { caption: event.target.value })

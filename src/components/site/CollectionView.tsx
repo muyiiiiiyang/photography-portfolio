@@ -55,7 +55,7 @@ export function CollectionView({
 
             <div>
               {description ? (
-                <p className="max-w-xl text-sm leading-relaxed text-ink/65">
+                <p className="max-w-xl whitespace-pre-line text-sm leading-relaxed text-ink/65">
                   {description}
                 </p>
               ) : null}

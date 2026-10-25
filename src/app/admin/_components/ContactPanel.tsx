@@ -132,8 +132,9 @@ export function ContactPanel({ config, setConfig }: ContactPanelProps) {
                 />
               </Field>
               <Field label="所在地说明">
-                <input
-                  className="field"
+                <textarea
+                  className="field min-h-16"
+                  rows={2}
                   value={config.contact.basedInNote}
                   onChange={(event) =>
                     patchContact({ basedInNote: event.target.value })
@@ -161,8 +162,9 @@ export function ContactPanel({ config, setConfig }: ContactPanelProps) {
             </div>
 
             <Field label="档期说明">
-              <input
-                className="field"
+              <textarea
+                className="field min-h-16"
+                rows={2}
                 value={config.contact.availabilityNote}
                 onChange={(event) =>
                   patchContact({ availabilityNote: event.target.value })
@@ -188,8 +190,9 @@ export function ContactPanel({ config, setConfig }: ContactPanelProps) {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="底部 CTA 标题">
-                <input
-                  className="field"
+                <textarea
+                  className="field min-h-16"
+                  rows={2}
                   value={config.contact.ctaTitle}
                   onChange={(event) =>
                     patchContact({ ctaTitle: event.target.value })

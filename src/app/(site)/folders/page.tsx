@@ -39,7 +39,7 @@ export default async function FoldersPage() {
               专题<span className="text-blue">.</span>
             </h1>
             <div className="max-w-md lg:pb-3">
-              <p className="text-sm leading-relaxed text-ink/65">
+              <p className="whitespace-pre-line text-sm leading-relaxed text-ink/65">
                 {config.pageCopy.foldersIntro}
               </p>
               <p className="mt-4 font-mono text-[9px] uppercase tracking-[0.24em] text-ink/40">
