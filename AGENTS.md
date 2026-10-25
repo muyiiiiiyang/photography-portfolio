@@ -172,9 +172,11 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
    - sharp 旋转/缩放/转 WebP、生成缩略图与 blur
    - exifr 解析拍摄时间、器材与 GPS 经纬度；有 GPS 的照片会自动写入 `photo.gps`，后台缩略图显示 `GPS` 徽标，编辑面板可跳转地图。
 3. 勾选照片批量加/减标签、删除、编辑标题与拍摄时间。切到「全部照片」可跨相册选中照片：移动到作品集，或加入任意专题/子专题。
-4. **专题**：创建顶级专题（景观/人像/产品），在任意专题下可继续创建子专题。
-5. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
-6. **版本快照** → 填写语义化 Commit Message → 提交。
+4. **工作台分区**：相册（含顶部导航作品集、作品集页引导语）、照片、专题（含专题页引导语）、关于作者、联系方式、版本快照。
+5. **关于作者**：品牌名、标语、个人照片、关于页大标题、合并后的个人简介/创作宣言、器材清单。
+6. **联系方式**：邮箱、所在地、社交链接、联系页文案。
+7. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
+8. **版本快照** → 填写语义化 Commit Message → 提交。
 
 ### 4.2 批量导入
 
@@ -240,9 +242,10 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 ### 5.2 页面与组件
 
 - 首页：`src/app/page.tsx`，纯白左右分栏；左侧标题与分类导航，右侧 `RandomWall` 每 5 秒自动换一组；下方 `AllFrames` 随机展示全部照片，点开可查看并进入作品集/专题。
-- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。大标题读取 `config.pageCopy.aboutHeadingLead / aboutHeadingAccent`；编辑入口在 Studio「站点设置 → 关于页文本」。Studio「站点设置 → 个人照片」上传。导航只保留「关于作者」直达链接。
-- 作品集/专题索引引导语：分别读取 `config.pageCopy.worksIntro / foldersIntro`，在 Studio「站点设置 → 作品集 / 专题页引导语」修改。
-- 联系页：可见文案读取 `config.contact`（标题、介绍、Elsewhere/Based in/Availability/Services 标签与说明、Services 列表、底部 CTA），在 Studio「站点设置 → 联系页文案」修改；邮箱/所在地/社交仍来自品牌信息与社交链接。
+- 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。大标题读取 `config.pageCopy.aboutHeadingLead / aboutHeadingAccent`（两行都为空时整块标题不显示，标题区垂直居中），编辑入口在 Studio「关于作者」。个人简介与创作宣言已合并为同一个文本字段，空行分段、段内换行保留。导航只保留「关于作者」直达链接。
+- 作品集/专题索引引导语：分别读取 `config.pageCopy.worksIntro / foldersIntro`，编辑入口分别在 Studio「相册」顶部与「专题」顶部。
+- 联系页：可见文案读取 `config.contact`（标题、介绍、Elsewhere/Based in/Availability/Services 标签与说明、Services 列表、底部 CTA），编辑入口在 Studio「联系方式」；邮箱/所在地/社交也在此面板。介绍文字支持回车换行。
+- 品牌名：前台左上角、首页大字、页脚、浏览器标题与 Studio 标题均读取 `config.photographer`，不要再硬编码 `Bok_Hamm`。
 - 导航：`SiteHeader`（服务端，读取 albums / folders / `config.navAlbumIds`）→ `SiteNav`（客户端 hover 子目录面板）。「作品集」为四组可配置相册 + 更多作品集；「专题」列出顶级专题，子专题在专题页内浏览。
 - 专题页：`/folders` 展示顶级专题与子专题列表；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
