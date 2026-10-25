@@ -10,9 +10,10 @@
 
 | 路由 | 说明 |
 | --- | --- |
-| `/` | 首页：左右分栏。左侧 `Bok_Hamm / Photography` 标题与分类导航，右侧每 5 秒自动轮换照片 |
+| `/` | 首页：左右分栏；向下滚动是全部照片的随机照片墙，点开可查看并进入作品集/专题 |
 | `/works` | 作品集索引，按相册展示，支持标签筛选 |
 | `/albums/[slug]` | 相册详情：大图封面 + 按拍摄时间排序的作品墙 + 灯箱 |
+| `/folders`、`/folders/[slug]` | 专题与子专题：按层级组织照片 |
 | `/about` | 关于作者、创作宣言、器材与社交链接 |
 | `/contact` | 联系方式、合作类型与社交入口 |
 | `/admin` | **仅本地**的可视化工作台（生产构建中会被物理删除） |
@@ -72,9 +73,11 @@ pnpm dev
    - 生成 1000px 缩略图与 24px 模糊占位图
    - 从 EXIF 读取 `DateTimeOriginal` / `CreateDate`，统一存为 ISO-8601 UTC
    - 提取相机、镜头、焦距、光圈、快门、ISO、GPS
-3. **站点设置**：姓名、标语、**导航作品集**、个人照片、Bio、邮箱、社交链接、器材清单。
-4. **保存至磁盘**：把草稿写入 `src/data/*.json`，并清理不再被引用的图片。
-5. **版本快照**：填写 Commit Message，一键 `git add -A && git commit`。
+   - 「全部照片」视图可跨相册查看；选中照片后可移动到作品集，或加入任意专题 / 子专题
+3. **专题**：创建顶级专题（已预设景观、人像、产品），也可在任意专题下继续创建子专题；跨相册勾选照片。
+4. **站点设置**：姓名、标语、**导航作品集**、个人照片、Bio、邮箱、社交链接、器材清单。
+5. **保存至磁盘**：把草稿写入 `src/data/*.json`，并清理不再被引用的图片。
+6. **版本快照**：填写 Commit Message，一键 `git add -A && git commit`。
 
 > 上传接口只负责把图片写进 `public/photos/<年份>/` 并返回元数据；点击「保存至磁盘」才会更新 JSON。未保存的上传会在下次保存时按规则清理。
 
@@ -96,7 +99,7 @@ node scripts/reset-demo.mjs --yes
 
 单一真相源：
 
-- `src/data/portfolio-data.json`：`albums` / `albumPhotos`（`folders` / `folderPhotos` 仅保留兼容，专题功能已移除）
+- `src/data/portfolio-data.json`：`albums` / `albumPhotos` / `folders` / `folderPhotos`（`folders.parentId` 表示子专题）
 - `src/data/site-config.json`：站点文案、导航作品集与社交链接
 
 三条不可破坏的规则：
@@ -186,9 +189,9 @@ scripts/                 演示数据、静态构建、补救、Pages 启用脚�
 
 ## 本地版本快照
 
-`ver1.5/` 保存了本次交付的完整工作副本（源码、`src/data`、`public` 图片、配置与文档），不包含 `node_modules`、`.next`、`out`、`.git` 和本机环境变量。该目录已加入 `.gitignore`，不会重复提交；`ver1.0/` 作为上一版快照保留。
+`ver1.5.2/` 保存了本次交付的完整工作副本（源码、`src/data`、`public` 图片、配置与文档），不包含 `node_modules`、`.next`、`out`、`.git` 和本机环境变量。该目录已加入 `.gitignore`，不会重复提交；`ver1.0` / `ver1.5` 作为历史快照保留。
 
-回滚时先停止 `pnpm dev`，把 `ver1.5/` 内的文件覆盖回项目根目录，再执行 `pnpm install && pnpm dev`。更细的回滚方式见 `ver1.5/VERSION.md`。
+回滚时先停止 `pnpm dev`，把 `ver1.5.2/` 内的文件覆盖回项目根目录，再执行 `pnpm install && pnpm dev`。更细的回滚方式见 `ver1.5.2/VERSION.md`。
 
 ---
 
