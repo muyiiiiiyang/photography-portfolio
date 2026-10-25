@@ -82,8 +82,15 @@ export default async function FolderPage({ params }: FolderPageProps) {
       description={folder.description}
       meta={[
         { label: "作品", value: `${String(folder.count).padStart(2, "0")} frames` },
-        { label: "子专题", value: `${String(folder.children.length).padStart(2, "0")}` },
-        { label: "标签", value: `${folder.tags.length}` },
+        ...(folder.parent
+          ? []
+          : [
+              {
+                label: "子专题",
+                value: `${String(folder.children.length).padStart(2, "0")}`,
+              },
+              { label: "标签", value: `${folder.tags.length}` },
+            ]),
         { label: "最近拍摄", value: formatDate(folder.latestTakenAt) },
       ]}
       cover={folder.cover}
