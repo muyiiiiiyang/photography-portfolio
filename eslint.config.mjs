@@ -18,5 +18,6 @@ export default defineConfig([
     "next-env.d.ts",
     "scripts/**",
     ".stash/**",
+    "ver1.0/**",
   ]),
 ]);
