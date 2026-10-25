@@ -107,6 +107,8 @@ export interface SiteConfig {
   portrait?: string;
   /** 顶部「作品集」下拉中优先展示的相册 id（最多四个） */
   navAlbumIds?: string[];
+  /** 顶部「专题」下拉中优先展示的顶级专题 id（最多四个） */
+  navFolderIds?: string[];
   bio: string;
   statement: string;
   location: string;

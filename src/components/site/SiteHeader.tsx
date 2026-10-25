@@ -10,7 +10,6 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
     getFolders(),
     getSiteConfig(),
   ]);
-  const topFolders = folders.filter((folder) => !folder.parentId);
 
   const albumById = new Map(albums.map((album) => [album.id, album]));
   const seenIds = new Set<string>();
@@ -25,6 +24,21 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
   const featuredAlbums = config.navAlbumIds
     ? configured
     : albums.slice(0, 4);
+
+  const topFolderById = new Map(
+    folders
+      .filter((folder) => !folder.parentId)
+      .map((folder) => [folder.id, folder]),
+  );
+  const seenFolderIds = new Set<string>();
+  const featuredFolders = (config.navFolderIds ?? [])
+    .map((id) => topFolderById.get(id))
+    .filter((folder): folder is (typeof folders)[number] => {
+      if (!folder || seenFolderIds.has(folder.id)) return false;
+      seenFolderIds.add(folder.id);
+      return true;
+    })
+    .slice(0, 4);
 
   const items: NavItem[] = [
     {
@@ -46,15 +60,16 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
       label: "专题",
       en: "Series",
       children: [
-        { label: "全部专题", href: "/folders", en: "ALL" },
-        ...topFolders.map((folder) => ({
+        ...featuredFolders.map((folder) => ({
           label: folder.title,
           href: `/folders/${folder.slug}`,
           en: folder.subtitle,
-          meta: folder.childCount > 0
-            ? `${folder.childCount} 子专题`
-            : `${folder.count} 张`,
+          meta:
+            folder.childCount > 0
+              ? `${folder.childCount} 子专题`
+              : `${folder.count} 张`,
         })),
+        { label: "更多专题", href: "/folders", en: "MORE", meta: "全部" },
       ],
     },
     {

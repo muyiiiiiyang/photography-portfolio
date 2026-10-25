@@ -55,6 +55,7 @@ export default async function FoldersPage() {
           <div className="grid gap-x-8 gap-y-14 md:grid-cols-2 xl:grid-cols-3 xl:gap-x-10">
             {topLevel.map((folder, index) => {
               const children = childrenByParent.get(folder.id) ?? [];
+              const visibleChildren = children.slice(0, 3);
               return (
                 <div key={folder.id}>
                   <CollectionCard
@@ -76,7 +77,7 @@ export default async function FoldersPage() {
                     </p>
                     {children.length > 0 ? (
                       <ul className="divide-y divide-ink/10 border-t border-ink/10">
-                        {children.map((child) => (
+                        {visibleChildren.map((child) => (
                           <li key={child.id}>
                             <Link
                               href={`/folders/${child.slug}`}
@@ -104,6 +105,28 @@ export default async function FoldersPage() {
                         还没有子专题，可在工作台继续创建。
                       </p>
                     )}
+                    {children.length > 0 ? (
+                      <Link
+                        href={`/folders/${folder.slug}`}
+                        className="group flex items-center justify-between gap-3 border-t border-ink/10 py-2.5 text-[11px] transition-colors hover:text-red"
+                      >
+                        <span>
+                          更多内容
+                          {children.length > 3
+                            ? ` · 还有 ${children.length - 3} 个子专题`
+                            : ""}
+                        </span>
+                        <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.12em] text-ink/35">
+                          进入主专题
+                          <span
+                            aria-hidden
+                            className="transition-transform duration-300 group-hover:translate-x-1"
+                          >
+                            →
+                          </span>
+                        </span>
+                      </Link>
+                    ) : null}
                   </div>
                 </div>
               );

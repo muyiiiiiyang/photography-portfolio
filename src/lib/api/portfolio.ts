@@ -70,6 +70,9 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     equipment: Array.isArray(data.equipment)
       ? data.equipment
       : DEFAULT_SITE_CONFIG.equipment,
+    navFolderIds: Array.isArray(data.navFolderIds)
+      ? data.navFolderIds
+      : DEFAULT_SITE_CONFIG.navFolderIds,
     pageCopy: {
       ...DEFAULT_SITE_CONFIG.pageCopy,
       ...(data.pageCopy ?? {}),

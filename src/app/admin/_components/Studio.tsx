@@ -361,6 +361,11 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
                   pageCopy: { ...prev.pageCopy, foldersIntro },
                 }))
               }
+              navFolderIds={config.navFolderIds ?? []}
+              onNavFolderIdsChange={(navFolderIds) =>
+                setConfig((prev) => ({ ...prev, navFolderIds }))
+              }
+              onNotify={notify}
             />
           ) : null}
           {tab === "about" ? (

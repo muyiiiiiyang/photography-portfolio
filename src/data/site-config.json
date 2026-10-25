@@ -60,5 +60,11 @@
     ],
     "ctaTitle": "先看看作品？",
     "ctaButton": "进入作品集"
-  }
+  },
+  "navFolderIds": [
+    "folder-landscape",
+    "folder-portrait",
+    "folder-product",
+    "folder_mvnxbdjn"
+  ]
 }

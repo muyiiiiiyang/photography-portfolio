@@ -153,8 +153,8 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 
 ### 3.2 `src/data/site-config.json`
 
-`photographer`、`title`、`tagline`、`portrait`、`navAlbumIds`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`、`pageCopy`、`contact`。
-前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。`navAlbumIds` 最多四个，控制顶部「作品集」下拉展示哪四组；未选择时回退前四个相册。`pageCopy` 控制关于页大标题、作品集/专题页引导语；`contact` 控制联系页全部可见文案（邮箱/所在地/社交仍来自顶层字段）。
+`photographer`、`title`、`tagline`、`portrait`、`navAlbumIds`、`navFolderIds`、`bio`、`statement`、`location`、`email`、`socials[]`、`equipment[]`、`copyright`、`pageCopy`、`contact`。
+前台文案优先读这里，不要在页面里重复硬编码。`portrait` 由 Studio 上传，存 `/portrait/...` 路径。`navAlbumIds` 最多四个，控制顶部「作品集」下拉展示哪四组；未选择时回退前四个相册。`navFolderIds` 最多四个，控制顶部「专题」下拉展示哪四个顶级专题，最后固定「更多专题」。`pageCopy` 控制关于页大标题、作品集/专题页引导语；`contact` 控制联系页全部可见文案（邮箱/所在地/社交仍来自顶层字段）。
 
 ---
 
@@ -171,8 +171,9 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 4. **工作台分区**：相册（含顶部导航作品集、作品集页引导语）、照片、专题（含专题页引导语）、关于作者、联系方式、版本快照。
 5. **关于作者**：品牌名、标语、个人照片、关于页大标题、合并后的个人简介/创作宣言、器材清单。
 6. **联系方式**：邮箱、所在地、社交链接、联系页文案。
-7. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
-8. **版本快照** → 填写语义化 Commit Message → 提交。
+7. **专题上传**：专题面板选择任意顶级专题或子专题后，可指定一个归属相册上传新照片；上传会同时追加到该相册并引用到当前专题。
+8. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
+9. **版本快照** → 填写语义化 Commit Message → 提交。
 
 ### 4.2 批量导入
 
@@ -243,8 +244,8 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 - 联系页：可见文案读取 `config.contact`（标题、介绍、Elsewhere/Based in/Availability/Services 标签与说明、Services 列表、底部 CTA），编辑入口在 Studio「联系方式」；邮箱/所在地/社交也在此面板。介绍文字支持回车换行。
 - 多行文案换行规则：所有后台用 `<textarea>` 编辑、且在前台按段落展示的字段，都必须带 `whitespace-pre-line`（或等效样式）。当前包括：关于页简介、作品集/专题引导语、相册/专题描述、照片 Caption、联系页介绍/所在地说明/档期说明/CTA 标题。不要只用 `text-sm` 之类样式直接渲染，否则换行会被 HTML 折叠。
 - 品牌名：前台左上角、首页大字、页脚、浏览器标题与 Studio 标题均读取 `config.photographer`，不要再硬编码 `Bok_Hamm`。
-- 导航：`SiteHeader`（服务端，读取 albums / folders / `config.navAlbumIds`）→ `SiteNav`（客户端 hover 子目录面板）。「作品集」为四组可配置相册 + 更多作品集；「专题」列出顶级专题，子专题在专题页内浏览。
-- 专题页：`/folders` 展示顶级专题与子专题列表；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。
+- 导航：`SiteHeader`（服务端，读取 albums / folders / `config.navAlbumIds` / `config.navFolderIds`）→ `SiteNav`（客户端 hover 子目录面板）。「作品集」为四组可配置相册 + 更多作品集；「专题」为四组可配置顶级专题 + 更多专题，子专题在专题页内浏览。
+- 专题页：`/folders` 展示顶级专题与子专题列表；每个主专题下方最多展示 3 个子专题，并固定提供「更多内容」进入该主专题；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
 - 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩 + 从点击缩略图位置开始的共享缩放开关动画，简介与说明居中显示）；打开时保留原生滚动条、用 `wheel` / `touchmove` / 键盘事件阻止背景滚动，避免滚动条消失造成的页面抖动；先用缩略图撑开灯箱再后台替换大图。相册卡片：`CollectionCard`（作品集封面使用 3:2 比例，无彩色偏移描边）；筛选：`WorksExplorer`（xl 四列）。
 - 相册详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 默认展示工作台拖动的手动顺序，按钮可循环切换「手动 → 拍摄时间倒序 → 拍摄时间正序」。

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
 import { formatDate } from "@/lib/format";
+import type { UploadSuccess } from "@/lib/admin/types";
 import type { Folder, Photo, PortfolioData } from "@/lib/types";
 
 interface FoldersPanelProps {
@@ -12,6 +13,9 @@ interface FoldersPanelProps {
   setPortfolio: Dispatch<SetStateAction<PortfolioData>>;
   foldersIntro: string;
   onFoldersIntroChange: (value: string) => void;
+  navFolderIds: string[];
+  onNavFolderIdsChange: (folderIds: string[]) => void;
+  onNotify: (message: string, tone?: "success" | "error" | "info") => void;
 }
 
 export function FoldersPanel({
@@ -19,9 +23,18 @@ export function FoldersPanel({
   setPortfolio,
   foldersIntro,
   onFoldersIntroChange,
+  navFolderIds,
+  onNavFolderIdsChange,
+  onNotify,
 }: FoldersPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.folders[0]?.id ?? "");
   const [query, setQuery] = useState("");
+  const [uploadAlbumId, setUploadAlbumId] = useState(
+    portfolio.albums[0]?.id ?? "",
+  );
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const uploadInput = useRef<HTMLInputElement | null>(null);
 
   const selected =
     portfolio.folders.find((folder) => folder.id === selectedId) ??
@@ -69,6 +82,110 @@ export function FoldersPanel({
   const parentOptions = portfolio.folders.filter(
     (folder) => !blockedParentIds.has(folder.id),
   );
+
+  const topFolders = portfolio.folders.filter((folder) => !folder.parentId);
+  const navSlots = Array.from(
+    { length: 4 },
+    (_, index) => navFolderIds[index] ?? "",
+  );
+  const effectiveUploadAlbumId =
+    uploadAlbumId || portfolio.albums[0]?.id || "";
+
+  function updateNavSlot(index: number, value: string) {
+    const next = [...navSlots];
+    const existing = next.indexOf(value);
+    if (value && existing !== -1 && existing !== index) {
+      next[existing] = next[index];
+    }
+    next[index] = value;
+    onNavFolderIdsChange(next.filter(Boolean));
+  }
+
+  async function uploadToFolder(fileList: FileList | null) {
+    if (!fileList || fileList.length === 0 || !selected) return;
+    const album =
+      portfolio.albums.find((item) => item.id === effectiveUploadAlbumId) ??
+      portfolio.albums[0];
+    if (!album) {
+      setUploadError("还没有相册，请先在「相册」中创建一个相册。");
+      return;
+    }
+
+    const files = Array.from(fileList).slice(0, 24);
+    const form = new FormData();
+    for (const file of files) form.append("files", file);
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const response = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: form,
+      });
+      const payload = (await response.json().catch(() => ({}))) as Partial<
+        UploadSuccess
+      > & { error?: string };
+
+      if (!response.ok) {
+        setUploadError(payload.error ?? "上传失败，请检查文件后重试。");
+        return;
+      }
+
+      const imported = payload.photos ?? [];
+      if (imported.length === 0) {
+        setUploadError(
+          payload.errors?.[0]?.message ?? "没有可导入的照片。",
+        );
+        return;
+      }
+
+      setPortfolio((prev) => {
+        const existing = prev.albumPhotos[album.id] ?? [];
+        const existingIds = new Set(existing.map((photo) => photo.id));
+        const newPhotos = imported.filter(
+          (photo) => !existingIds.has(photo.id),
+        );
+        const folderCurrent = prev.folderPhotos[selected.id] ?? [];
+        const folderIds = new Set(folderCurrent);
+        for (const photo of newPhotos) folderIds.add(photo.id);
+
+        return {
+          ...prev,
+          albums: prev.albums.map((item) =>
+            item.id === album.id
+              ? {
+                  ...item,
+                  coverPhotoId:
+                    item.coverPhotoId ?? existing[0]?.id ?? newPhotos[0]?.id,
+                }
+              : item,
+          ),
+          albumPhotos: {
+            ...prev.albumPhotos,
+            [album.id]: [...existing, ...newPhotos],
+          },
+          folderPhotos: {
+            ...prev.folderPhotos,
+            [selected.id]: [...folderIds],
+          },
+        };
+      });
+
+      const warning =
+        payload.warnings && payload.warnings.length > 0
+          ? `，${payload.warnings.length} 条提醒`
+          : "";
+      onNotify(
+        `已上传 ${imported.length} 张到「${album.title}」，并加入专题「${selected.title}」${warning}。保存至磁盘后生效。`,
+        "success",
+      );
+    } catch {
+      setUploadError("上传失败：无法连接本地服务。");
+    } finally {
+      setUploading(false);
+      if (uploadInput.current) uploadInput.current.value = "";
+    }
+  }
 
   function patchFolder(patch: Partial<Folder>) {
     if (!selected) return;
@@ -208,6 +325,43 @@ export function FoldersPanel({
       />
 
       <section className="mt-6 border border-ink/15 bg-white p-4 sm:p-5">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <p className="font-display text-lg">顶部导航专题</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+              顶部「专题」下拉只展示这四组顶级专题，最后固定为「更多专题」；留空则少展示一组。
+            </p>
+          </div>
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink/35">
+            {navFolderIds.length} / 4
+          </p>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {navSlots.map((folderId, index) => (
+            <Field
+              key={`nav-folder-${index}`}
+              label={`位置 ${String(index + 1).padStart(2, "0")}`}
+            >
+              <select
+                className="field"
+                value={folderId}
+                onChange={(event) =>
+                  updateNavSlot(index, event.target.value)
+                }
+              >
+                <option value="">未选择</option>
+                {topFolders.map((folder) => (
+                  <option key={folder.id} value={folder.id}>
+                    {folder.title}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-6 border border-ink/15 bg-white p-4 sm:p-5">
         <Field
           label="专题页引导语"
           hint="显示在专题索引页大标题右侧，支持换行。"
@@ -342,6 +496,72 @@ export function FoldersPanel({
                   placeholder="这个专题的线索…"
                 />
               </Field>
+            </div>
+
+            <div className="border border-ink/15 bg-white p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-display text-lg">上传照片到专题</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-ink/45">
+                    照片会先存入选定相册，然后自动加入「{selected.title}」。
+                    顶级专题和子专题都可以使用。
+                  </p>
+                </div>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink/30">
+                  Upload to series
+                </span>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <select
+                  className="field w-full sm:w-56"
+                  value={effectiveUploadAlbumId}
+                  onChange={(event) => setUploadAlbumId(event.target.value)}
+                  aria-label="上传照片的归属相册"
+                  disabled={portfolio.albums.length === 0 || uploading}
+                >
+                  {portfolio.albums.length === 0 ? (
+                    <option value="">还没有相册</option>
+                  ) : (
+                    portfolio.albums.map((album) => (
+                      <option key={album.id} value={album.id}>
+                        存入相册：{album.title}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <input
+                  ref={uploadInput}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(event) =>
+                    void uploadToFolder(event.target.files)
+                  }
+                />
+                <Button
+                  variant="accent"
+                  disabled={uploading || portfolio.albums.length === 0}
+                  onClick={() => uploadInput.current?.click()}
+                >
+                  {uploading ? "上传中…" : "上传照片 ↑"}
+                </Button>
+              </div>
+
+              {portfolio.albums.length === 0 ? (
+                <p className="mt-2 text-[11px] text-red">
+                  还没有相册。请先在「相册」中创建相册，再上传到专题。
+                </p>
+              ) : null}
+              {uploadError ? (
+                <p
+                  role="alert"
+                  className="mt-2 border-l-2 border-red bg-red/5 px-2 py-1 text-[11px] text-red"
+                >
+                  {uploadError}
+                </p>
+              ) : null}
             </div>
 
             <div className="border border-ink/15 bg-white p-5">

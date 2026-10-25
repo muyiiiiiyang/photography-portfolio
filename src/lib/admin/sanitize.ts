@@ -340,6 +340,14 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
         .slice(0, 4)
     : fallback.navAlbumIds ?? [];
 
+  const navFolderIds = Array.isArray(source.navFolderIds)
+    ? source.navFolderIds
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .slice(0, 4)
+    : fallback.navFolderIds ?? [];
+
   const pageCopyRaw =
     source.pageCopy && typeof source.pageCopy === "object"
       ? (source.pageCopy as Record<string, unknown>)
@@ -400,6 +408,7 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
     tagline: asString(source.tagline) ?? fallback.tagline,
     portrait,
     navAlbumIds,
+    navFolderIds,
     statement: asText(source.statement) ?? fallback.statement,
     bio: typeof source.bio === "string" ? source.bio : fallback.bio,
     location: asString(source.location) ?? fallback.location,
