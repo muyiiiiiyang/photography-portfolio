@@ -1596,6 +1596,14 @@
       "description": "关于材质、形态与光的静物练习。",
       "coverPhotoId": "p_55f18bc5bb",
       "createdAt": "2026-10-25T12:06:07.161Z"
+    },
+    {
+      "id": "folder_mvnsy575",
+      "slug": "new-series-4",
+      "title": "新子专题",
+      "subtitle": "NEW CHILD SERIES",
+      "createdAt": "2026-10-25T12:26:46.865Z",
+      "parentId": "folder-portrait"
     }
   ],
   "folderPhotos": {
@@ -1626,7 +1634,8 @@
       "p_55f18bc5bb",
       "p_aba7984980",
       "p_5b1e9d8bfd"
-    ]
+    ],
+    "folder_mvnsy575": []
   },
-  "updatedAt": "2026-10-25T12:20:15.600Z"
+  "updatedAt": "2026-10-25T12:26:49.641Z"
 }
