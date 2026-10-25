@@ -12,7 +12,7 @@ export default function NotFound() {
           href="/"
           className="font-display text-[15px] font-semibold tracking-[-0.01em] sm:text-[17px]"
         >
-          BOK_HAMM<span className="text-red">.</span>
+          Bok_Hamm<span className="text-red">.</span>
         </Link>
         <span className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
           Error / 404

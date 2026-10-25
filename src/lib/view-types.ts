@@ -35,4 +35,9 @@ export interface FolderView extends FolderSummary {
   photos: PhotoView[];
 }
 
+export interface FrameView extends PhotoView {
+  albumSlug: string;
+  albumTitle: string;
+}
+
 export type { Accent };

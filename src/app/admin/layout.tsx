@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = {
   title: {
     default: "Studio",
-    template: "%s · BOK_HAMM Studio",
+    template: "%s · Bok_Hamm Studio",
   },
   robots: { index: false, follow: false, nocache: true },
 };

@@ -17,6 +17,7 @@ import type {
   AlbumView,
   FolderSummary,
   FolderView,
+  FrameView,
   PhotoView,
 } from "@/lib/view-types";
 
@@ -26,7 +27,14 @@ const CONFIG_FILE = path.join(DATA_DIR, "site-config.json");
 
 const ACCENTS: Accent[] = ["red", "yellow", "blue"];
 
-export type { AlbumSummary, AlbumView, FolderSummary, FolderView, PhotoView };
+export type {
+  AlbumSummary,
+  AlbumView,
+  FolderSummary,
+  FolderView,
+  FrameView,
+  PhotoView,
+};
 
 async function readJson<T>(file: string, fallback: T): Promise<T> {
   try {
@@ -230,6 +238,24 @@ export async function getAllTags(): Promise<{ tag: string; count: number }[]> {
   return [...counts.entries()]
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, "zh-CN"));
+}
+
+/** 首页随机墙：全站照片 + 所属相册信息，按拍摄时间降序。 */
+export async function getAllFrames(): Promise<FrameView[]> {
+  const data = await getPortfolioData();
+  const frames: FrameView[] = [];
+
+  for (const album of data.albums) {
+    for (const photo of data.albumPhotos[album.id] ?? []) {
+      frames.push({
+        ...toPhotoView(photo),
+        albumSlug: album.slug,
+        albumTitle: album.title,
+      });
+    }
+  }
+
+  return frames.sort((a, b) => isoTime(b.dateTaken) - isoTime(a.dateTaken));
 }
 
 export async function getPortfolioStats(): Promise<{

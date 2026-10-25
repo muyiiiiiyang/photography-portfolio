@@ -219,9 +219,9 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
             href="/admin"
             className="flex items-baseline gap-1.5 font-display text-[15px] tracking-[-0.01em]"
           >
-            BOK_HAMM
+            Bok_Hamm
             <span className="text-[11px] tracking-[0.18em] text-yellow">
-              STUDIO
+              Studio
             </span>
           </Link>
 

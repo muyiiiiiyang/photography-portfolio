@@ -37,7 +37,7 @@ export async function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
             <p className="font-display text-[clamp(2.6rem,6vw,5.2rem)] leading-[0.85] tracking-[-0.04em]">
-              BOK_HAMM
+              Bok_Hamm
             </p>
             <p className="mt-4 max-w-xs text-xs leading-relaxed text-ink/55">
               {config.tagline}

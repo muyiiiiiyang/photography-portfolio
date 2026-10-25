@@ -31,7 +31,7 @@ export default async function LoginPage() {
         />
 
         <p className="relative font-display text-[17px] font-semibold tracking-[-0.01em]">
-          BOK_HAMM<span className="text-red">.</span>
+          Bok_Hamm<span className="text-red">.</span>
         </p>
 
         <div className="relative">

@@ -15,7 +15,7 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
     {
       href: "/works",
       label: "作品集",
-      en: "WORKS",
+      en: "Works",
       children: [
         { label: "全部作品", href: "/works", en: "ALL" },
         ...albums.map((album) => ({
@@ -29,7 +29,7 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
     {
       href: "/folders",
       label: "专题",
-      en: "SERIES",
+      en: "Series",
       children: [
         { label: "全部专题", href: "/folders", en: "ALL" },
         ...folders.map((folder) => ({
@@ -43,9 +43,10 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
     {
       href: "/about",
       label: "关于",
-      en: "ABOUT",
+      en: "About",
       children: [
         { label: "关于作者", href: "/about", en: "PROFILE" },
+        { label: "个人照片", href: "/about#portrait", en: "PORTRAIT" },
         { label: "创作宣言", href: "/about#statement", en: "STATEMENT" },
         { label: "器材清单", href: "/about#equipment", en: "EQUIPMENT" },
       ],
@@ -53,7 +54,7 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
     {
       href: "/contact",
       label: "联系",
-      en: "CONTACT",
+      en: "Contact",
       children: [
         {
           label: "发送邮件",
@@ -84,7 +85,7 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
           aria-label="Bok Hamm Photography 首页"
         >
           <span className="font-display text-[15px] font-semibold tracking-[-0.01em] sm:text-[17px]">
-            BOK_HAMM
+            Bok_Hamm
           </span>
           <span
             className="mb-[1px] h-1.5 w-1.5 bg-red transition-transform duration-300 group-hover:rotate-45"
@@ -103,7 +104,7 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
         {isDev ? (
           <Link
             href="/admin"
-            className="hidden shrink-0 border border-ink/25 px-2 py-1 text-[9px] uppercase tracking-[0.2em] text-ink/60 transition-colors hover:border-ink hover:text-ink sm:block"
+            className="hidden shrink-0 border border-ink/25 px-2 py-1 text-[9px] tracking-[0.18em] text-ink/60 transition-colors hover:border-ink hover:text-ink sm:block"
           >
             Studio
           </Link>
