@@ -21,5 +21,6 @@ export default defineConfig([
     "ver1.0/**",
     "ver1.5/**",
     "ver1.5.2/**",
+    "ver1.5.3/**",
   ]),
 ]);

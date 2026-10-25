@@ -244,7 +244,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 - 导航：`SiteHeader`（服务端，读取 albums / folders / `config.navAlbumIds`）→ `SiteNav`（客户端 hover 子目录面板）。「作品集」为四组可配置相册 + 更多作品集；「专题」列出顶级专题，子专题在专题页内浏览。
 - 专题页：`/folders` 展示顶级专题与子专题列表；`/folders/[slug]` 同时支持父/子专题，顶部展示子专题入口。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
-- 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩 + 打开/切图过渡，简介与说明居中显示）；相册卡片：`CollectionCard`（作品集封面使用 3:2 比例，无彩色偏移描边）；筛选：`WorksExplorer`（xl 四列）。
+- 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩 + 从点击缩略图位置开始的共享缩放开关动画，简介与说明居中显示）；滚动锁使用 `scrollbar-gutter: stable` + body padding，避免开关时页面横向抖动。相册卡片：`CollectionCard`（作品集封面使用 3:2 比例，无彩色偏移描边）；筛选：`WorksExplorer`（xl 四列）。
 - 相册详情：`CollectionView` 顶部封面限高 52vh；`CollectionGallery` 提供“按拍摄时间倒序/正序”切换。
 - 图片一律使用 `<img>` + `withBasePath()`（已关闭 `@next/next/no-img-element`），必须带 `width`/`height`、`loading`、`decoding`。
 - 内页静态生成：`generateStaticParams()` 必须穷举所有 albums 与 folders，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
