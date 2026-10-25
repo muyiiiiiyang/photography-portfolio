@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { exifLine, formatDate } from "@/lib/format";
 import type { PhotoView } from "@/lib/view-types";
@@ -90,14 +91,15 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
         ))}
       </div>
 
-      {active ? (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="作品大图"
-          className="fixed inset-0 z-[80] flex flex-col bg-ink/95 text-paper backdrop-blur-sm"
-          onClick={close}
-        >
+      {active
+        ? createPortal(
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="作品大图"
+              className="fixed inset-0 z-[80] flex flex-col bg-ink text-paper"
+              onClick={close}
+            >
           <div className="flex items-center justify-between border-b border-paper/15 px-4 py-3 sm:px-8">
             <span className="font-mono text-[10px] tracking-[0.24em] text-paper/60">
               {String((activeIndex ?? 0) + 1).padStart(2, "0")} /{" "}
@@ -173,8 +175,10 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
               </div>
             </div>
           </div>
-        </div>
-      ) : null}
+        </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
