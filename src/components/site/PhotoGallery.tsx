@@ -115,14 +115,12 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
             </button>
           </div>
 
-          <div
-            className="flex min-h-0 flex-1 items-center justify-center p-3 sm:p-8"
-            onClick={(event) => event.stopPropagation()}
-          >
+          <div className="flex min-h-0 flex-1 items-center justify-center p-3 sm:p-8">
             <img
               key={active.id}
               src={active.srcUrl}
               alt={active.title ?? "摄影作品"}
+              onClick={(event) => event.stopPropagation()}
               className="lightbox-media max-h-full max-w-full object-contain shadow-[0_24px_80px_rgba(20,18,16,0.22)]"
             />
           </div>
