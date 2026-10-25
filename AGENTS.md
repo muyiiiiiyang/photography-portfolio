@@ -380,7 +380,7 @@ git reset --hard <commit>
 node scripts/reset-demo.mjs --yes
 ```
 
-会清空 JSON 并删除被引用的 WebP；不可撤销，先确认没有真实作品。
+会清空 JSON 并删除被引用的 WebP；不可撤销。当前站内已有 58 张真实作品，除非明确要清空，不要运行此命令。
 
 ---
 

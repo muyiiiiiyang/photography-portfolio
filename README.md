@@ -59,7 +59,7 @@ pnpm dev
 - 工作台：<http://localhost:3000/admin>
 - 若没有创建 `.env.local`，开发环境会回退到默认密码 `admin123`；**生产环境不会使用任何默认密码**。
 
-当前仓库自带一组演示作品（Unsplash 图片 + 示例文案），方便直接看到完整版式。
+当前已导入四组作品：日本、广元、港新与粤车南下胶卷，共 58 张，文案为示例；照片与文字都可以在 Studio 内继续替换。
 
 ---
 
@@ -80,13 +80,15 @@ pnpm dev
 
 > 上传接口只负责把图片写进 `public/photos/<年份>/` 并返回元数据；点击「保存至磁盘」才会更新 JSON。未保存的上传会在下次保存时按规则清理。
 
-### 演示内容
+### 示例数据工具（可选）
+
+以下脚本会覆盖现有作品，仅在需要重新演示版式时使用：
 
 ```bash
 # 重新生成演示数据（会覆盖现有作品，需 --force）
 pnpm seed:demo --force
 
-# 清空演示数据与图片（谨慎）
+# 清空作品数据与图片（谨慎，当前 58 张作品会被删除）
 node scripts/reset-demo.mjs --yes
 ```
 
@@ -118,8 +120,8 @@ node scripts/reset-demo.mjs --yes
 | `pnpm lint` | ESLint |
 | `pnpm build` | 服务端模式构建（本地完整功能） |
 | `pnpm build:static` | 模拟 CI：移出 admin/api → `output: export` → 还原源码 |
-| `pnpm seed:demo` | 生成演示作品 |
-| `pnpm reset:demo` | 清空演示作品（需 `--yes`） |
+| `pnpm seed:demo` | 生成演示作品（会覆盖，需 `--force`） |
+| `pnpm reset:demo` | 清空全部作品（需 `--yes`，谨慎） |
 
 针对缺少拍摄时间的旧数据：
 
@@ -184,8 +186,16 @@ scripts/                 演示数据、静态构建、补救、Pages 启用脚�
 
 ---
 
+## 本地版本快照
+
+`ver1.0/` 保存了本次交付的完整工作副本（源码、`src/data`、`public` 图片、配置与文档），不包含 `node_modules`、`.next`、`out`、`.git` 和本机环境变量。该目录已加入 `.gitignore`，不会重复提交。
+
+回滚时先停止 `pnpm dev`，把 `ver1.0/` 内的文件覆盖回项目根目录，再执行 `pnpm install && pnpm dev`。更细的回滚方式见 `ver1.0/VERSION.md`。
+
+---
+
 ## 说明
 
-- 演示图片来自 [Unsplash](https://unsplash.com)，仅用于占位；正式发布前请替换为自己的作品并确认授权。
-- 工程思路参考 [TfiyuenLau/Photography-Portfolio](https://github.com/TfiyuenLau/Photography-Portfolio) 与 [agarun/photos](https://github.com/agarun/photos)；视觉与交互为本项目原创的包豪斯方向。
+- 站内作品图片来自摄影师本人提供的素材；正式发布前请自行确认肖像、场所与出版授权。
+- 工程思路参考 [TfiyuenLau/Photography-Portfolio](https://github.com/TfiyuenLau/Photography-Portfolio) 与 [agarun/photos](https://github.com/agarun/photos)；视觉与交互为本项目原创的方向。
 - 详细维护规范见 [AGENTS.md](./AGENTS.md)。

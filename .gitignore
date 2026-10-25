@@ -24,6 +24,9 @@ desktop.ini
 # local QA screenshots
 .shots/
 
+# local version snapshots
+ver1.0/
+
 # logs
 npm-debug.log*
 pnpm-debug.log*
