@@ -25,6 +25,10 @@ interface PhotoGalleryProps {
 
 export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [fullPreview, setFullPreview] = useState<{
+    id: string;
+    src: string;
+  } | null>(null);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
@@ -34,6 +38,29 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
 
   const active = activeIndex === null ? null : photos[activeIndex];
   const activeLinks = active && links ? links(active) : [];
+  const activeSrc =
+    active && fullPreview?.id === active.id
+      ? fullPreview.src
+      : active?.thumbUrl ?? "";
+
+  // 先用已缓存的缩略图立即撑开灯箱，再在后台换成大图。
+  // 这样第一次点击时动画不会等待大图加载，也就不会出现先错位再修正。
+  useEffect(() => {
+    if (!active) return;
+    let cancelled = false;
+    const preload = new Image();
+    const reveal = () => {
+      if (cancelled) return;
+      setFullPreview({ id: active.id, src: active.srcUrl });
+    };
+    preload.addEventListener("load", reveal);
+    preload.src = active.srcUrl;
+    if (preload.complete) reveal();
+    return () => {
+      cancelled = true;
+      preload.removeEventListener("load", reveal);
+    };
+  }, [active]);
 
   const openPhoto = useCallback((index: number, element: HTMLElement) => {
     const image = element.querySelector("img");
@@ -135,26 +162,38 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
     if (activeIndex === null) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
-      if (event.key === "ArrowRight") step(1);
-      if (event.key === "ArrowLeft") step(-1);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        step(1);
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        step(-1);
+      }
+      if (
+        [" ", "PageUp", "PageDown", "Home", "End"].includes(event.key)
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    const preventScroll = (event: Event) => {
+      event.preventDefault();
     };
 
     document.addEventListener("keydown", onKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    const previousPaddingRight = document.body.style.paddingRight;
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = "hidden";
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-    closeRef.current?.focus();
+    document.addEventListener("wheel", preventScroll, { passive: false });
+    document.addEventListener("touchmove", preventScroll, { passive: false });
+    closeRef.current?.focus({ preventScroll: true });
 
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
-      document.body.style.paddingRight = previousPaddingRight;
+      document.removeEventListener("wheel", preventScroll);
+      document.removeEventListener("touchmove", preventScroll);
     };
   }, [activeIndex, close, step]);
 
@@ -295,7 +334,7 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
                 <img
                   ref={imageRef}
                   key={active.id}
-                  src={active.srcUrl}
+                  src={activeSrc}
                   alt={active.title ?? "摄影作品"}
                   width={active.width}
                   height={active.height}
