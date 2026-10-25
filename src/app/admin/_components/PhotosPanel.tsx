@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
@@ -8,6 +8,8 @@ import { formatDate } from "@/lib/format";
 import { sortPhotosByTakenDateDesc, uniqueTags } from "@/lib/photos";
 import type { Photo, PortfolioData } from "@/lib/types";
 import type { UploadSuccess } from "@/lib/admin/types";
+
+const ALL_ALBUMS = "__all__";
 
 interface PhotosPanelProps {
   portfolio: PortfolioData;
@@ -40,23 +42,81 @@ export function PhotosPanel({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tagText, setTagText] = useState("");
   const [batchTag, setBatchTag] = useState("");
+  const [targetAlbumId, setTargetAlbumId] = useState("");
+  const [targetFolderId, setTargetFolderId] = useState("");
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const activeAlbumId = albumId ?? localAlbumId;
-  const album =
-    portfolio.albums.find((item) => item.id === activeAlbumId) ??
-    portfolio.albums[0] ??
-    null;
-  const photos = album ? portfolio.albumPhotos[album.id] ?? [] : [];
+  const isAll = activeAlbumId === ALL_ALBUMS;
+  const album = isAll
+    ? null
+    : (portfolio.albums.find((item) => item.id === activeAlbumId) ??
+      portfolio.albums[0] ??
+      null);
+
+  const allEntries = useMemo(() => {
+    const entries = portfolio.albums.flatMap((item) =>
+      (portfolio.albumPhotos[item.id] ?? []).map((photo) => ({
+        photo,
+        albumId: item.id,
+        albumTitle: item.title,
+      })),
+    );
+    return entries.sort(
+      (a, b) => Date.parse(b.photo.dateTaken) - Date.parse(a.photo.dateTaken),
+    );
+  }, [portfolio]);
+
+  const albumTitleByPhoto = useMemo(
+    () => new Map(allEntries.map((entry) => [entry.photo.id, entry.albumTitle])),
+    [allEntries],
+  );
+
+  const folderOptions = useMemo(() => {
+    const result: { id: string; label: string; depth: number }[] = [];
+    const walk = (parentId: string | undefined, depth: number) => {
+      for (const folder of portfolio.folders) {
+        if (
+          (parentId && folder.parentId === parentId) ||
+          (!parentId && !folder.parentId)
+        ) {
+          result.push({
+            id: folder.id,
+            label: `${depth > 0 ? "↳ " : ""}${folder.title}`,
+            depth,
+          });
+          walk(folder.id, depth + 1);
+        }
+      }
+    };
+    walk(undefined, 0);
+    return result;
+  }, [portfolio.folders]);
+
+  const photos = isAll
+    ? allEntries.map((entry) => entry.photo)
+    : album
+      ? portfolio.albumPhotos[album.id] ?? []
+      : [];
   const editing = photos.find((photo) => photo.id === editingId) ?? null;
+  const effectiveTargetAlbumId =
+    targetAlbumId || portfolio.albums[0]?.id || "";
+  const effectiveTargetFolderId =
+    targetFolderId || folderOptions[0]?.id || "";
 
   function switchAlbum(nextId: string) {
     setLocalAlbumId(nextId);
     onAlbumChange?.(nextId);
     setSelected(new Set());
     setEditingId(null);
+  }
+
+  function ownerAlbumId(photoId: string): string | undefined {
+    return Object.entries(portfolio.albumPhotos).find(([, list]) =>
+      list.some((photo) => photo.id === photoId),
+    )?.[0];
   }
 
   function addPhotos(targetAlbumId: string, incoming: Photo[]) {
@@ -78,16 +138,17 @@ export function PhotosPanel({
   }
 
   function updatePhoto(id: string, patch: Partial<Photo>) {
-    if (!album) return;
+    const albumId = ownerAlbumId(id);
+    if (!albumId) return;
     setPortfolio((prev) => {
-      const updated = (prev.albumPhotos[album.id] ?? []).map((photo) =>
+      const updated = (prev.albumPhotos[albumId] ?? []).map((photo) =>
         photo.id === id ? { ...photo, ...patch } : photo,
       );
       return {
         ...prev,
         albumPhotos: {
           ...prev.albumPhotos,
-          [album.id]: sortPhotosByTakenDateDesc(updated),
+          [albumId]: sortPhotosByTakenDateDesc(updated),
         },
       };
     });
@@ -116,24 +177,26 @@ export function PhotosPanel({
 
   function applyBatchTag(mode: "add" | "remove") {
     const tag = batchTag.trim();
-    if (!tag || !album || selected.size === 0) return;
+    if (!tag || selected.size === 0) return;
 
     setPortfolio((prev) => {
-      const next = (prev.albumPhotos[album.id] ?? []).map((photo) => {
-        if (!selected.has(photo.id)) return photo;
-        const tags =
-          mode === "add"
-            ? uniqueTags([...photo.tags, tag])
-            : photo.tags.filter(
-                (item) => item.toLowerCase() !== tag.toLowerCase(),
-              );
-        return { ...photo, tags };
-      });
+      const albumPhotos = Object.fromEntries(
+        Object.entries(prev.albumPhotos).map(([albumKey, list]) => [
+          albumKey,
+          list.map((photo) => {
+            if (!selected.has(photo.id)) return photo;
+            const tags =
+              mode === "add"
+                ? uniqueTags([...photo.tags, tag])
+                : photo.tags.filter(
+                    (item) => item.toLowerCase() !== tag.toLowerCase(),
+                  );
+            return { ...photo, tags };
+          }),
+        ]),
+      );
 
-      return {
-        ...prev,
-        albumPhotos: { ...prev.albumPhotos, [album.id]: next },
-      };
+      return { ...prev, albumPhotos };
     });
 
     setBatchTag("");
@@ -146,11 +209,14 @@ export function PhotosPanel({
   }
 
   function removePhotos(ids: Set<string>) {
-    if (!album || ids.size === 0) return;
+    if (ids.size === 0) return;
 
     setPortfolio((prev) => {
-      const remaining = (prev.albumPhotos[album.id] ?? []).filter(
-        (photo) => !ids.has(photo.id),
+      const albumPhotos = Object.fromEntries(
+        Object.entries(prev.albumPhotos).map(([albumKey, list]) => [
+          albumKey,
+          list.filter((photo) => !ids.has(photo.id)),
+        ]),
       );
       const folderPhotos = Object.fromEntries(
         Object.entries(prev.folderPhotos).map(([folderId, list]) => [
@@ -158,19 +224,14 @@ export function PhotosPanel({
           list.filter((id) => !ids.has(id)),
         ]),
       );
+      const albums = prev.albums.map((item) => {
+        const remaining = albumPhotos[item.id] ?? [];
+        return item.coverPhotoId && ids.has(item.coverPhotoId)
+          ? { ...item, coverPhotoId: remaining[0]?.id }
+          : item;
+      });
 
-      return {
-        ...prev,
-        albums: prev.albums.map((item) =>
-          item.id === album.id &&
-          item.coverPhotoId &&
-          ids.has(item.coverPhotoId)
-            ? { ...item, coverPhotoId: remaining[0]?.id }
-            : item,
-        ),
-        albumPhotos: { ...prev.albumPhotos, [album.id]: remaining },
-        folderPhotos,
-      };
+      return { ...prev, albums, albumPhotos, folderPhotos };
     });
 
     setSelected((prev) => {
@@ -182,7 +243,7 @@ export function PhotosPanel({
   }
 
   function deleteSelected() {
-    if (!album || selected.size === 0) return;
+    if (selected.size === 0) return;
     const count = selected.size;
     if (
       !window.confirm(
@@ -196,10 +257,90 @@ export function PhotosPanel({
     onNotify(`已有 ${count} 张照片移出草稿，保存后生效。`, "info");
   }
 
+  function moveSelectedToAlbum() {
+    const target = portfolio.albums.find(
+      (item) => item.id === effectiveTargetAlbumId,
+    );
+    if (!target || selected.size === 0) return;
+
+    setPortfolio((prev) => {
+      const moving = new Set(selected);
+      const moved: Photo[] = [];
+      const albumPhotos: Record<string, Photo[]> = {};
+
+      for (const item of prev.albums) {
+        const keep: Photo[] = [];
+        for (const photo of prev.albumPhotos[item.id] ?? []) {
+          if (moving.has(photo.id)) moved.push(photo);
+          else keep.push(photo);
+        }
+        albumPhotos[item.id] = keep;
+      }
+
+      albumPhotos[target.id] = sortPhotosByTakenDateDesc([
+        ...(albumPhotos[target.id] ?? []),
+        ...moved,
+      ]);
+
+      const albums = prev.albums.map((item) => {
+        const list = albumPhotos[item.id] ?? [];
+        const keepCover =
+          item.coverPhotoId && list.some((photo) => photo.id === item.coverPhotoId);
+        return {
+          ...item,
+          coverPhotoId: keepCover ? item.coverPhotoId : list[0]?.id,
+        };
+      });
+
+      return { ...prev, albums, albumPhotos };
+    });
+
+    onNotify(
+      `已将 ${selected.size} 张照片移动到「${target.title}」，保存后生效。`,
+      "success",
+    );
+    setSelected(new Set());
+    setEditingId(null);
+  }
+
+  function addSelectedToFolder() {
+    const folder = portfolio.folders.find(
+      (item) => item.id === effectiveTargetFolderId,
+    );
+    if (!folder || selected.size === 0) return;
+
+    setPortfolio((prev) => {
+      const current = new Set(prev.folderPhotos[folder.id] ?? []);
+      for (const id of selected) current.add(id);
+
+      const dateById = new Map<string, string>();
+      for (const list of Object.values(prev.albumPhotos)) {
+        for (const photo of list) dateById.set(photo.id, photo.dateTaken);
+      }
+
+      const ordered = [...current].sort(
+        (a, b) => Date.parse(dateById.get(b) ?? "") - Date.parse(dateById.get(a) ?? ""),
+      );
+
+      return {
+        ...prev,
+        folderPhotos: { ...prev.folderPhotos, [folder.id]: ordered },
+      };
+    });
+
+    onNotify(
+      `已将 ${selected.size} 张照片加入「${folder.title}」，保存后生效。`,
+      "success",
+    );
+  }
+
   async function handleFiles(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
     if (!album) {
-      onNotify("请先在「相册」里创建一个相册。", "error");
+      onNotify(
+        "「全部照片」用于筛选与分类；请在上方选择具体相册后再上传。",
+        "error",
+      );
       return;
     }
 
@@ -275,21 +416,28 @@ export function PhotosPanel({
       <PanelHeader
         eyebrow="Photos"
         title="照片"
-        description={`当前相册：${album?.title ?? "未选择"}。拖拽上传后由 Sharp 自动压制成 WebP，并读取 EXIF 拍摄时间。`}
+        description={
+          isAll
+            ? `全部照片：${allEntries.length} 张。可选中照片移动到作品集，或加入任意专题 / 子专题。`
+            : `当前相册：${album?.title ?? "未选择"}。拖拽上传后由 Sharp 自动压制成 WebP，并读取 EXIF 拍摄时间。`
+        }
         actions={
           <div className="flex items-center gap-3">
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink/40">
               {photos.length} frames
             </span>
             <select
-              className="field w-52"
-              value={album?.id ?? ""}
+              className="field w-56"
+              value={isAll ? ALL_ALBUMS : album?.id ?? ""}
               onChange={(event) => switchAlbum(event.target.value)}
-              aria-label="选择相册"
+              aria-label="选择相册或全部照片"
             >
+              <option value={ALL_ALBUMS}>
+                全部照片（{allEntries.length}）
+              </option>
               {portfolio.albums.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.title}
+                  {item.title}（{(portfolio.albumPhotos[item.id] ?? []).length}）
                 </option>
               ))}
             </select>
@@ -298,48 +446,58 @@ export function PhotosPanel({
       />
 
       <div className="mt-6 space-y-5">
-        <div
-          onDragOver={(event) => {
-            event.preventDefault();
-            setDragging(true);
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={(event) => {
-            event.preventDefault();
-            setDragging(false);
-            void handleFiles(event.dataTransfer.files);
-          }}
-          className={`border-2 border-dashed px-6 py-8 text-center transition-colors ${
-            dragging
-              ? "border-red bg-red/5"
-              : "border-ink/20 bg-white/50 hover:border-ink/40"
-          }`}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(event) => void handleFiles(event.target.files)}
-          />
-          <p className="font-display text-lg">
-            {uploading
-              ? "正在压制 WebP 并读取 EXIF…"
-              : `拖拽照片到「${album?.title ?? "当前相册"}」`}
-          </p>
-          <p className="mt-1 text-[11px] text-ink/45">
-            JPG / PNG / WebP / HEIC · 单张 ≤ 60MB · 一次最多 24 张
-          </p>
-          <Button
-            variant="accent"
-            className="mt-4"
-            disabled={uploading}
-            onClick={() => inputRef.current?.click()}
+        {album ? (
+          <div
+            onDragOver={(event) => {
+              event.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(event) => {
+              event.preventDefault();
+              setDragging(false);
+              void handleFiles(event.dataTransfer.files);
+            }}
+            className={`border-2 border-dashed px-6 py-8 text-center transition-colors ${
+              dragging
+                ? "border-red bg-red/5"
+                : "border-ink/20 bg-white/50 hover:border-ink/40"
+            }`}
           >
-            {uploading ? "处理中…" : "选择照片"}
-          </Button>
-        </div>
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(event) => void handleFiles(event.target.files)}
+            />
+            <p className="font-display text-lg">
+              {uploading
+                ? "正在压制 WebP 并读取 EXIF…"
+                : `拖拽照片到「${album.title}」`}
+            </p>
+            <p className="mt-1 text-[11px] text-ink/45">
+              JPG / PNG / WebP / HEIC · 单张 ≤ 60MB · 一次最多 24 张
+            </p>
+            <Button
+              variant="accent"
+              className="mt-4"
+              disabled={uploading}
+              onClick={() => inputRef.current?.click()}
+            >
+              {uploading ? "处理中…" : "选择照片"}
+            </Button>
+          </div>
+        ) : (
+          <div className="border border-dashed border-ink/25 bg-white/50 px-6 py-5 text-center">
+            <p className="font-display text-lg">全部照片视图</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+              这里适合跨相册查看与分类。选中照片后可移动到作品集或加入专题；
+              上传请在上方选择具体相册。
+            </p>
+          </div>
+        )}
 
         {selected.size > 0 ? (
           <div className="flex flex-wrap items-center gap-2 border border-ink bg-white p-2.5">
@@ -375,6 +533,60 @@ export function PhotosPanel({
             >
               全选
             </Button>
+          </div>
+        ) : null}
+
+        {selected.size > 0 ? (
+          <div className="space-y-2 border border-ink bg-white p-2.5">
+            <p className="px-1 font-mono text-[9px] uppercase tracking-[0.2em] text-ink/40">
+              分类已选照片 / {selected.size}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                className="field w-52"
+                value={effectiveTargetAlbumId}
+                onChange={(event) => setTargetAlbumId(event.target.value)}
+                aria-label="目标作品集"
+              >
+                {portfolio.albums.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    移动到：{item.title}
+                  </option>
+                ))}
+              </select>
+              <Button
+                size="sm"
+                onClick={moveSelectedToAlbum}
+                disabled={!effectiveTargetAlbumId}
+              >
+                移入作品集
+              </Button>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                className="field w-52"
+                value={effectiveTargetFolderId}
+                onChange={(event) => setTargetFolderId(event.target.value)}
+                aria-label="目标专题"
+              >
+                {folderOptions.length === 0 ? (
+                  <option value="">还没有专题</option>
+                ) : (
+                  folderOptions.map((folder) => (
+                    <option key={folder.id} value={folder.id}>
+                      加入：{folder.label}
+                    </option>
+                  ))
+                )}
+              </select>
+              <Button
+                size="sm"
+                onClick={addSelectedToFolder}
+                disabled={!effectiveTargetFolderId}
+              >
+                加入专题
+              </Button>
+            </div>
           </div>
         ) : null}
 
@@ -601,7 +813,12 @@ export function PhotosPanel({
                     ) : null}
                   </div>
                   <div className="mt-1.5 flex items-baseline justify-between gap-2 px-0.5">
-                    <span className="truncate text-[10px] text-ink/70">
+                    <span className="min-w-0 truncate text-[10px] text-ink/70">
+                      {isAll ? (
+                        <span className="mr-1.5 font-mono text-[8px] uppercase tracking-[0.08em] text-ink/35">
+                          {albumTitleByPhoto.get(photo.id)}
+                        </span>
+                      ) : null}
                       {photo.title ?? "Untitled"}
                     </span>
                     <span className="shrink-0 font-mono text-[8px] text-ink/35">
@@ -624,7 +841,9 @@ export function PhotosPanel({
 
         {photos.length === 0 ? (
           <p className="border border-dashed border-ink/20 px-6 py-12 text-center text-xs text-ink/40">
-            这个相册还没有照片。拖拽上传第一批作品吧。
+            {isAll
+              ? "还没有照片，先到具体相册上传作品。"
+              : "这个相册还没有照片。拖拽上传第一批作品吧。"}
           </p>
         ) : null}
       </div>
