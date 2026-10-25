@@ -1,10 +1,10 @@
 {
   "photographer": "Bok_Haam",
   "title": "Bok_Haam Photography",
-  "tagline": "记录城市、光线与旅途里的短暂停顿。",
+  "tagline": "记录城市、光线与旅途里的短暂停顿",
   "portrait": "/portrait/portrait-1792932357433-0806b0.webp",
   "navAlbumIds": [
-    "album-japan-2024",
+    "album_mvnxejjj",
     "album-hk-sg-2025",
     "album-guangyuan-2024",
     "album-southbound-2026"
@@ -37,16 +37,16 @@
   "pageCopy": {
     "aboutHeadingLead": "Bok-Haam",
     "aboutHeadingAccent": "Yang",
-    "worksIntro": "观察世界，理解秩序，以作品回应所见\n\nTo observe the world, discern its order, and articulate the seen through creation.",
-    "foldersIntro": "从主题到子专题，逐层收拢照片。先选一个大方向，再进入下一层继续细分。"
+    "worksIntro": "观察世界，理解秩序，以作品回应所见\nTo observe. To discern. To articulate.",
+    "foldersIntro": "在不同的对象与语境之间，寻找观看、感知与表达的可能\nBetween subject and context, a study of perception"
   },
   "contact": {
     "eyebrow": "Say hello",
     "title": "一起做点\n有光的事",
-    "intro": "商业拍摄、建筑与空间、编辑约稿、展览与出版合作，欢迎来信，通常会在两个工作日内回复",
+    "intro": "商业拍摄、建筑与空间、编辑约稿、展览与出版合作\n通常会在两个工作日内回复",
     "elsewhereLabel": "Elsewhere",
     "basedInLabel": "Based in",
-    "basedInNote": "接受国内及海外委托，可灵活安排行程",
+    "basedInNote": "接受国内及海外委托\n可灵活安排行程",
     "availabilityLabel": "Availability",
     "availabilityStatus": "接受新项目",
     "availabilityNote": "2026 年秋季档期开放中",
