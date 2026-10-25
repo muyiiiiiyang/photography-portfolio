@@ -97,11 +97,11 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
               role="dialog"
               aria-modal="true"
               aria-label="作品大图"
-              className="fixed inset-0 z-[80] flex flex-col bg-ink text-paper"
+              className="fixed inset-0 z-[80] flex flex-col bg-white/60 text-ink backdrop-blur-3xl backdrop-saturate-150"
               onClick={close}
             >
-          <div className="flex items-center justify-between border-b border-paper/15 px-4 py-3 sm:px-8">
-            <span className="font-mono text-[10px] tracking-[0.24em] text-paper/60">
+          <div className="flex items-center justify-between border-b border-ink/10 px-4 py-3 sm:px-8">
+            <span className="font-mono text-[10px] tracking-[0.24em] text-ink/50">
               {String((activeIndex ?? 0) + 1).padStart(2, "0")} /{" "}
               {String(photos.length).padStart(2, "0")}
             </span>
@@ -109,7 +109,7 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
               ref={closeRef}
               type="button"
               onClick={close}
-              className="flex h-9 items-center gap-2 border border-paper/25 px-3 text-[10px] uppercase tracking-[0.2em] text-paper/80 transition-colors hover:border-paper hover:text-paper"
+              className="flex h-9 items-center gap-2 border border-ink/20 px-3 text-[10px] uppercase tracking-[0.2em] text-ink/65 transition-colors hover:border-ink hover:bg-ink hover:text-paper"
             >
               关闭 <span aria-hidden>×</span>
             </button>
@@ -122,23 +122,23 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
             <img
               src={active.srcUrl}
               alt={active.title ?? "摄影作品"}
-              className="max-h-full max-w-full object-contain"
+              className="max-h-full max-w-full object-contain shadow-[0_24px_80px_rgba(20,18,16,0.22)]"
             />
           </div>
 
           <div
-            className="border-t border-paper/15 px-4 py-4 sm:px-8"
+            className="border-t border-ink/10 bg-white/30 px-4 py-4 sm:px-8"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex flex-wrap items-end justify-between gap-5">
               <div className="min-w-0">
-                <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-paper/40">
+                <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
                   {formatDate(active.dateTaken)}
                 </p>
                 <h3 className="mt-1 truncate font-display text-xl tracking-[-0.01em]">
                   {active.title ?? "Untitled"}
                 </h3>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-paper/50">
+                <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-ink/50">
                   {exifLine(active) || active.fileName}
                 </p>
                 {active.tags.length > 0 ? (
@@ -146,7 +146,7 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
                     {active.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="border border-paper/20 px-1.5 py-0.5 text-[9px] tracking-[0.08em] text-paper/55"
+                        className="border border-ink/15 px-1.5 py-0.5 text-[9px] tracking-[0.08em] text-ink/55"
                       >
                         {tag}
                       </span>
@@ -159,7 +159,7 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
                 <button
                   type="button"
                   onClick={() => step(-1)}
-                  className="flex h-10 w-10 items-center justify-center border border-paper/25 transition-colors hover:border-paper hover:bg-paper hover:text-ink"
+                  className="flex h-10 w-10 items-center justify-center border border-ink/20 text-ink/60 transition-colors hover:border-ink hover:bg-ink hover:text-paper"
                   aria-label="上一张"
                 >
                   ←
@@ -167,7 +167,7 @@ export function PhotoGallery({ photos }: { photos: PhotoView[] }) {
                 <button
                   type="button"
                   onClick={() => step(1)}
-                  className="flex h-10 w-10 items-center justify-center border border-paper/25 transition-colors hover:border-paper hover:bg-paper hover:text-ink"
+                  className="flex h-10 w-10 items-center justify-center border border-ink/20 text-ink/60 transition-colors hover:border-ink hover:bg-ink hover:text-paper"
                   aria-label="下一张"
                 >
                   →

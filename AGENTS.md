@@ -234,6 +234,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 - 版式：直角、1px 硬边框、5px 偏移硬阴影（`shadow-[5px_5px_0_0_var(--color-ink)]`）、大量留白。
 - 动效：统一 `cubic-bezier(0.65, 0, 0.35, 1)` 或 `(0.22, 0.61, 0.36, 1)`；必须支持 `prefers-reduced-motion`。
 - 不要加入圆角卡片、玻璃拟态、渐变英雄区等与包豪斯冲突的元素。
+- 唯一例外：作品灯箱使用「白色毛玻璃」效果（半透明白 + `backdrop-blur`），这是明确的产品要求；其余页面保持实色直角。
 
 ### 5.2 页面与组件
 
@@ -241,7 +242,7 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 - 关于页：`config.portrait` 优先显示个人照片；未上传时退回第一张相册封面，再退回几何占位。Studio「站点设置 → 个人照片」上传。
 - 导航：`SiteHeader`（服务端，读取 albums/folders）→ `SiteNav`（客户端 hover 子目录面板）；新增分类页时同步修改 `SiteHeader` 的 `items`。
 - 前台布局：`src/app/(site)/layout.tsx`（页头/页脚），路由组不影响 URL。
-- 作品墙：`PhotoGallery`（客户端灯箱）；相册卡片：`CollectionCard`；筛选：`WorksExplorer`。
+- 作品墙：`PhotoGallery`（客户端灯箱，Portal 到 `body`，白色毛玻璃遮罩）；相册卡片：`CollectionCard`；筛选：`WorksExplorer`。
 - 图片一律使用 `<img>` + `withBasePath()`（已关闭 `@next/next/no-img-element`），必须带 `width`/`height`、`loading`、`decoding`。
 - 内页静态生成：`generateStaticParams()` 必须穷举所有 albums/folders，且 `dynamicParams = false`；新增维度（年份/城市/标签页）时同样要穷举，否则导出后 404。
 - 空作品集时，两个动态路由会返回 `coming-soon` 占位参数（`src/lib/constants.ts`），避免 `output: export` 报 “empty array”；有数据后自动恢复真实参数。这个兜底不要删除。
