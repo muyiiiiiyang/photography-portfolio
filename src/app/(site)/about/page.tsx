@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getAlbums, getPortfolioStats, getSiteConfig } from "@/lib/api/portfolio";
+import { withBasePath } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "关于",
@@ -15,7 +16,13 @@ export default async function AboutPage() {
     getAlbums(),
   ]);
 
-  const portrait = albums[0]?.cover ?? null;
+  const portrait = config.portrait
+    ? withBasePath(config.portrait)
+    : albums[0]?.cover?.srcUrl ?? null;
+  const portraitAlt = config.portrait
+    ? `${config.photographer} 的个人照片`
+    : `${config.photographer} 的作品`;
+  const portraitCaption = config.portrait ? "Portrait / 个人照片" : "Selected work";
   const paragraphs = config.bio
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
@@ -43,7 +50,7 @@ export default async function AboutPage() {
       </header>
 
       <section className="mx-auto grid max-w-[1560px] gap-12 px-5 py-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20 lg:px-12 lg:py-20">
-        <div>
+        <div id="portrait" className="scroll-mt-28">
           <div className="sticky top-24">
             <div className="relative">
               {portrait ? (
@@ -53,10 +60,8 @@ export default async function AboutPage() {
                     className="absolute -left-2 -top-2 h-full w-full bg-yellow"
                   />
                   <img
-                    src={portrait.srcUrl}
-                    alt={`${config.photographer} 的作品`}
-                    width={portrait.width}
-                    height={portrait.height}
+                    src={portrait}
+                    alt={portraitAlt}
                     className="relative aspect-[4/5] w-full border border-ink object-cover"
                   />
                 </>
@@ -81,7 +86,7 @@ export default async function AboutPage() {
               )}
             </div>
             <div className="mt-4 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.22em] text-ink/40">
-              <span>{config.photographer}</span>
+              <span>{portraitCaption}</span>
               <span>{config.location}</span>
             </div>
           </div>

@@ -78,6 +78,8 @@ export interface SiteConfig {
   photographer: string;
   title: string;
   tagline: string;
+  /** 关于页个人照片，例如 /portrait/portrait-xxx.webp */
+  portrait?: string;
   bio: string;
   statement: string;
   location: string;

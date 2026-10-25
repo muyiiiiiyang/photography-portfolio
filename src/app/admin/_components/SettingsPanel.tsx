@@ -1,8 +1,10 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
+import { useRef, useState } from "react";
+import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
+import { withBasePath } from "@/lib/site";
 import type { SiteConfig } from "@/lib/types";
 
 interface SettingsPanelProps {
@@ -11,8 +13,45 @@ interface SettingsPanelProps {
 }
 
 export function SettingsPanel({ config, setConfig }: SettingsPanelProps) {
+  const portraitInput = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   function patch(patchValue: Partial<SiteConfig>) {
     setConfig((prev) => ({ ...prev, ...patchValue }));
+  }
+
+  async function uploadPortrait(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const response = await fetch("/api/admin/portrait/", {
+        method: "POST",
+        body: form,
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        src?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.src) {
+        setUploadError(payload.error ?? "上传失败，请重试。");
+        return;
+      }
+
+      patch({ portrait: payload.src });
+    } catch {
+      setUploadError("上传失败：无法连接本地服务。");
+    } finally {
+      setUploading(false);
+    }
   }
 
   function updateSocial(
@@ -85,6 +124,80 @@ export function SettingsPanel({ config, setConfig }: SettingsPanelProps) {
                 onChange={(event) => patch({ copyright: event.target.value })}
               />
             </Field>
+          </div>
+        </section>
+
+        <section className="border border-ink/15 bg-white p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="font-display text-lg">个人照片</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+                会显示在「关于作者」页面左侧，建议上传竖幅人像。
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                ref={portraitInput}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(event) => void uploadPortrait(event)}
+              />
+              <Button
+                size="sm"
+                variant="solid"
+                disabled={uploading}
+                onClick={() => portraitInput.current?.click()}
+              >
+                {uploading
+                  ? "上传中…"
+                  : config.portrait
+                    ? "更换照片"
+                    : "上传照片"}
+              </Button>
+              {config.portrait ? (
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={() => patch({ portrait: undefined })}
+                >
+                  移除
+                </Button>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row">
+            <div className="relative aspect-[4/5] w-full max-w-[160px] overflow-hidden border border-ink/20 bg-paper-2">
+              {config.portrait ? (
+                <img
+                  src={withBasePath(config.portrait)}
+                  alt="个人照片预览"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="flex h-full items-center justify-center font-mono text-[9px] uppercase tracking-[0.2em] text-ink/35">
+                  No portrait
+                </span>
+              )}
+            </div>
+            <div className="flex-1">
+              <p className="text-[11px] leading-relaxed text-ink/45">
+                上传只写入图片文件；点击右上角「保存至磁盘」后才会写入站点配置。
+                保存成功后，被替换的旧照片会自动清理。
+              </p>
+              {uploadError ? (
+                <p
+                  role="alert"
+                  className="mt-2 border-l-2 border-red bg-red/5 px-2 py-1 text-[11px] text-red"
+                >
+                  {uploadError}
+                </p>
+              ) : null}
+              <p className="mt-3 break-all font-mono text-[9px] text-ink/30">
+                {config.portrait ?? "—"}
+              </p>
+            </div>
           </div>
         </section>
 

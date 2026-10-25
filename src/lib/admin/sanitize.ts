@@ -288,10 +288,17 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
         .slice(0, 24)
     : fallback.equipment;
 
+  const portraitRaw = asString(source.portrait);
+  const portrait =
+    portraitRaw && /^\/portrait\/[a-zA-Z0-9._-]+$/.test(portraitRaw)
+      ? portraitRaw
+      : fallback.portrait;
+
   return {
     photographer: asString(source.photographer) ?? fallback.photographer,
     title: asString(source.title) ?? fallback.title,
     tagline: asString(source.tagline) ?? fallback.tagline,
+    portrait,
     statement: asString(source.statement) ?? fallback.statement,
     bio: typeof source.bio === "string" ? source.bio : fallback.bio,
     location: asString(source.location) ?? fallback.location,

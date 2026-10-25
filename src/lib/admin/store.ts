@@ -129,10 +129,24 @@ export async function savePortfolio(raw: unknown): Promise<PortfolioData> {
 
 export async function saveSiteConfig(raw: unknown): Promise<SiteConfig> {
   return serialize(async () => {
+    const previous = await readSiteConfigFile();
     const next = sanitizeSiteConfig(raw, DEFAULT_SITE_CONFIG);
     await writeJsonAtomic(CONFIG_FILE, next);
+
+    if (previous.portrait && previous.portrait !== next.portrait) {
+      const file = portraitFile(previous.portrait);
+      if (file) await fs.unlink(file).catch(() => undefined);
+    }
+
     return next;
   });
+}
+
+function portraitFile(relative: string): string | null {
+  if (!relative.startsWith("/portrait/")) return null;
+  const root = path.resolve(ROOT, "public", "portrait");
+  const resolved = path.resolve(ROOT, "public", relative.replace(/^\//, ""));
+  return resolved.startsWith(`${root}${path.sep}`) ? resolved : null;
 }
 
 export async function getAdminSnapshot(): Promise<AdminSnapshot> {
