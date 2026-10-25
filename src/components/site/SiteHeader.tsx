@@ -2,14 +2,27 @@ import Link from "next/link";
 
 import { SiteNav } from "./SiteNav";
 import type { NavItem } from "./SiteNav";
-import { getAlbums, getFolders, getSiteConfig } from "@/lib/api/portfolio";
+import { getAlbums, getSiteConfig } from "@/lib/api/portfolio";
 
 export async function SiteHeader({ floating = false }: { floating?: boolean }) {
-  const [albums, folders, config] = await Promise.all([
+  const [albums, config] = await Promise.all([
     getAlbums(),
-    getFolders(),
     getSiteConfig(),
   ]);
+
+  const albumById = new Map(albums.map((album) => [album.id, album]));
+  const seenIds = new Set<string>();
+  const configured = (config.navAlbumIds ?? [])
+    .map((id) => albumById.get(id))
+    .filter((album): album is (typeof albums)[number] => {
+      if (!album || seenIds.has(album.id)) return false;
+      seenIds.add(album.id);
+      return true;
+    })
+    .slice(0, 4);
+  const featuredAlbums = config.navAlbumIds
+    ? configured
+    : albums.slice(0, 4);
 
   const items: NavItem[] = [
     {
@@ -17,27 +30,13 @@ export async function SiteHeader({ floating = false }: { floating?: boolean }) {
       label: "作品集",
       en: "Works",
       children: [
-        { label: "全部作品", href: "/works", en: "ALL" },
-        ...albums.map((album) => ({
+        ...featuredAlbums.map((album) => ({
           label: album.title,
           href: `/albums/${album.slug}`,
           en: album.subtitle,
           meta: `${album.count} 张`,
         })),
-      ],
-    },
-    {
-      href: "/folders",
-      label: "专题",
-      en: "Series",
-      children: [
-        { label: "全部专题", href: "/folders", en: "ALL" },
-        ...folders.map((folder) => ({
-          label: folder.title,
-          href: `/folders/${folder.slug}`,
-          en: folder.subtitle,
-          meta: `${folder.count} 张`,
-        })),
+        { label: "更多作品集", href: "/works", en: "MORE", meta: "全部" },
       ],
     },
     {

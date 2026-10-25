@@ -30,12 +30,6 @@ export default async function CoverPage() {
       en: "Works",
       meta: stats.albums > 0 ? `${stats.albums} 组` : "Soon",
     },
-    {
-      href: "/folders",
-      label: "专题",
-      en: "Series",
-      meta: stats.folders > 0 ? `${stats.folders} 组` : "Soon",
-    },
     { href: "/about", label: "关于作者", en: "About", meta: "Profile" },
     { href: "/contact", label: "联系", en: "Contact", meta: "Say hello" },
   ];

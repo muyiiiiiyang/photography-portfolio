@@ -5,20 +5,45 @@ import type { ChangeEvent, Dispatch, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
 import { withBasePath } from "@/lib/site";
-import type { SiteConfig } from "@/lib/types";
+import type { Album, SiteConfig } from "@/lib/types";
 
 interface SettingsPanelProps {
   config: SiteConfig;
   setConfig: Dispatch<SetStateAction<SiteConfig>>;
+  albums: Album[];
 }
 
-export function SettingsPanel({ config, setConfig }: SettingsPanelProps) {
+export function SettingsPanel({
+  config,
+  setConfig,
+  albums,
+}: SettingsPanelProps) {
   const portraitInput = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  const configuredNavIds = config.navAlbumIds;
+  const navSlots = Array.from({ length: 4 }, (_, index) =>
+    configuredNavIds
+      ? (configuredNavIds[index] ?? "")
+      : (albums[index]?.id ?? ""),
+  );
+
   function patch(patchValue: Partial<SiteConfig>) {
     setConfig((prev) => ({ ...prev, ...patchValue }));
+  }
+
+  function updateNavSlot(index: number, value: string) {
+    const next = [...navSlots];
+    const existing = next.indexOf(value);
+
+    // 已在其他位置选过同一相册时交换位置，避免出现重复。
+    if (value && existing !== -1 && existing !== index) {
+      next[existing] = next[index];
+    }
+    next[index] = value;
+
+    patch({ navAlbumIds: next.filter(Boolean) });
   }
 
   async function uploadPortrait(event: ChangeEvent<HTMLInputElement>) {
@@ -125,6 +150,39 @@ export function SettingsPanel({ config, setConfig }: SettingsPanelProps) {
               />
             </Field>
           </div>
+        </section>
+
+        <section className="border border-ink/15 bg-white p-5">
+          <p className="font-display text-lg">导航作品集</p>
+          <p className="mt-1 text-[11px] leading-relaxed text-ink/45">
+            顶部「作品集」下拉只展示这四组，最后固定为「更多作品集」；留空则少展示一组。
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {navSlots.map((albumId, index) => (
+              <Field
+                key={`nav-album-${index}`}
+                label={`位置 ${String(index + 1).padStart(2, "0")}`}
+              >
+                <select
+                  className="field"
+                  value={albumId}
+                  onChange={(event) =>
+                    updateNavSlot(index, event.target.value)
+                  }
+                >
+                  <option value="">未选择</option>
+                  {albums.map((album) => (
+                    <option key={album.id} value={album.id}>
+                      {album.title}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            ))}
+          </div>
+          <p className="mt-3 text-[10px] leading-relaxed text-ink/40">
+            修改后点击右上角「保存至磁盘」，刷新前台即可看到新的导航。
+          </p>
         </section>
 
         <section className="border border-ink/15 bg-white p-5">

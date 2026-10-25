@@ -16,7 +16,6 @@ interface GitPanelProps {
 const TEMPLATES = [
   "content: 更新作品",
   "fix: 修正拍摄时间",
-  "feat: 新增专题",
   "chore: 更新站点文案",
 ];
 

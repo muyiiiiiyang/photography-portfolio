@@ -80,6 +80,8 @@ export interface SiteConfig {
   tagline: string;
   /** 关于页个人照片，例如 /portrait/portrait-xxx.webp */
   portrait?: string;
+  /** 顶部「作品集」下拉中优先展示的相册 id（最多四个） */
+  navAlbumIds?: string[];
   bio: string;
   statement: string;
   location: string;

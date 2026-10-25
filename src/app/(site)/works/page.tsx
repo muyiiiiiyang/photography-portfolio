@@ -86,20 +86,6 @@ export default async function WorksPage() {
           </div>
         </section>
       )}
-
-      <section className="border-t border-ink/15">
-        <div className="mx-auto flex max-w-[1560px] flex-col gap-6 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12">
-          <p className="font-display text-[clamp(1.6rem,3.4vw,2.6rem)] leading-tight tracking-[-0.02em]">
-            按主题重新观看 <span className="text-blue">→</span>
-          </p>
-          <Link
-            href="/folders"
-            className="inline-flex w-fit items-center gap-4 border border-ink px-5 py-3 text-[11px] tracking-[0.16em] transition-colors hover:bg-ink hover:text-paper"
-          >
-            浏览专题 <span aria-hidden>↗</span>
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

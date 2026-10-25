@@ -294,11 +294,20 @@ export function sanitizeSiteConfig(raw: unknown, fallback: SiteConfig): SiteConf
       ? portraitRaw
       : fallback.portrait;
 
+  const navAlbumIds = Array.isArray(source.navAlbumIds)
+    ? source.navAlbumIds
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .slice(0, 4)
+    : fallback.navAlbumIds ?? [];
+
   return {
     photographer: asString(source.photographer) ?? fallback.photographer,
     title: asString(source.title) ?? fallback.title,
     tagline: asString(source.tagline) ?? fallback.tagline,
     portrait,
+    navAlbumIds,
     statement: asString(source.statement) ?? fallback.statement,
     bio: typeof source.bio === "string" ? source.bio : fallback.bio,
     location: asString(source.location) ?? fallback.location,

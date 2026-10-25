@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  FolderOpen,
   GitBranch,
   Images,
   Layers,
@@ -14,14 +13,13 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { AlbumsPanel } from "./AlbumsPanel";
-import { FoldersPanel } from "./FoldersPanel";
 import { GitPanel } from "./GitPanel";
 import { PhotosPanel } from "./PhotosPanel";
 import { SettingsPanel } from "./SettingsPanel";
 import type { AdminSnapshot } from "@/lib/admin/types";
 import type { PortfolioData, SiteConfig } from "@/lib/types";
 
-type Tab = "albums" | "photos" | "folders" | "settings" | "git";
+type Tab = "albums" | "photos" | "settings" | "git";
 
 type Tone = "success" | "error" | "info";
 
@@ -38,7 +36,6 @@ const TABS: {
 }[] = [
   { id: "albums", label: "相册", icon: Layers },
   { id: "photos", label: "照片", icon: Images },
-  { id: "folders", label: "专题", icon: FolderOpen },
   { id: "settings", label: "站点设置", icon: Settings },
   { id: "git", label: "版本快照", icon: GitBranch },
 ];
@@ -214,7 +211,6 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
   const counts: Record<Tab, number | string> = {
     albums: portfolio.albums.length,
     photos: totalPhotos,
-    folders: portfolio.folders.length,
     settings: "—",
     git: git.isRepo ? (git.clean ? "✓" : git.changes.length) : "!",
   };
@@ -335,11 +331,12 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
               onAlbumChange={setPhotoAlbumId}
             />
           ) : null}
-          {tab === "folders" ? (
-            <FoldersPanel portfolio={portfolio} setPortfolio={setPortfolio} />
-          ) : null}
           {tab === "settings" ? (
-            <SettingsPanel config={config} setConfig={setConfig} />
+            <SettingsPanel
+              config={config}
+              setConfig={setConfig}
+              albums={portfolio.albums}
+            />
           ) : null}
           {tab === "git" ? (
             <GitPanel
