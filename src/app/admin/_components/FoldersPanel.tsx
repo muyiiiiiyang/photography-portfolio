@@ -32,7 +32,6 @@ export function FoldersPanel({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [readTitle, setReadTitle] = useState(false);
-  const [customDate, setCustomDate] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const uploadInput = useRef<HTMLInputElement | null>(null);
 
@@ -109,7 +108,6 @@ export function FoldersPanel({
     const form = new FormData();
     for (const file of files) form.append("files", file);
     form.append("readTitle", readTitle ? "1" : "0");
-    if (customDate) form.append("dateTaken", customDate);
 
     setUploading(true);
     setUploadError(null);
@@ -557,15 +555,6 @@ export function FoldersPanel({
 
               <div className="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-ink/60">
                 <label className="flex items-center gap-2">
-                  自定义拍摄时间
-                  <input
-                    type="datetime-local"
-                    className="field w-48"
-                    value={customDate}
-                    onChange={(event) => setCustomDate(event.target.value)}
-                  />
-                </label>
-                <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={readTitle}
@@ -575,7 +564,7 @@ export function FoldersPanel({
                 </label>
               </div>
               <p className="mt-2 text-[10px] leading-relaxed text-ink/40">
-                拍摄时间留空时读取 EXIF；没有 EXIF 则保持空白。照片标题默认不读取。
+                上传后可在照片编辑区设置拍摄时间。照片标题默认不读取。
               </p>
 
               {uploadError ? (
@@ -595,7 +584,7 @@ export function FoldersPanel({
                     专题照片 / {assigned.length}
                   </p>
                   <p className="mt-0.5 text-[11px] text-ink/45">
-                    这里只显示当前专题的照片；点击缩略图可移出专题。
+                    这里只显示当前专题的照片；需要添加时展开下方照片库。
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -611,12 +600,10 @@ export function FoldersPanel({
               {assigned.length > 0 ? (
                 <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-6">
                   {assigned.map((photo) => (
-                    <button
+                    <div
                       key={photo.id}
-                      type="button"
-                      onClick={() => togglePhoto(photo.id)}
-                      className="group relative border border-red p-0.5 text-left transition-colors hover:border-ink"
-                      title="点击移出专题"
+                      className="group relative border border-ink/15 p-0.5 text-left"
+                      title={photo.title ?? photo.fileName}
                     >
                       <div className="relative aspect-square overflow-hidden bg-paper-2">
                         <img
@@ -632,7 +619,7 @@ export function FoldersPanel({
                       <span className="mt-0.5 block truncate px-0.5 text-[8px] text-ink/50">
                         {photo.title ?? formatDate(photo.dateTaken)}
                       </span>
-                    </button>
+                    </div>
                   ))}
                 </div>
               ) : (
@@ -659,6 +646,7 @@ export function FoldersPanel({
                 {portfolio.albums.map((album) => {
                   const photos = (portfolio.albumPhotos[album.id] ?? []).filter(
                     (photo) => {
+                      if (assignedIds.includes(photo.id)) return false;
                       if (!needle) return true;
                       return (
                         (photo.title ?? "").toLowerCase().includes(needle) ||
@@ -727,6 +715,7 @@ export function FoldersPanel({
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-6">
                       {(portfolio.loosePhotos ?? [])
                         .filter((photo) => {
+                          if (assignedIds.includes(photo.id)) return false;
                           if (!needle) return true;
                           return (
                             (photo.title ?? "")

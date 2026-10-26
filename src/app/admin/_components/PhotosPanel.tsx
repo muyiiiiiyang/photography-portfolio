@@ -268,7 +268,6 @@ export function PhotosPanel({
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [readTitle, setReadTitle] = useState(false);
-  const [customDate, setCustomDate] = useState("");
   const [dragPhotoId, setDragPhotoId] = useState<string | null>(null);
   const [dragOverPhotoId, setDragOverPhotoId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -707,7 +706,6 @@ export function PhotosPanel({
     const form = new FormData();
     for (const file of files) form.append("files", file);
     form.append("readTitle", readTitle ? "1" : "0");
-    if (customDate) form.append("dateTaken", customDate);
 
     setUploading(true);
     try {
@@ -908,15 +906,6 @@ export function PhotosPanel({
             </p>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-[11px] text-ink/60">
               <label className="flex items-center gap-2">
-                自定义拍摄时间
-                <input
-                  type="datetime-local"
-                  className="field w-48"
-                  value={customDate}
-                  onChange={(event) => setCustomDate(event.target.value)}
-                />
-              </label>
-              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={readTitle}
@@ -926,7 +915,7 @@ export function PhotosPanel({
               </label>
             </div>
             <p className="mt-2 text-[10px] leading-relaxed text-ink/40">
-              拍摄时间留空时读取 EXIF；没有 EXIF 则保持空白。照片标题默认不读取。
+              上传后可在照片编辑区设置拍摄时间。照片标题默认不读取。
             </p>
             <Button
               variant="accent"

@@ -34,7 +34,6 @@ export function AlbumsPanel({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [readTitle, setReadTitle] = useState(false);
-  const [customDate, setCustomDate] = useState("");
   const uploadInput = useRef<HTMLInputElement | null>(null);
   const selected =
     portfolio.albums.find((album) => album.id === selectedId) ??
@@ -96,7 +95,6 @@ export function AlbumsPanel({
     const form = new FormData();
     for (const file of files) form.append("files", file);
     form.append("readTitle", readTitle ? "1" : "0");
-    if (customDate) form.append("dateTaken", customDate);
 
     setUploading(true);
     setUploadError(null);
@@ -369,6 +367,137 @@ export function AlbumsPanel({
               </div>
             </div>
 
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="标题">
+                <input
+                  className="field"
+                  value={selected.title}
+                  onChange={(event) =>
+                    patchAlbum({ title: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="副标题 / EN">
+                <input
+                  className="field"
+                  value={selected.subtitle ?? ""}
+                  onChange={(event) =>
+                    patchAlbum({ subtitle: event.target.value })
+                  }
+                />
+              </Field>
+              <Field
+                label="Slug"
+                hint={`前台路径：/albums/${selected.slug}/`}
+              >
+                <input
+                  className="field font-mono"
+                  value={selected.slug}
+                  onChange={(event) =>
+                    patchAlbum({ slug: event.target.value })
+                  }
+                />
+              </Field>
+              <Field label="封面照片">
+                <select
+                  className="field"
+                  value={selected.coverPhotoId ?? ""}
+                  onChange={(event) =>
+                    patchAlbum({
+                      coverPhotoId: event.target.value || undefined,
+                    })
+                  }
+                >
+                  <option value="">自动（最新一张）</option>
+                  {photos.map((photo) => (
+                    <option key={photo.id} value={photo.id}>
+                      {photo.title ?? photo.fileName}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
+
+            <Field label="描述">
+              <textarea
+                className="field min-h-24"
+                rows={4}
+                value={selected.description ?? ""}
+                onChange={(event) =>
+                  patchAlbum({ description: event.target.value })
+                }
+                placeholder="这组作品的一句话说明…"
+              />
+            </Field>
+
+            <div className="grid gap-4 sm:grid-cols-[1.4fr_0.8fr_0.8fr]">
+              <Field label="地点名称">
+                <input
+                  className="field"
+                  value={selected.location?.name ?? ""}
+                  onChange={(event) =>
+                    patchAlbum({
+                      location: {
+                        ...selected.location,
+                        name: event.target.value,
+                      },
+                    })
+                  }
+                  placeholder="上海"
+                />
+              </Field>
+              <Field label="纬度">
+                <input
+                  className="field font-mono"
+                  inputMode="decimal"
+                  value={selected.location?.lat ?? ""}
+                  onChange={(event) =>
+                    patchAlbum({
+                      location: {
+                        ...selected.location,
+                        lat:
+                          event.target.value === ""
+                            ? undefined
+                            : Number(event.target.value),
+                      },
+                    })
+                  }
+                  placeholder="31.2304"
+                />
+              </Field>
+              <Field label="经度">
+                <input
+                  className="field font-mono"
+                  inputMode="decimal"
+                  value={selected.location?.lng ?? ""}
+                  onChange={(event) =>
+                    patchAlbum({
+                      location: {
+                        ...selected.location,
+                        lng:
+                          event.target.value === ""
+                            ? undefined
+                            : Number(event.target.value),
+                      },
+                    })
+                  }
+                  placeholder="121.4737"
+                />
+              </Field>
+            </div>
+
+            <div className="mt-4">
+              <MapPicker
+                lat={selected.location?.lat}
+                lng={selected.location?.lng}
+                onChange={(lat, lng) =>
+                  patchAlbum({
+                    location: { ...selected.location, lat, lng },
+                  })
+                }
+              />
+            </div>
+
             <div className="flex flex-wrap items-center justify-between gap-3 border border-ink/15 bg-paper-2/50 p-4">
               <div>
                 <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink/40">
@@ -377,7 +506,7 @@ export function AlbumsPanel({
                 <p className="mt-1 text-[11px] leading-relaxed text-ink/50">
                   {photos.length > 0
                     ? "继续添加照片，或到「照片」里调整标题、标签与拍摄时间；上传完成后记得保存至磁盘。"
-                    : "这个相册还没有照片。点右侧按钮会直接打开「照片」并选中当前相册，上传完成后记得保存至磁盘。"}
+                    : "这个相册还没有照片。点右侧按钮上传第一批照片，完成后记得保存至磁盘。"}
                 </p>
               </div>
               <Button
@@ -394,7 +523,7 @@ export function AlbumsPanel({
                 <div>
                   <p className="font-display text-lg">上传照片到相册</p>
                   <p className="mt-0.5 text-[11px] leading-relaxed text-ink/45">
-                    拍摄时间留空时读取 EXIF；没有 EXIF 则保持空白。照片标题默认不读取。
+                    上传后可在照片编辑区设置拍摄时间。照片标题默认不读取。
                   </p>
                 </div>
                 <Button
@@ -407,15 +536,6 @@ export function AlbumsPanel({
                 </Button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-ink/60">
-                <label className="flex items-center gap-2">
-                  自定义拍摄时间
-                  <input
-                    type="datetime-local"
-                    className="field w-48"
-                    value={customDate}
-                    onChange={(event) => setCustomDate(event.target.value)}
-                  />
-                </label>
                 <label className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -577,137 +697,6 @@ export function AlbumsPanel({
               )}
             </section>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="标题">
-                <input
-                  className="field"
-                  value={selected.title}
-                  onChange={(event) =>
-                    patchAlbum({ title: event.target.value })
-                  }
-                />
-              </Field>
-              <Field label="副标题 / EN">
-                <input
-                  className="field"
-                  value={selected.subtitle ?? ""}
-                  onChange={(event) =>
-                    patchAlbum({ subtitle: event.target.value })
-                  }
-                />
-              </Field>
-              <Field
-                label="Slug"
-                hint={`前台路径：/albums/${selected.slug}/`}
-              >
-                <input
-                  className="field font-mono"
-                  value={selected.slug}
-                  onChange={(event) =>
-                    patchAlbum({ slug: event.target.value })
-                  }
-                />
-              </Field>
-              <Field label="封面照片">
-                <select
-                  className="field"
-                  value={selected.coverPhotoId ?? ""}
-                  onChange={(event) =>
-                    patchAlbum({
-                      coverPhotoId: event.target.value || undefined,
-                    })
-                  }
-                >
-                  <option value="">自动（最新一张）</option>
-                  {photos.map((photo) => (
-                    <option key={photo.id} value={photo.id}>
-                      {photo.title ?? photo.fileName}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-            </div>
-
-            <Field label="描述">
-              <textarea
-                className="field min-h-24"
-                rows={4}
-                value={selected.description ?? ""}
-                onChange={(event) =>
-                  patchAlbum({ description: event.target.value })
-                }
-                placeholder="这组作品的一句话说明…"
-              />
-            </Field>
-
-            <div className="grid gap-4 sm:grid-cols-[1.4fr_0.8fr_0.8fr]">
-              <Field label="地点名称">
-                <input
-                  className="field"
-                  value={selected.location?.name ?? ""}
-                  onChange={(event) =>
-                    patchAlbum({
-                      location: {
-                        ...selected.location,
-                        name: event.target.value,
-                      },
-                    })
-                  }
-                  placeholder="上海"
-                />
-              </Field>
-              <Field label="纬度">
-                <input
-                  className="field font-mono"
-                  inputMode="decimal"
-                  value={selected.location?.lat ?? ""}
-                  onChange={(event) =>
-                    patchAlbum({
-                      location: {
-                        ...selected.location,
-                        lat:
-                          event.target.value === ""
-                            ? undefined
-                            : Number(event.target.value),
-                      },
-                    })
-                  }
-                  placeholder="31.2304"
-                />
-              </Field>
-              <Field label="经度">
-                <input
-                  className="field font-mono"
-                  inputMode="decimal"
-                  value={selected.location?.lng ?? ""}
-                  onChange={(event) =>
-                    patchAlbum({
-                      location: {
-                        ...selected.location,
-                        lng:
-                          event.target.value === ""
-                            ? undefined
-                            : Number(event.target.value),
-                      },
-                    })
-                  }
-                  placeholder="121.4737"
-                />
-              </Field>
-            </div>
-
-            <div className="mt-4">
-              <MapPicker
-                lat={selected.location?.lat}
-                lng={selected.location?.lng}
-                onChange={(lat, lng) =>
-                  patchAlbum({
-                    location: { ...selected.location, lat, lng },
-                  })
-                }
-              />
-            </div>
-
             <p className="border-t border-ink/10 pt-3 text-[10px] leading-relaxed text-ink/40">
               修改只会停留在草稿状态，点击右上角「保存至磁盘」才会写入
               <code className="font-mono"> src/data/portfolio-data.json</code>。
@@ -717,7 +706,7 @@ export function AlbumsPanel({
           <div className="flex min-h-64 flex-col items-center justify-center border border-dashed border-ink/20 bg-white/50 p-8 text-center">
             <p className="font-display text-xl">先建一个相册</p>
             <p className="mt-2 max-w-sm text-xs leading-relaxed text-ink/45">
-              相册是作品的基本容器。新建后点「上传照片」会跳到照片面板并自动选中它。
+              相册是作品的基本容器。新建后可直接上传照片并编辑标题、描述与地点。
             </p>
             <Button variant="solid" className="mt-5" onClick={addAlbum}>
               + 新建相册
