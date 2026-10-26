@@ -31,6 +31,9 @@ export function FoldersPanel({
   const [query, setQuery] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [readTitle, setReadTitle] = useState(false);
+  const [customDate, setCustomDate] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
   const uploadInput = useRef<HTMLInputElement | null>(null);
 
   const selected =
@@ -105,6 +108,8 @@ export function FoldersPanel({
     const files = Array.from(fileList).slice(0, 24);
     const form = new FormData();
     for (const file of files) form.append("files", file);
+    form.append("readTitle", readTitle ? "1" : "0");
+    if (customDate) form.append("dateTaken", customDate);
 
     setUploading(true);
     setUploadError(null);
@@ -240,7 +245,10 @@ export function FoldersPanel({
         <div key={folder.id}>
           <button
             type="button"
-            onClick={() => setSelectedId(folder.id)}
+            onClick={() => {
+              setSelectedId(folder.id);
+              setShowPicker(false);
+            }}
             style={{ paddingLeft: `${12 + depth * 16}px` }}
             className={`w-full border-l-2 py-2 pr-3 text-left transition-colors ${
               active
@@ -288,6 +296,39 @@ export function FoldersPanel({
         folderPhotos: { ...prev.folderPhotos, [selected.id]: next },
       };
     });
+  }
+
+  function clearFolderTitles() {
+    if (!selected) return;
+    const ids = new Set(assignedIds);
+    const titled = assigned.filter((photo) => photo.title).length;
+    if (titled === 0) {
+      onNotify("当前专题没有需要清除的照片标题。", "info");
+      return;
+    }
+    if (
+      !window.confirm(
+        `清除专题「${selected.title}」中 ${titled} 张照片的标题？照片不会被删除。`,
+      )
+    ) {
+      return;
+    }
+
+    const clear = (photo: Photo) =>
+      ids.has(photo.id) && photo.title
+        ? { ...photo, title: undefined }
+        : photo;
+    setPortfolio((prev) => ({
+      ...prev,
+      albumPhotos: Object.fromEntries(
+        Object.entries(prev.albumPhotos).map(([key, list]) => [
+          key,
+          list.map(clear),
+        ]),
+      ),
+      loosePhotos: (prev.loosePhotos ?? []).map(clear),
+    }));
+    onNotify(`已清除专题「${selected.title}」的照片标题。`, "success");
   }
 
   return (
@@ -514,6 +555,29 @@ export function FoldersPanel({
                 </span>
               </div>
 
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-ink/60">
+                <label className="flex items-center gap-2">
+                  自定义拍摄时间
+                  <input
+                    type="datetime-local"
+                    className="field w-48"
+                    value={customDate}
+                    onChange={(event) => setCustomDate(event.target.value)}
+                  />
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={readTitle}
+                    onChange={(event) => setReadTitle(event.target.checked)}
+                  />
+                  读取照片标题
+                </label>
+              </div>
+              <p className="mt-2 text-[10px] leading-relaxed text-ink/40">
+                拍摄时间留空时读取 EXIF；没有 EXIF 则保持空白。照片标题默认不读取。
+              </p>
+
               {uploadError ? (
                 <p
                   role="alert"
@@ -527,20 +591,71 @@ export function FoldersPanel({
             <div className="border border-ink/15 bg-white p-5">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink/10 pb-3">
                 <div>
-                  <p className="font-display text-lg">选择照片</p>
+                  <p className="font-display text-lg">
+                    专题照片 / {assigned.length}
+                  </p>
                   <p className="mt-0.5 text-[11px] text-ink/45">
-                    已选 {assigned.length} 张 · 点击缩略图加入或移出专题
+                    这里只显示当前专题的照片；点击缩略图可移出专题。
                   </p>
                 </div>
-                <input
-                  className="field w-44"
-                  placeholder="搜索标题 / 标签"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                />
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button size="sm" onClick={() => setShowPicker((value) => !value)}>
+                    {showPicker ? "收起照片库" : "添加已有照片"}
+                  </Button>
+                  <Button size="sm" variant="danger" onClick={clearFolderTitles}>
+                    清除本专题标题
+                  </Button>
+                </div>
               </div>
 
-              <div className="mt-4 max-h-[28rem] space-y-5 overflow-y-auto pr-1">
+              {assigned.length > 0 ? (
+                <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-6">
+                  {assigned.map((photo) => (
+                    <button
+                      key={photo.id}
+                      type="button"
+                      onClick={() => togglePhoto(photo.id)}
+                      className="group relative border border-red p-0.5 text-left transition-colors hover:border-ink"
+                      title="点击移出专题"
+                    >
+                      <div className="relative aspect-square overflow-hidden bg-paper-2">
+                        <img
+                          src={photo.thumb}
+                          alt={photo.title ?? "照片"}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                        <span className="absolute left-1 top-1 flex h-4 w-4 items-center justify-center border border-ink bg-ink text-[9px] text-paper">
+                          ✓
+                        </span>
+                      </div>
+                      <span className="mt-0.5 block truncate px-0.5 text-[8px] text-ink/50">
+                        {photo.title ?? formatDate(photo.dateTaken)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 border border-dashed border-ink/15 px-4 py-6 text-center text-[11px] text-ink/40">
+                  这个专题还没有照片。可在上方上传，或点「添加已有照片」。
+                </p>
+              )}
+
+              {showPicker ? (
+                <div className="mt-5 border-t border-ink/10 pt-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink/40">
+                      照片库 / 点击加入专题
+                    </p>
+                    <input
+                      className="field w-44"
+                      placeholder="搜索标题 / 标签"
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                    />
+                  </div>
+
+                  <div className="mt-3 max-h-[28rem] space-y-5 overflow-y-auto pr-1">
                 {portfolio.albums.map((album) => {
                   const photos = (portfolio.albumPhotos[album.id] ?? []).filter(
                     (photo) => {
@@ -670,7 +785,9 @@ export function FoldersPanel({
                     还没有照片，先到「照片」标签导入作品，或在上方直接上传到专题。
                   </p>
                 ) : null}
-              </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         ) : (

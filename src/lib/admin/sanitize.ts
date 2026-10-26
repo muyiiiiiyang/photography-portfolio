@@ -71,13 +71,15 @@ export function sanitizePhoto(raw: unknown, index: number): Photo | null {
 
   const thumb = asString(source.thumb) ?? src;
   const dateRaw = asString(source.dateTaken);
-  const dateTaken =
-    dateRaw && isIsoDate(dateRaw) ? toIsoUtc(dateRaw) : new Date(0).toISOString();
+  const dateTaken = dateRaw && isIsoDate(dateRaw) ? toIsoUtc(dateRaw) : "";
   const sourceValue = source.dateTakenSource;
-  const dateTakenSource =
-    sourceValue === "exif" || sourceValue === "manual" || sourceValue === "fallback"
+  const dateTakenSource = dateTaken
+    ? sourceValue === "exif" ||
+      sourceValue === "manual" ||
+      sourceValue === "fallback"
       ? sourceValue
-      : "manual";
+      : "manual"
+    : undefined;
 
   const width = Math.round(asNumber(source.width) ?? 1200);
   const height = Math.round(asNumber(source.height) ?? 800);
@@ -93,7 +95,9 @@ export function sanitizePhoto(raw: unknown, index: number): Photo | null {
 
   const addedRaw = asString(source.addedAt);
   const addedAt =
-    addedRaw && isIsoDate(addedRaw) ? toIsoUtc(addedRaw) : dateTaken;
+    addedRaw && isIsoDate(addedRaw)
+      ? toIsoUtc(addedRaw)
+      : new Date().toISOString();
 
   return {
     id,

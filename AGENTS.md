@@ -52,14 +52,15 @@ pwsh -File scripts/enable-pages.ps1   # 首次开启 GitHub Pages
 ### 2.1 拍摄时间是真实元数据，相册顺序由手动拖动决定
 
 - 排序字段：`photo.dateTaken`，完整 ISO-8601 UTC 字符串（如 `2026-09-14T09:12:00.000Z`）。
-- 取值优先级：EXIF `DateTimeOriginal` → `CreateDate` → （缺失时）导入时间兜底，并标记 `dateTakenSource: "fallback"`。
+- 取值优先级：EXIF `DateTimeOriginal` → `CreateDate` → 缺失时保持**空白**（不写 `dateTakenSource`）。禁止用导入时间、文件 `mtime` 或 `ctime` 伪造拍摄时间；后台可手动填写或清空。
+- `dateTaken` 为空表示“未设置”，排序时沉底；只有用户手动填写后才写 `dateTakenSource: "manual"`。
 - **严禁**使用文件 `mtime`、`ctime` 或上传时间参与正常排序；`dateTaken` 仍必须准确。
 - **相册内顺序**：`albumPhotos[albumId]` 的数组顺序就是前台顺序，由 Studio「照片」或「相册」面板拖动决定。写入、读取和保存都不得自动按日期重排。
 - **时间排序视图**：`sortPhotosByTakenDateDesc()` 仍用于专题、首页时间轴，以及相册页的手动/倒序/正序切换；不要删除该函数。
-- 校验（PowerShell）：只检查时间字段合法/缺时兜底；不要再断言相册数组按日期降序。
+- 校验（PowerShell）：只检查时间字段合法或为空；不要再断言相册数组按日期降序。
 
 ```powershell
-node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of Object.entries(d.albumPhotos)){console.log(id, ps.length, ps.every(p=>p.dateTaken))}"
+node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of Object.entries(d.albumPhotos)){console.log(id, ps.length, ps.filter(p=>!p.dateTaken).length+' blank')}"
 ```
 
 ### 2.2 原始大图不进库
@@ -165,17 +166,17 @@ node -e "const d=require('./src/data/portfolio-data.json');for(const [id,ps] of 
 ### 4.1 常规流程（推荐）
 
 1. 打开 `/admin` → **相册** → 新建/选择相册，填写标题、slug、地点（地图点击拾取坐标）。
-2. **照片** → 拖拽上传。也可在「相册」页点击「上传照片 ↑」，会直接切到「照片」并自动选中当前相册。服务端会：
+2. **照片** → 拖拽上传。也可在「相册」编辑页直接用「上传照片 ↑」上传到当前相册；上传前可选择「自定义拍摄时间」，并可勾选「读取照片标题」（默认不勾选）。服务端会：
    - 校验格式与大小（≤60MB，单次 ≤24 张）
    - sharp 旋转/缩放/转 WebP、生成缩略图与 blur
    - exifr 解析拍摄时间、器材与 GPS 经纬度；有 GPS 的照片会自动写入 `photo.gps`，后台缩略图显示 `GPS` 徽标，编辑面板可跳转地图。
-3. 勾选照片批量加/减标签、删除、编辑标题与拍摄时间。切到「全部照片」可跨相册选中照片：移动到作品集，或加入任意专题/子专题。
+3. 勾选照片批量加/减标签、删除、编辑标题与拍摄时间。切到「全部照片」可跨相册选中照片：移动到作品集，或加入任意专题/子专题。照片管理页支持按专题筛选、Shift 连选，双击照片会在该照片上方打开编辑面板。
 4. **工作台分区**：相册（含顶部导航作品集、作品集页引导语）、照片、专题（含专题页引导语）、关于作者、联系方式、版本快照。
 5. **关于作者**：品牌名、标语、个人照片、关于页大标题、合并后的个人简介/创作宣言、器材清单。
 6. **联系方式**：邮箱、所在地、社交链接、联系页文案。
 7. **专题上传**：专题面板选择任意顶级专题或子专题后，可直接上传独立照片；照片不归入相册，保存到 `loosePhotos`，引用到当前专题，并同时出现在「照片」的「全部照片 / 独立照片」视图。
 8. **保存至磁盘**（`Ctrl/⌘ + S`）→ 写 JSON + 清理未引用图片。
-9. **版本快照** → 填写语义化 Commit Message → 提交。
+9. **版本快照** → 填写语义化 Commit Message → 提交并发布（自动 push）。
 
 ### 4.2 批量导入
 
@@ -195,10 +196,10 @@ node scripts/import-folder.mjs --dir "D:\photos\inbox" --album street-night --ta
 | POST | `/api/admin/logout/` | 清除会话 |
 | GET | `/api/admin/data/` | 返回 `{ portfolio, config, git }` |
 | PUT | `/api/admin/data/` | `{ portfolio?, config? }`，保存并返回最新快照 |
-| POST | `/api/admin/upload/` | multipart：`files[]` + 可选 `tags`，只写图片文件、不改 JSON |
+| POST | `/api/admin/upload/` | multipart：`files[]` + 可选 `tags`、`readTitle=1`、`dateTaken`（ISO）；只写图片文件、不改 JSON |
 | POST | `/api/admin/portrait/` | multipart：`file`，压制成 `public/portrait/*.webp`，供关于页个人照片使用 |
 | GET | `/api/admin/git/` | 工作区状态 |
-| POST | `/api/admin/git/` | `{ message }`，`git add -A && git commit` |
+| POST | `/api/admin/git/` | `{ message }`，`git add -A && git commit`，随后自动 push 到 origin |
 
 所有接口（除 login）必须先 `await guardAdmin()`；返回 401 时前端应跳转登录。
 
@@ -290,7 +291,7 @@ pnpm check; if ($LASTEXITCODE -ne 0) { exit 1 }
 pnpm lint
 ```
 
-- Studio 里的「提交快照」适合**内容更新**，不会替你跑 check/lint。
+- Studio 里的「提交快照」会保存、提交并自动推送到 GitHub，但不会替你跑 check/lint；发布代码仍建议用 CLI 门禁后提交。
 - 改代码请用 CLI 提交，并在提交前跑门禁。
 - 不要提交：`.env.local`、`.next`、`out`、`.shots`、原片、`node_modules`。
 - 不要使用 `--no-verify` 绕过钩子（如后续添加）。
@@ -389,7 +390,7 @@ git reset --hard <commit>
 node scripts/reset-demo.mjs --yes
 ```
 
-会清空 JSON 并删除被引用的 WebP；不可撤销。当前站内已有 58 张真实作品，除非明确要清空，不要运行此命令。
+会清空 JSON 并删除被引用的 WebP；不可撤销。站内已有真实作品，除非明确要清空，不要运行此命令。
 
 ---
 

@@ -1,35 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 import { Button, Field, PanelHeader } from "./ui";
 import { MapPicker } from "./MapPicker";
 import { formatDate } from "@/lib/format";
-import type { Album, PortfolioData } from "@/lib/types";
+import type { UploadSuccess } from "@/lib/admin/types";
+import type { Album, Photo, PortfolioData } from "@/lib/types";
 
 interface AlbumsPanelProps {
   portfolio: PortfolioData;
   setPortfolio: Dispatch<SetStateAction<PortfolioData>>;
-  onUploadPhotos: (albumId: string) => void;
   navAlbumIds: string[];
   onNavAlbumIdsChange: (albumIds: string[]) => void;
   worksIntro: string;
   onWorksIntroChange: (value: string) => void;
+  onNotify: (message: string, tone?: "success" | "error" | "info") => void;
 }
 
 export function AlbumsPanel({
   portfolio,
   setPortfolio,
-  onUploadPhotos,
   navAlbumIds,
   onNavAlbumIdsChange,
   worksIntro,
   onWorksIntroChange,
+  onNotify,
 }: AlbumsPanelProps) {
   const [selectedId, setSelectedId] = useState(portfolio.albums[0]?.id ?? "");
   const [dragPhotoId, setDragPhotoId] = useState<string | null>(null);
   const [dragOverPhotoId, setDragOverPhotoId] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [readTitle, setReadTitle] = useState(false);
+  const [customDate, setCustomDate] = useState("");
+  const uploadInput = useRef<HTMLInputElement | null>(null);
   const selected =
     portfolio.albums.find((album) => album.id === selectedId) ??
     portfolio.albums[0] ??
@@ -82,6 +88,73 @@ export function AlbumsPanel({
   function resetDrag() {
     setDragPhotoId(null);
     setDragOverPhotoId(null);
+  }
+
+  async function uploadToAlbum(fileList: FileList | null) {
+    if (!fileList || fileList.length === 0 || !selected) return;
+    const files = Array.from(fileList).slice(0, 24);
+    const form = new FormData();
+    for (const file of files) form.append("files", file);
+    form.append("readTitle", readTitle ? "1" : "0");
+    if (customDate) form.append("dateTaken", customDate);
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const response = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: form,
+      });
+      const payload = (await response.json().catch(() => ({}))) as Partial<
+        UploadSuccess
+      > & { error?: string };
+
+      if (!response.ok) {
+        setUploadError(payload.error ?? "上传失败，请检查文件后重试。");
+        return;
+      }
+
+      const imported = payload.photos ?? [];
+      if (imported.length === 0) {
+        setUploadError(payload.errors?.[0]?.message ?? "没有可导入的照片。");
+        return;
+      }
+
+      setPortfolio((prev) => {
+        const existing = prev.albumPhotos[selected.id] ?? [];
+        const existingIds = new Set(existing.map((photo) => photo.id));
+        const added: Photo[] = imported.filter(
+          (photo) => !existingIds.has(photo.id),
+        );
+        const merged = [...existing, ...added];
+        return {
+          ...prev,
+          albums: prev.albums.map((album) =>
+            album.id === selected.id
+              ? {
+                  ...album,
+                  coverPhotoId: album.coverPhotoId ?? merged[0]?.id,
+                }
+              : album,
+          ),
+          albumPhotos: { ...prev.albumPhotos, [selected.id]: merged },
+        };
+      });
+
+      const warning =
+        payload.warnings && payload.warnings.length > 0
+          ? `，${payload.warnings.length} 条提醒`
+          : "";
+      onNotify(
+        `已上传 ${imported.length} 张到「${selected.title}」${warning}。保存至磁盘后生效。`,
+        "success",
+      );
+    } catch {
+      setUploadError("上传失败：无法连接本地服务。");
+    } finally {
+      setUploading(false);
+      if (uploadInput.current) uploadInput.current.value = "";
+    }
   }
 
   function patchAlbum(patch: Partial<Album>) {
@@ -164,7 +237,7 @@ export function AlbumsPanel({
             {selected ? (
               <Button
                 variant="accent"
-                onClick={() => onUploadPhotos(selected.id)}
+                onClick={() => uploadInput.current?.click()}
               >
                 上传照片 ↑
               </Button>
@@ -278,7 +351,7 @@ export function AlbumsPanel({
                 <Button
                   variant="accent"
                   size="sm"
-                  onClick={() => onUploadPhotos(selected.id)}
+                  onClick={() => uploadInput.current?.click()}
                 >
                   上传照片 ↑
                 </Button>
@@ -310,10 +383,64 @@ export function AlbumsPanel({
               <Button
                 variant="accent"
                 size="sm"
-                onClick={() => onUploadPhotos(selected.id)}
+                onClick={() => uploadInput.current?.click()}
               >
                 {photos.length > 0 ? "继续上传" : "上传第一批照片"} ↑
               </Button>
+            </div>
+
+            <div className="border border-ink/15 bg-white p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-display text-lg">上传照片到相册</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-ink/45">
+                    拍摄时间留空时读取 EXIF；没有 EXIF 则保持空白。照片标题默认不读取。
+                  </p>
+                </div>
+                <Button
+                  variant="accent"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={() => uploadInput.current?.click()}
+                >
+                  {uploading ? "上传中…" : "选择照片 ↑"}
+                </Button>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-ink/60">
+                <label className="flex items-center gap-2">
+                  自定义拍摄时间
+                  <input
+                    type="datetime-local"
+                    className="field w-48"
+                    value={customDate}
+                    onChange={(event) => setCustomDate(event.target.value)}
+                  />
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={readTitle}
+                    onChange={(event) => setReadTitle(event.target.checked)}
+                  />
+                  读取照片标题
+                </label>
+              </div>
+              <input
+                ref={uploadInput}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(event) => void uploadToAlbum(event.target.files)}
+              />
+              {uploadError ? (
+                <p
+                  role="alert"
+                  className="mt-2 border-l-2 border-red bg-red/5 px-2 py-1 text-[11px] text-red"
+                >
+                  {uploadError}
+                </p>
+              ) : null}
             </div>
 
             <section className="border border-ink/15 bg-paper-2/30 p-4">

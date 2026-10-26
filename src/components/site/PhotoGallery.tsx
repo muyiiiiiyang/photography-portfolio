@@ -298,7 +298,7 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
                 {photo.title ?? ""}
               </span>
               <span className="shrink-0 font-mono text-[9px] tracking-[0.06em] text-ink/35">
-                {formatDate(photo.dateTaken)}
+                {photo.dateTaken ? formatDate(photo.dateTaken) : ""}
               </span>
             </div>
           </button>
@@ -357,9 +357,11 @@ export function PhotoGallery({ photos, links }: PhotoGalleryProps) {
                 onClick={(event) => event.stopPropagation()}
               >
                 <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
-                    {formatDate(active.dateTaken)}
-                  </p>
+                  {active.dateTaken ? (
+                    <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-ink/40">
+                      {formatDate(active.dateTaken)}
+                    </p>
+                  ) : null}
                   {active.title ? (
                     <h3 className="mt-1 font-display text-xl tracking-[-0.01em]">
                       {active.title}

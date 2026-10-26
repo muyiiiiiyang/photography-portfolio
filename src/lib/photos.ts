@@ -20,8 +20,13 @@ export function sortPhotosByTakenDateDesc<
   T extends Pick<Photo, "dateTaken" | "addedAt" | "id">,
 >(photos: T[]): T[] {
   return [...photos].sort((a, b) => {
-    const diff = takenAt(b) - takenAt(a);
-    if (diff !== 0) return diff;
+    const aTime = takenAt(a);
+    const bTime = takenAt(b);
+    if (aTime !== bTime) {
+      if (!Number.isFinite(aTime)) return 1;
+      if (!Number.isFinite(bTime)) return -1;
+      return bTime - aTime;
+    }
 
     const addedDiff = Date.parse(b.addedAt) - Date.parse(a.addedAt);
     if (Number.isFinite(addedDiff) && addedDiff !== 0) return addedDiff;

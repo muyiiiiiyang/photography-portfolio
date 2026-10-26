@@ -87,8 +87,8 @@ function applyExifOffset(date: Date, offset?: string): Date {
 }
 
 function pickShotDate(exif: ExifBag | undefined): {
-  date: Date;
-  source: Photo["dateTakenSource"];
+  date: Date | null;
+  source?: Photo["dateTakenSource"];
 } {
   for (const key of ["DateTimeOriginal", "CreateDate"] as const) {
     const value = exif?.[key];
@@ -100,8 +100,8 @@ function pickShotDate(exif: ExifBag | undefined): {
       return { date: applyExifOffset(value, offset), source: "exif" };
     }
   }
-  // 明确不使用文件修改时间；缺口由后台手动校正。
-  return { date: new Date(), source: "fallback" };
+  // 不伪造日期：没有 EXIF 拍摄时间时保持空白，等待后台手动补充。
+  return { date: null };
 }
 
 function pickCamera(exif: ExifBag | undefined): {
@@ -222,7 +222,11 @@ function meaningFullTitle(fileName: string): string | undefined {
 
 export async function processUpload(
   file: File,
-  options: { tags?: string[] } = {},
+  options: {
+    tags?: string[];
+    readTitle?: boolean;
+    dateTaken?: string;
+  } = {},
 ): Promise<ProcessedUpload> {
   const extension = path.extname(file.name).toLowerCase();
 
@@ -236,8 +240,19 @@ export async function processUpload(
   const buffer = Buffer.from(await file.arrayBuffer());
   const exif = await readExif(buffer);
 
-  const { date, source } = pickShotDate(exif);
-  const isoDate = date.toISOString();
+  let shotDate: { date: Date | null; source?: Photo["dateTakenSource"] };
+  const customDate = options.dateTaken?.trim();
+  if (customDate) {
+    const parsed = new Date(customDate);
+    if (Number.isNaN(parsed.getTime())) {
+      throw new Error("自定义拍摄时间无效，请重新选择。");
+    }
+    shotDate = { date: parsed, source: "manual" };
+  } else {
+    shotDate = pickShotDate(exif);
+  }
+
+  const isoDate = shotDate.date ? shotDate.date.toISOString() : "";
   const gps = pickGps(exif);
   const meta = pickCamera(exif);
 
@@ -257,8 +272,11 @@ export async function processUpload(
     .webp({ quality: 38 })
     .toBuffer();
 
-  const year = isoDate.slice(0, 4);
-  const stamp = isoDate.replace(/[-:TZ.]/g, "").slice(0, 14);
+  // 没有拍摄时间时，用当前时间生成不冲突的文件名，但 photo.dateTaken 仍保持空白。
+  const fileDate = shotDate.date ?? new Date();
+  const fileIso = fileDate.toISOString();
+  const year = fileIso.slice(0, 4);
+  const stamp = fileIso.replace(/[-:TZ.]/g, "").slice(0, 14);
   const token = randomUUID().replace(/-/g, "").slice(0, 6);
   const fileName = `${stamp}-${token}.webp`;
   const thumbName = `${stamp}-${token}-thumb.webp`;
@@ -269,9 +287,9 @@ export async function processUpload(
   await fs.writeFile(path.join(targetDir, thumbName), thumb);
 
   const warnings: string[] = [];
-  if (source === "fallback") {
+  if (!shotDate.date) {
     warnings.push(
-      `${file.name}：没有读取到拍摄时间，已暂用导入时间，请在 Studio 中校正。`,
+      `${file.name}：没有读取到拍摄时间，已保持空白，可在 Studio 中补充。`,
     );
   }
   if (!meta.camera) {
@@ -286,10 +304,10 @@ export async function processUpload(
     width: full.info.width,
     height: full.info.height,
     blurDataURL: `data:image/webp;base64,${blur.toString("base64")}`,
-    title: meaningFullTitle(file.name),
+    title: options.readTitle ? meaningFullTitle(file.name) : undefined,
     tags: uniqueTags(options.tags ?? []),
     dateTaken: isoDate,
-    dateTakenSource: source,
+    dateTakenSource: shotDate.source,
     camera: meta.camera,
     lens: meta.lens,
     focalLength: meta.focalLength,

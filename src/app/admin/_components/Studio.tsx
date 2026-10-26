@@ -73,11 +73,6 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
     setToast({ id: Date.now(), message, tone });
   }, []);
 
-  const openPhotoUpload = useCallback((albumId: string) => {
-    setPhotoAlbumId(albumId);
-    setTab("photos");
-  }, []);
-
   useEffect(() => {
     if (!toast) return;
     const timer = window.setTimeout(() => setToast(null), 4500);
@@ -352,7 +347,6 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
             <AlbumsPanel
               portfolio={portfolio}
               setPortfolio={setPortfolio}
-              onUploadPhotos={openPhotoUpload}
               navAlbumIds={config.navAlbumIds ?? []}
               onNavAlbumIdsChange={(navAlbumIds) =>
                 setConfig((prev) => ({ ...prev, navAlbumIds }))
@@ -364,6 +358,7 @@ export function Studio({ initial }: { initial: AdminSnapshot }) {
                   pageCopy: { ...prev.pageCopy, worksIntro },
                 }))
               }
+              onNotify={notify}
             />
           ) : null}
           {tab === "photos" ? (

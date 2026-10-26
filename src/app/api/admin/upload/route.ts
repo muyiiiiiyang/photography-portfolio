@@ -43,6 +43,8 @@ export async function POST(request: Request) {
       .map((tag) => tag.trim())
       .filter(Boolean),
   );
+  const readTitle = String(form.get("readTitle") ?? "") === "1";
+  const dateTaken = String(form.get("dateTaken") ?? "").trim();
 
   const photos: Photo[] = [];
   const errors: { name: string; message: string }[] = [];
@@ -50,7 +52,11 @@ export async function POST(request: Request) {
 
   for (const file of files) {
     try {
-      const result = await processUpload(file, { tags });
+      const result = await processUpload(file, {
+        tags,
+        readTitle,
+        dateTaken: dateTaken || undefined,
+      });
       photos.push(result.photo);
       warnings.push(...result.warnings);
     } catch (error) {

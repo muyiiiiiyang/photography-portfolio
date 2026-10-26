@@ -28,7 +28,7 @@ function FrameMeta({ frame }: { frame: FrameView }) {
         {frame.title ?? ""}
       </span>
       <span className="shrink-0 font-mono text-[8px] text-paper/55">
-        {formatDate(frame.dateTaken)}
+        {frame.dateTaken ? formatDate(frame.dateTaken) : ""}
       </span>
     </div>
   );
