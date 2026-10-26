@@ -18,7 +18,9 @@
       "title": "现实中的梦",
       "description": "现实中的梦\n还是梦中梦",
       "location": {
-        "name": "丰乡"
+        "name": "丰乡",
+        "lat": 31.272686,
+        "lng": 121.293762
       },
       "coverPhotoId": "p_8b8edfdeea",
       "createdAt": "2026-10-25T15:32:11.542Z"
@@ -1691,6 +1693,132 @@
       "dateTaken": "2026-10-25T15:06:52.422Z",
       "dateTakenSource": "fallback",
       "addedAt": "2026-10-25T15:06:53.407Z"
+    },
+    {
+      "id": "p_ade616f61a",
+      "fileName": "20261026115831-5356a1.webp",
+      "src": "/photos/2026/20261026115831-5356a1.webp",
+      "thumb": "/photos/2026/20261026115831-5356a1-thumb.webp",
+      "width": 2048,
+      "height": 1638,
+      "blurDataURL": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAACQBACdASoYABMAPvVqp04qpiMiMBgMAVAeiWcAxNgQ72at61s0WvJOVOMhUgAA/pYgsSBmbiFXyW108e4ZCxZ2IIVXji1c8/ctBpOkc8VDEFh1mE+ZtEOT59/4O3/NEqEjXTGeWjKF6QrBYc6mKAAA",
+      "title": "1.1",
+      "tags": [],
+      "dateTaken": "2026-09-10T11:58:00.000Z",
+      "dateTakenSource": "manual",
+      "addedAt": "2026-10-26T11:58:32.541Z"
+    },
+    {
+      "id": "p_f199e0f9fc",
+      "fileName": "20261026115832-69c6c2.webp",
+      "src": "/photos/2026/20261026115832-69c6c2.webp",
+      "thumb": "/photos/2026/20261026115832-69c6c2-thumb.webp",
+      "width": 2048,
+      "height": 1638,
+      "blurDataURL": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAABQBACdASoYABMAPvVwrVGqpiQiqAqpUB6JQAAFqlXks/vQ+S9QShW2Wy8AAPllUusYHeF9DBL6rZjSjHZotvU+/tfQFpXx54x+dbKp4VZ51iNanOfE9D+DuG5/u6nG7L28p+eWWtU/4y6Y+PuEtOpjvaGJOREIlv/g9UE0IErFqkO14qSakOJVhRxIDWg+cacwh2KeAAA=",
+      "title": "1.2",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:32.545Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:33.381Z"
+    },
+    {
+      "id": "p_e414479699",
+      "fileName": "20261026115833-4eb546.webp",
+      "src": "/photos/2026/20261026115833-4eb546.webp",
+      "thumb": "/photos/2026/20261026115833-4eb546-thumb.webp",
+      "width": 2048,
+      "height": 1636,
+      "blurDataURL": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAAAQBQCdASoYABMAPvVqrE+qpiQiKA1RUB6JZQCdAA9odNVW9tq6X/lvbaWA19iHGfQAAP5UZhPxyVQpcmmdFnF/MmtlA5ipac/K17BnL5NhiFAd9e83ETEX6EFGG2W3fLZVHczgFkUg66aGAAA=",
+      "title": "1.3",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:33.386Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:34.237Z"
+    },
+    {
+      "id": "p_7d337e217b",
+      "fileName": "20261026115834-26b4da.webp",
+      "src": "/photos/2026/20261026115834-26b4da.webp",
+      "thumb": "/photos/2026/20261026115834-26b4da-thumb.webp",
+      "width": 2048,
+      "height": 1610,
+      "blurDataURL": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAABQBQCdASoYABMAPvVur1EqpiQiqAqpUB6JZwDA3q/wbPSkYZbBVdfreNb97t77g1M+C6gA/vKg2p3xKWuAf+YawmlhNXJydIGBO1S+UMgNPkzwsh8hAx7MfJwWacluKJmaoG5rC4vACDwpXw7bDhjiRY8EIh3bpw0vUuKZQRbJGq+1b9mO2//Oco75ARSLgAA=",
+      "title": "1.6",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:34.241Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:35.090Z"
+    },
+    {
+      "id": "p_2cfb08a11b",
+      "fileName": "20261026115835-ded04c.webp",
+      "src": "/photos/2026/20261026115835-ded04c.webp",
+      "thumb": "/photos/2026/20261026115835-ded04c-thumb.webp",
+      "width": 2048,
+      "height": 1612,
+      "blurDataURL": "data:image/webp;base64,UklGRroAAABXRUJQVlA4IK4AAADQBACdASoYABMAPvVysFMqpqSiqAgBUB6JYwCuHA+DIpaPiMhSH5O+BEgkRfTBgAD+5GqfzxpFlVNmVnD2y4vhd5CXunXPtaJZvduTYpAWH+5nyQNVWHMbGXCUNjcE5avVFZspvaIk/89DSMidZJxdiJM1WFzluTVxh5IOpgkO0Sb8FGKWUqUQ2h3uDHrIfTpSucIb1dwdKj/Wq54Oc8aAtrGqq9poEZDtSrgAAAA=",
+      "title": "1.7",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:35.092Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:35.857Z"
+    },
+    {
+      "id": "p_8083b2c47e",
+      "fileName": "20261026115835-900d54.webp",
+      "src": "/photos/2026/20261026115835-900d54.webp",
+      "thumb": "/photos/2026/20261026115835-900d54-thumb.webp",
+      "width": 2048,
+      "height": 1635,
+      "blurDataURL": "data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAAAQBQCdASoYABMAPvVqq1AqpaOiqA1RUB6JZwDKABGggy0VW2WBcOLnIV+cTyF6tkyAAP7fSfHnBz463+uev1pncLX9M4qsSQaVLNqFhPJCzY2+c4T56knbL4NEQqgVlDIch1H5A2RQ0bn0MkkvUNqKQdR/7dzZbszAQLkdgGMU2lVnWJTzs4nRDWJd4meOR2fd5QAA",
+      "title": "2.2",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:35.861Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:36.644Z"
+    },
+    {
+      "id": "p_b84e28d565",
+      "fileName": "20261026115836-e8c5e0.webp",
+      "src": "/photos/2026/20261026115836-e8c5e0.webp",
+      "thumb": "/photos/2026/20261026115836-e8c5e0-thumb.webp",
+      "width": 2048,
+      "height": 1731,
+      "blurDataURL": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAABQBACdASoYABQAPvVmqk4qpaOpMAgBUB6JZwDCgCHZp1X3pegYfVkRt6WAAP7eqnCkCw98cwEi3I3Dh8BsnQI2RWA4a7BhVnV+iNs1ogQX247kBribLI8AAAA=",
+      "title": "2.3",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:36.648Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:37.469Z"
+    },
+    {
+      "id": "p_b8032022fd",
+      "fileName": "20261026115837-9c26aa.webp",
+      "src": "/photos/2026/20261026115837-9c26aa.webp",
+      "thumb": "/photos/2026/20261026115837-9c26aa-thumb.webp",
+      "width": 2048,
+      "height": 1629,
+      "blurDataURL": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADQBACdASoYABMAPuVgqk4pJaQiMAwBIByJZQC2FCHbnrnuOd1gQv1ryWHu+WNvAAD+r47hoBNvGkJNsbZC+Tz32UQqzn4qdA1g+QVNsdv7LHnhK+/pr057sXFP3BwVMr8JQAAA",
+      "title": "2.4",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:37.473Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:38.245Z"
+    },
+    {
+      "id": "p_1285d54c51",
+      "fileName": "20261026115838-25abd3.webp",
+      "src": "/photos/2026/20261026115838-25abd3.webp",
+      "thumb": "/photos/2026/20261026115838-25abd3-thumb.webp",
+      "width": 2048,
+      "height": 1658,
+      "blurDataURL": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAwBACdASoYABMAPu1kpU4ppaOiMAwBMB2JZwAAW/GK4X7ilS+7vY4pjgAA/sNDEGEys6xGK11zI+ftb8kbwcAFmc+ptjjSkrWFjZwIAAA=",
+      "title": "2.7",
+      "tags": [],
+      "dateTaken": "2026-10-26T11:58:38.250Z",
+      "dateTakenSource": "fallback",
+      "addedAt": "2026-10-26T11:58:39.020Z"
     }
   ],
   "folders": [
@@ -1727,14 +1855,6 @@
       "parentId": "folder-product"
     },
     {
-      "id": "folder_mvnxbdjn",
-      "slug": "new-series-5",
-      "title": "旅行游记",
-      "subtitle": "Journeys",
-      "description": "记录行走的轨迹，也记录沿途的感知。于陌生的风景与偶然的相遇之间，捕捉旅程留下的片刻与余韵",
-      "createdAt": "2026-10-25T14:29:02.675Z"
-    },
-    {
       "id": "folder_mvnymabl",
       "slug": "new-series-6",
       "title": "隐",
@@ -1742,6 +1862,15 @@
       "coverPhotoId": "p_795585d889",
       "createdAt": "2026-10-25T15:05:31.329Z",
       "parentId": "folder-portrait"
+    },
+    {
+      "id": "folder_mvp78yta",
+      "slug": "new-series-7",
+      "title": "香港",
+      "subtitle": "HONG KONG",
+      "coverPhotoId": "p_ade616f61a",
+      "createdAt": "2026-10-26T11:54:52.606Z",
+      "parentId": "folder-landscape"
     }
   ],
   "folderPhotos": {
@@ -1765,7 +1894,6 @@
       "p_467272ce96",
       "p_d5f458dcc5"
     ],
-    "folder_mvnxbdjn": [],
     "folder_mvnymabl": [
       "p_58511d2eb9",
       "p_43e0aab718",
@@ -1782,7 +1910,18 @@
       "p_b615df0b1a",
       "p_9850604e45",
       "p_d76a054323"
+    ],
+    "folder_mvp78yta": [
+      "p_ade616f61a",
+      "p_f199e0f9fc",
+      "p_e414479699",
+      "p_7d337e217b",
+      "p_2cfb08a11b",
+      "p_8083b2c47e",
+      "p_b84e28d565",
+      "p_b8032022fd",
+      "p_1285d54c51"
     ]
   },
-  "updatedAt": "2026-10-26T05:57:35.261Z"
+  "updatedAt": "2026-10-26T12:09:55.691Z"
 }
