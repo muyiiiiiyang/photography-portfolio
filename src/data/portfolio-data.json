@@ -1716,8 +1716,8 @@
       "height": 1638,
       "blurDataURL": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAABQBACdASoYABMAPvVwrVGqpiQiqAqpUB6JQAAFqlXks/vQ+S9QShW2Wy8AAPllUusYHeF9DBL6rZjSjHZotvU+/tfQFpXx54x+dbKp4VZ51iNanOfE9D+DuG5/u6nG7L28p+eWWtU/4y6Y+PuEtOpjvaGJOREIlv/g9UE0IErFqkO14qSakOJVhRxIDWg+cacwh2KeAAA=",
       "tags": [],
-      "dateTaken": "2026-10-26T11:58:32.545Z",
-      "dateTakenSource": "fallback",
+      "dateTaken": "2026-09-11T11:58:00.000Z",
+      "dateTakenSource": "manual",
       "addedAt": "2026-10-26T11:58:33.381Z"
     },
     {
@@ -1807,8 +1807,8 @@
       "height": 1658,
       "blurDataURL": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAwBACdASoYABMAPu1kpU4ppaOiMAwBMB2JZwAAW/GK4X7ilS+7vY4pjgAA/sNDEGEys6xGK11zI+ftb8kbwcAFmc+ptjjSkrWFjZwIAAA=",
       "tags": [],
-      "dateTaken": "2026-10-26T11:58:38.250Z",
-      "dateTakenSource": "fallback",
+      "dateTaken": "2026-09-11T11:58:00.000Z",
+      "dateTakenSource": "manual",
       "addedAt": "2026-10-26T11:58:39.020Z"
     }
   ],
@@ -1914,5 +1914,5 @@
       "p_1285d54c51"
     ]
   },
-  "updatedAt": "2026-10-26T12:34:16.117Z"
+  "updatedAt": "2026-10-26T12:48:13.582Z"
 }
